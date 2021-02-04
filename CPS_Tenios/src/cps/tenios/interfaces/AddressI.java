@@ -1,5 +1,11 @@
 package cps.tenios.interfaces;
 
+
+/**
+ * 
+ * @author alexc
+ *
+ */
 public interface AddressI {
 	boolean isNodeAddress();
 	boolean isNetworkAddress();
