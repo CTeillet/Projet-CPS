@@ -1,4 +1,7 @@
-package cps.tenios.interfaces;
+package cps.tenios.interfaces.node;
+
+import cps.tenios.interfaces.gestionnaireReseau.AddressI;
+import cps.tenios.interfaces.gestionnaireReseau.NodeAddressI;
 
 public interface CommunicationCI {
 	void connect (NodeAddressI address, String communicationInboundPortURI);

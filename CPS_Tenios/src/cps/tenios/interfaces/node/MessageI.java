@@ -1,6 +1,8 @@
-package cps.tenios.interfaces;
+package cps.tenios.interfaces.node;
 
 import java.io.Serializable;
+
+import cps.tenios.interfaces.gestionnaireReseau.AddressI;
 
 public interface MessageI {
 	AddressI getAddress();
