@@ -1,4 +1,4 @@
-package cps.tenios.interfaces.gestionnaireReseau;
+package cps.tenios.interfaces;
 
 public interface NetworkAddressI extends AddressI{
 	boolean isNodeAddress();

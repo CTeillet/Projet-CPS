@@ -1,8 +1,6 @@
-package cps.tenios.interfaces.node;
+package cps.tenios.interfaces;
 
 import java.util.Set;
-
-import cps.tenios.interfaces.gestionnaireReseau.NodeAddressI;
 
 public interface RoutingCI {
 	void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes);
