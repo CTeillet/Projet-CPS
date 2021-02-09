@@ -2,10 +2,10 @@ package cps.tenios.reseauEphemere;
 
 import java.util.Set;
 
-import cps.tenios.interfaces.ConnectionInfoI;
-import cps.tenios.interfaces.NodeAddressI;
-import cps.tenios.interfaces.PositionI;
-import cps.tenios.interfaces.RegistrationCI;
+import cps.tenios.reseauEphemere.interfaces.ConnectionInfoI;
+import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.PositionI;
+import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 
 public class RegistrationConnector extends AbstractConnector implements RegistrationCI {

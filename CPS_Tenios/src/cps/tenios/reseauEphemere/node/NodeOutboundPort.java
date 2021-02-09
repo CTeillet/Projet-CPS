@@ -1,9 +1,9 @@
 package cps.tenios.reseauEphemere.node;
 
-import cps.tenios.interfaces.AddressI;
-import cps.tenios.interfaces.CommunicationCI;
-import cps.tenios.interfaces.MessageI;
-import cps.tenios.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
+import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
+import cps.tenios.reseauEphemere.interfaces.MessageI;
+import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;

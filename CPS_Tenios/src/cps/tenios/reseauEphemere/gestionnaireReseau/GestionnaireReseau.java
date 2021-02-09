@@ -2,8 +2,8 @@ package cps.tenios.reseauEphemere.gestionnaireReseau;
 
 import java.util.Set;
 
-import cps.tenios.interfaces.ConnectionInfoI;
-import cps.tenios.interfaces.RegistrationCI;
+import cps.tenios.reseauEphemere.interfaces.ConnectionInfoI;
+import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 

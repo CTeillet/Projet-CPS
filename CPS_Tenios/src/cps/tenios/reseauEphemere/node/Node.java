@@ -1,7 +1,7 @@
 package cps.tenios.reseauEphemere.node;
 
-import cps.tenios.interfaces.CommunicationCI;
-import cps.tenios.interfaces.RegistrationCI;
+import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
+import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
