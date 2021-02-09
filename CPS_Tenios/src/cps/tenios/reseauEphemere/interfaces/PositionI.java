@@ -1,4 +1,4 @@
-package cps.tenios.interfaces;
+package cps.tenios.reseauEphemere.interfaces;
 
 /**
  * 

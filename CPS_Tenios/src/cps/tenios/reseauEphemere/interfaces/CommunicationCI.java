@@ -1,4 +1,4 @@
-package cps.tenios.interfaces;
+package cps.tenios.reseauEphemere.interfaces;
 
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;

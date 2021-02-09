@@ -1,4 +1,4 @@
-package cps.tenios.node;
+package cps.tenios.reseauEphemere.node;
 
 import cps.tenios.interfaces.CommunicationCI;
 import cps.tenios.interfaces.RegistrationCI;

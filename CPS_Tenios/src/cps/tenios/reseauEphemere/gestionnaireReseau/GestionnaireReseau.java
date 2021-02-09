@@ -1,4 +1,4 @@
-package cps.tenios.gestionnaireReseau;
+package cps.tenios.reseauEphemere.gestionnaireReseau;
 
 import java.util.Set;
 
@@ -11,9 +11,10 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 public class GestionnaireReseau extends AbstractComponent {
 	
 	private Set<ConnectionInfoI> table;
+	private RegistrationInboundPort inboundPort;
 
-	protected GestionnaireReseau(int nbThreads, int nbSchedulableThreads) {
-		super(nbThreads, nbSchedulableThreads);
+	protected GestionnaireReseau() {
+		super(1, 0);
 		// TODO Auto-generated constructor stub
 	}
 
