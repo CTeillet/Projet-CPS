@@ -1,12 +1,15 @@
 package cps.tenios.interfaces;
 
 import java.util.Set;
+
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 /**
  * 
  * @author alexc
  *
  */
-public interface RegistrationCI {
+public interface RegistrationCI extends RequiredCI, OfferedCI {
 
 	/**
 	 * 

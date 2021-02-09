@@ -1,10 +1,14 @@
 package cps.tenios.interfaces;
+
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
+
 /**
  * 
  * @author teill
  *
  */
-public interface CommunicationCI {
+public interface CommunicationCI extends OfferedCI, RequiredCI {
 	/**
 	 * 
 	 * @param address
