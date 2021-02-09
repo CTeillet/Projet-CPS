@@ -1,4 +1,4 @@
-package cps.tenios.reseauEphemere.gestionnaireReseau;
+package cps.tenios.reseauEphemere;
 
 import java.util.Set;
 
