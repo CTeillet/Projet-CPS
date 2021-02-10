@@ -19,7 +19,8 @@ public interface RegistrationCI extends RequiredCI, OfferedCI {
 	 * @param initialRange
 	 * @return
 	 */
-	Set<ConnectionInfoI> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI, PositionI initialPosition, double initialRange);
+	Set<ConnectionInfoI> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
+			PositionI initialPosition, double initialRange) throws Exception;
 	
 	/**
 	 * 
@@ -30,7 +31,8 @@ public interface RegistrationCI extends RequiredCI, OfferedCI {
 	 * @param routingInboundPortURI
 	 * @return
 	 */
-	Set<ConnectionInfoI> registerAccessPoint(NodeAddressI address, String communicationInboundPortURI, PositionI initialPosition, double initialRange, String routingInboundPortURI);
+	Set<ConnectionInfoI> registerAccessPoint(NodeAddressI address, String communicationInboundPortURI,
+			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception;
 	
 	/**
 	 * 
@@ -41,13 +43,14 @@ public interface RegistrationCI extends RequiredCI, OfferedCI {
 	 * @param routingInboundPortURI
 	 * @return
 	 */
-	Set<ConnectionInfoI> registerRoutingNode(NodeAddressI address, String communicationInboundPortURI, PositionI initialPosition, double initialRange, String routingInboundPortURI);
+	Set<ConnectionInfoI> registerRoutingNode(NodeAddressI address, String communicationInboundPortURI,
+			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception;
 	
 	/**
 	 * 
 	 * @param address
 	 */
-	void unregister (NodeAddressI address);
+	void unregister (NodeAddressI address) throws Exception;
 
 	
 }

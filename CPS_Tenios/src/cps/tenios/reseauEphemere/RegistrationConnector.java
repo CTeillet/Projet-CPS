@@ -10,35 +10,27 @@ import fr.sorbonne_u.components.connectors.AbstractConnector;
 
 public class RegistrationConnector extends AbstractConnector implements RegistrationCI {
 
-	public RegistrationConnector() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public Set<ConnectionInfoI> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
-			PositionI initialPosition, double initialRange) {
-		// TODO Auto-generated method stub
-		return null;
+			PositionI initialPosition, double initialRange) throws Exception {
+		return ((RegistrationCI)this.offering).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange);
 	}
 
 	@Override
 	public Set<ConnectionInfoI> registerAccessPoint(NodeAddressI address, String communicationInboundPortURI,
-			PositionI initialPosition, double initialRange, String routingInboundPortURI) {
-		// TODO Auto-generated method stub
-		return null;
+			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
+		return ((RegistrationCI)this.offering).registerAccessPoint(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI);
 	}
 
 	@Override
 	public Set<ConnectionInfoI> registerRoutingNode(NodeAddressI address, String communicationInboundPortURI,
-			PositionI initialPosition, double initialRange, String routingInboundPortURI) {
-		// TODO Auto-generated method stub
-		return null;
+			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
+		return ((RegistrationCI)this.offering).registerRoutingNode(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI);
 	}
 
 	@Override
-	public void unregister(NodeAddressI address) {
-		// TODO Auto-generated method stub
-
+	public void unregister(NodeAddressI address) throws Exception {
+		((RegistrationCI)this.offering).unregister(address);
 	}
 
 }
