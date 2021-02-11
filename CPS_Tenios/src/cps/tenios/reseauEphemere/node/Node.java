@@ -1,7 +1,10 @@
 package cps.tenios.reseauEphemere.node;
 
 import java.util.List;
+import java.util.Set;
 
+import cps.tenios.reseauEphemere.ConnectionInfo;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.AbstractComponent;
@@ -17,8 +20,11 @@ public abstract class  Node extends AbstractComponent{
 	// TODO a verifier besoin d'un port par noeud rattacher 
 	protected List<NodeOutboundPort> nodesOutboundPort;
 	protected List<NodeInboundPort> nodesInboundPort;
+	protected AddressI addr;
 	//port vers le gestionnaire reseau
 	protected NodeRegistrationOutboundPort registrationOutboundPort;
+	
+	protected Set<ConnectionInfo> voisin;
 
 	protected Node() throws Exception {
 		super(0, 1);
@@ -46,6 +52,7 @@ public abstract class  Node extends AbstractComponent{
 		super.shutdown();
 	}
 	
+
 	
 
 }

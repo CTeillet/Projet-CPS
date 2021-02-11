@@ -17,14 +17,19 @@ public class GestionnaireReseau extends AbstractComponent {
 	
 	public static final String  INBOUNDPORT_URI = "registrationInboundPort-uri";
 	private RegistrationInboundPort registrationInboundPort;
+	String test = registrationInboundPort.get
 
-	private Set<ConnectionInfo> table;
+	private Set<ConnectionInfo> tableNoeudTerminal;
+	private Set<ConnectionInfo> tableNoeudAccess;
+	private Set<ConnectionInfo> tableNoeudRouting;
 	
 	protected GestionnaireReseau() throws Exception {
 		super(1, 0);
 		this.registrationInboundPort = new RegistrationInboundPort(INBOUNDPORT_URI, this);
 		this.registrationInboundPort.publishPort();
-		table = new HashSet<ConnectionInfo>();
+		tableNoeudTerminal = new HashSet<ConnectionInfo>();
+		tableNoeudAccess = new HashSet<ConnectionInfo>();
+		tableNoeudRouting = new HashSet<ConnectionInfo>();
 	}
 	
 	@Override
@@ -41,10 +46,16 @@ public class GestionnaireReseau extends AbstractComponent {
 			PositionI initialPosition, double initialRange){
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, false, "", initialPosition);
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
-		table.stream()
+		tableNoeudAccess.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
-		table.add(c);
+		tableNoeudRouting.stream()
+		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+		.forEach(x-> res.add(x));
+		tableNoeudTerminal.stream()
+		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+		.forEach(x-> res.add(x));
+		tableNoeudTerminal.add(c);
 		return res;	
 	}
 	
@@ -52,10 +63,8 @@ public class GestionnaireReseau extends AbstractComponent {
 			PositionI initialPosition, double initialRange, String routingInboundPortURI){
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, initialPosition);
-		table.stream()
-		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
-		.forEach(x-> res.add(x));
-		table.add(c);
+		res.addAll(tableNoeudAccess);
+		tableNoeudAccess.add(c);
 		return res;
 	}
 	
@@ -63,10 +72,10 @@ public class GestionnaireReseau extends AbstractComponent {
 			PositionI initialPosition, double initialRange, String routingInboundPortURI){
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, initialPosition);
-		table.stream()
+		tableNoeudRouting.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
-		table.add(c);
+		tableNoeudRouting.add(c);
 		return res;
 	}
 }
