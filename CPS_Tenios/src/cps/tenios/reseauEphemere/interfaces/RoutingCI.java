@@ -19,6 +19,6 @@ public interface RoutingCI {
 	 * @param neighbour
 	 * @param numberOfHops
 	 */
-	void udateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception;
+	void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception;
 	
 }

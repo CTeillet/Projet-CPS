@@ -11,7 +11,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
 @OfferedInterfaces(offered = {CommunicationCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
-public class Node extends AbstractComponent{
+public abstract class  Node extends AbstractComponent{
 	
 	public static final String REGISTRATION_URI = "registrationOutboundPort-uri";
 	// TODO a verifier besoin d'un port par noeud rattacher 
@@ -28,11 +28,7 @@ public class Node extends AbstractComponent{
 	}
 	
 	@Override
-	public synchronized void execute() throws Exception {
-		super.execute();
-		// TODO : cf c1 1:46:00
-		// TODO this.logMessage("...");
-	}
+	public abstract void execute() throws Exception;
 
 	@Override
 	public synchronized void finalise() throws Exception {

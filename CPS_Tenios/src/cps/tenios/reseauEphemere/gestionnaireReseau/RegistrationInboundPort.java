@@ -2,12 +2,11 @@ package cps.tenios.reseauEphemere.gestionnaireReseau;
 
 import java.util.Set;
 
-import cps.tenios.reseauEphemere.interfaces.ConnectionInfoI;
+import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.PositionI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 public class RegistrationInboundPort extends AbstractInboundPort implements RegistrationCI {
@@ -47,7 +46,7 @@ public class RegistrationInboundPort extends AbstractInboundPort implements Regi
 */
 
 	@Override
-	public Set<ConnectionInfoI> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
+	public Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception {
 		// TODO a verfier
 		return this.getOwner().handleRequest(
@@ -55,7 +54,7 @@ public class RegistrationInboundPort extends AbstractInboundPort implements Regi
 	}
 
 	@Override
-	public Set<ConnectionInfoI> registerAccessPoint(NodeAddressI address, String communicationInboundPortURI,
+	public Set<ConnectionInfo> registerAccessPoint(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
 		// TODO a verfier
 		return this.getOwner().handleRequest(
@@ -63,7 +62,7 @@ public class RegistrationInboundPort extends AbstractInboundPort implements Regi
 	}
 
 	@Override
-	public Set<ConnectionInfoI> registerRoutingNode(NodeAddressI address, String communicationInboundPortURI,
+	public Set<ConnectionInfo> registerRoutingNode(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
 		// TODO a verfier
 		return this.getOwner().handleRequest(
@@ -72,10 +71,11 @@ public class RegistrationInboundPort extends AbstractInboundPort implements Regi
 
 	@Override
 	public void unregister(NodeAddressI address) throws Exception {
-		// TODO a verfier 
-		this.getOwner().handleRequest(
-				register -> ((RegistrationCI)register).unregister(address));
-
+		((RegistrationCI)this.getOwner()).unregister(address);
+		this.getOwner().handleRequest( register -> 
+						{((RegistrationCI)register).unregister(address);
+						  return null;
+		});
 	}
 
 }

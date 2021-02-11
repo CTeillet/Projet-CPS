@@ -8,37 +8,34 @@ import fr.sorbonne_u.components.connectors.AbstractConnector;
 
 public class NodeConnector extends AbstractConnector implements CommunicationCI {
 
-	public NodeConnector() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
-	public void connect(NodeAddressI address, String communicationInboundPortURI) {
-		// TODO Auto-generated method stub
+	public void connect(NodeAddressI address, String communicationInboundPortURI)  throws Exception{
+		((CommunicationCI)this.offering).connect(address, communicationInboundPortURI);
 
 	}
 
 	@Override
-	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) {
-		// TODO Auto-generated method stub
+	public void connectRouting(NodeAddressI address, String communicationInboundPortURI,
+			String routingInboundPortURI)  throws Exception{
+		((CommunicationCI)this.offering).connectRouting(address, communicationInboundPortURI,
+														routingInboundPortURI);
 
 	}
 
 	@Override
-	public void transmitMessage(MessageI m) {
-		// TODO Auto-generated method stub
+	public void transmitMessage(MessageI m)  throws Exception{
+		((CommunicationCI)this.offering).transmitMessage(m);
 
 	}
 
 	@Override
-	public boolean hasRouteFor(AddressI address) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasRouteFor(AddressI address)  throws Exception{
+		return ((CommunicationCI)this.offering).hasRouteFor(address);
 	}
 
 	@Override
-	public void ping() {
-		// TODO Auto-generated method stub
+	public void ping()  throws Exception{
+		((CommunicationCI)this.offering).ping();
 
 	}
 
