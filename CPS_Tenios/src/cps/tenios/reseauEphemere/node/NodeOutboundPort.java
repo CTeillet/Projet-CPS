@@ -5,51 +5,52 @@ import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 public class NodeOutboundPort extends AbstractOutboundPort implements CommunicationCI {
 	
-	public NodeOutboundPort(Class<? extends RequiredCI> implementedInterface, ComponentI owner) throws Exception {
-		super(implementedInterface, owner);
-		// TODO Auto-generated constructor stub
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3254624094913909113L;
+
+	public NodeOutboundPort(ComponentI owner) throws Exception {
+		super(CommunicationCI.class, owner);
 	}
 
-	public NodeOutboundPort(String uri, Class<? extends RequiredCI> implementedInterface, ComponentI owner)
+	public NodeOutboundPort(String uri,ComponentI owner)
 			throws Exception {
-		super(uri, implementedInterface, owner);
+		super(uri, CommunicationCI.class, owner);
 		// TODO Auto-generated constructor stub
 	}
 	
 	
 
 	@Override
-	public void connect(NodeAddressI address, String communicationInboundPortURI) {
-		// TODO Auto-generated method stub
+	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
+		((CommunicationCI)this.getConnector()).connect(address, communicationInboundPortURI);
 
 	}
 
 	@Override
-	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) {
-		// TODO Auto-generated method stub
+	public String connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception  {
+		return ((CommunicationCI)this.getConnector()).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);
+	}
+
+	@Override
+	public void transmitMessage(MessageI m) throws Exception {
+		((CommunicationCI)this.getConnector()).transmitMessage(m);
 
 	}
 
 	@Override
-	public void transmitMessage(MessageI m) {
-		// TODO Auto-generated method stub
-
+	public boolean hasRouteFor(AddressI address) throws Exception {
+		return ((CommunicationCI)this.getConnector()).hasRouteFor(address);
 	}
 
 	@Override
-	public boolean hasRouteFor(AddressI address) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void ping() {
-		// TODO Auto-generated method stub
+	public void ping() throws Exception {
+		((CommunicationCI)this.getConnector()).ping();
 
 	}
 
