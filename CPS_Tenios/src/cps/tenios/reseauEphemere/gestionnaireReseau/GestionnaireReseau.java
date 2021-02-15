@@ -34,15 +34,11 @@ public class GestionnaireReseau extends AbstractComponent {
 		
 		this.toggleLogging();
 		this.toggleTracing();
-		logMessage("Fin constructeur");
-		logMessage(this.toString());
 	}
 	
 
 	public Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange){
-		System.out.println("LAAA");
-		logMessage("Connexion");
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, false, "", initialPosition);
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
 		tableNoeudAccess.stream()
@@ -55,6 +51,7 @@ public class GestionnaireReseau extends AbstractComponent {
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
 		tableNoeudTerminal.add(c);
+		logMessage("Register taille ensemble " + size());
 		return res;	
 	}
 	
@@ -78,6 +75,13 @@ public class GestionnaireReseau extends AbstractComponent {
 		return res;
 	}
 	
+	public void unregister (NodeAddressI address) throws Exception{
+		tableNoeudAccess.removeIf(c-> c.getAddress()==address);
+		tableNoeudRouting.removeIf(c-> c.getAddress()==address);
+		tableNoeudTerminal.removeIf(c-> c.getAddress()==address);
+		logMessage("Unregister taille ensemble " + size());
+	}
+	
 	@Override
 	public synchronized void execute() throws Exception {
 		super.execute();
@@ -99,5 +103,13 @@ public class GestionnaireReseau extends AbstractComponent {
 	public synchronized void finalise() throws Exception {
 		//this.doPortDisconnection(INBOUNDPORT_URI);
 		super.finalise();
+	}
+	
+	private int size() {
+		Set<ConnectionInfo> temp = new HashSet<ConnectionInfo>();
+		temp.addAll(tableNoeudAccess);
+		temp.addAll(tableNoeudRouting);
+		temp.addAll(tableNoeudTerminal);
+		return temp.size();
 	}
 }

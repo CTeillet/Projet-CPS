@@ -20,9 +20,9 @@ public class TerminalNode extends Node {
 
 	@Override
 	public void execute() throws Exception {
-		logMessage("Test");
+		logMessage("Debut Execute TerminalNode");
 		super.registrationOutboundPort.registerTerminalNode(super.addr, "", super.pos, 100.);
-		logMessage("Debut");
+		super.registrationOutboundPort.unregister(super.addr);
 	}
 
 	@Override

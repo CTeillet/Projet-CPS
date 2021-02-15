@@ -34,38 +34,29 @@ implements RegistrationCI {
 	@Override
 	public Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception {
-		System.out.println("AAAAA");
-		System.out.println(this.getOwner());
-		try {
-			return this.getOwner().handleRequest(
-				register -> ((RegistrationCI)register).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange));
-		}catch(Exception e) {
-			e.printStackTrace();
-		}finally {
-			return null;
-		}
+		return this.getOwner().handleRequest(
+				register -> ((GestionnaireReseau)register).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange));
+
 	}
 
 	@Override
 	public Set<ConnectionInfo> registerAccessPoint(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
 		return this.getOwner().handleRequest(
-				register -> ((RegistrationCI)register).registerAccessPoint(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
+				register -> ((GestionnaireReseau)register).registerAccessPoint(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
 	}
 
 	@Override
 	public Set<ConnectionInfo> registerRoutingNode(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
-		// TODO a verfier
 		return this.getOwner().handleRequest(
-				register -> ((RegistrationCI)register).registerRoutingNode(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
+				register -> ((GestionnaireReseau)register).registerRoutingNode(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
 	}
 
 	@Override
 	public void unregister(NodeAddressI address) throws Exception {
-		((RegistrationCI)this.getOwner()).unregister(address);
 		this.getOwner().handleRequest( register -> 
-						{((RegistrationCI)register).unregister(address);
+						{((GestionnaireReseau)register).unregister(address);
 						  return null;
 		});
 	}
