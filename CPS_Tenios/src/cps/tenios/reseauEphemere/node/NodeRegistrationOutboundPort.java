@@ -32,7 +32,6 @@ public class NodeRegistrationOutboundPort extends AbstractOutboundPort implement
 	@Override
 	public Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception {
-		// TODO Auto-generated method stub
 		return ((RegistrationCI)this.getConnector()).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange);
 	}
 

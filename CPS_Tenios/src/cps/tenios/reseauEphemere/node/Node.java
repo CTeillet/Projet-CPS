@@ -2,13 +2,17 @@ package cps.tenios.reseauEphemere.node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
+import cps.tenios.reseauEphemere.NodeAddress;
+import cps.tenios.reseauEphemere.Position;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.PositionI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
@@ -17,12 +21,13 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
 
 public abstract class  Node extends AbstractComponent{
-	
+	private static int cmp = 0;
 	public static final String REGISTRATION_URI = "registrationOutboundPort-uri";
 	// TODO a verifier besoin d'un port par noeud rattacher 
 	protected List<NodeOutboundPort> nodesOutboundPort;
 	protected List<NodeInboundPort> nodesInboundPort;
-	protected AddressI addr;
+	protected NodeAddressI addr;
+	protected PositionI pos;
 	//port vers le gestionnaire reseau
 	protected NodeRegistrationOutboundPort registrationOutboundPort;
 	
@@ -36,6 +41,10 @@ public abstract class  Node extends AbstractComponent{
 		registrationOutboundPort.publishPort();
 		this.toggleLogging();
 		this.toggleTracing();
+		
+		addr = new NodeAddress(cmp++);
+		Random r =new Random();
+		pos = new Position(r.nextInt(150), r.nextInt(150));
 	}
 	
 	@Override
@@ -45,7 +54,7 @@ public abstract class  Node extends AbstractComponent{
 	public synchronized void finalise() throws Exception {
 		this.doPortDisconnection(REGISTRATION_URI);
 		for(NodeOutboundPort np : nodesOutboundPort) this.doPortDisconnection(np.getPortURI());
-		for(NodeInboundPort np : nodesInboundPort) this.doPortDisconnection(np.getPortURI());
+		//for(NodeInboundPort np : nodesInboundPort) this.doPortDisconnection(np.getPortURI());
 		super.finalise();
 	}
 
@@ -54,7 +63,7 @@ public abstract class  Node extends AbstractComponent{
 		try {
 			this.registrationOutboundPort.unpublishPort();		
 			for(NodeOutboundPort np : nodesOutboundPort) np.unpublishPort();
-			for(NodeInboundPort np : nodesInboundPort)np.unpublishPort();
+			//for(NodeInboundPort np : nodesInboundPort)np.unpublishPort();
 			
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);

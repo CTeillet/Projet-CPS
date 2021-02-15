@@ -14,7 +14,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 @OfferedInterfaces(offered = {RegistrationCI.class})
 public class GestionnaireReseau extends AbstractComponent {
 	
-	public static final String  INBOUNDPORT_URI = "registrationInboundPort-uri";
+	public final static String  INBOUNDPORT_URI = "registrationInboundPort-uri";
 	private RegistrationInboundPort registrationInboundPort;
 	//String test = registrationInboundPort.get
 
@@ -26,14 +26,23 @@ public class GestionnaireReseau extends AbstractComponent {
 		super(1, 0);
 		this.registrationInboundPort = new RegistrationInboundPort(INBOUNDPORT_URI, this);
 		this.registrationInboundPort.publishPort();
+		
 		tableNoeudTerminal = new HashSet<ConnectionInfo>();
 		tableNoeudAccess = new HashSet<ConnectionInfo>();
 		tableNoeudRouting = new HashSet<ConnectionInfo>();
+		
+		
+		this.toggleLogging();
+		this.toggleTracing();
+		logMessage("Fin constructeur");
+		logMessage(this.toString());
 	}
 	
 
 	public Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange){
+		System.out.println("LAAA");
+		logMessage("Connexion");
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, false, "", initialPosition);
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
 		tableNoeudAccess.stream()
@@ -88,7 +97,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	
 	@Override
 	public synchronized void finalise() throws Exception {
-		this.doPortDisconnection(INBOUNDPORT_URI);
+		//this.doPortDisconnection(INBOUNDPORT_URI);
 		super.finalise();
 	}
 }

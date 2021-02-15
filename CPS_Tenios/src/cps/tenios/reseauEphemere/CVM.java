@@ -14,7 +14,8 @@ public class CVM extends AbstractCVM {
 	public void deploy() throws Exception {
 		
 		String gestionReseauURI = AbstractComponent.createComponent(GestionnaireReseau.class.getCanonicalName(),new Object[] {});
-		String terminalURI =  AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(),new Object[] {});
+		String terminalURI =  AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(),new Object[] {}); // Calculator dan
+		System.out.println("GR : " + gestionReseauURI);
 		this.doPortConnection(terminalURI, TerminalNode.REGISTRATION_URI, GestionnaireReseau.INBOUNDPORT_URI, RegistrationConnector.class.getCanonicalName());
 		super.deploy();
 	}
@@ -22,7 +23,7 @@ public class CVM extends AbstractCVM {
 	public static void main(String[] args) {
 		try {
 			CVM c = new CVM();
-			c.startStandardLifeCycle(5000L);
+			c.startStandardLifeCycle(10000L);
 			System.exit(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

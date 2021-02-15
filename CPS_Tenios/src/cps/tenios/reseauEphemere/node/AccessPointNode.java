@@ -1,13 +1,17 @@
 package cps.tenios.reseauEphemere.node;
 
-import java.sql.Connection;
-import java.util.Set;
 
 import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
+import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
+import fr.sorbonne_u.components.annotations.OfferedInterfaces;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 
+@OfferedInterfaces(offered = {CommunicationCI.class})
+@RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class AccessPointNode extends Node {
 
 	protected AccessPointNode() throws Exception {

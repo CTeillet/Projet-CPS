@@ -14,13 +14,15 @@ public class TerminalNode extends Node {
 
 	protected TerminalNode() throws Exception {
 		super();
+		logMessage(super.registrationOutboundPort.getPortURI());
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void execute() throws Exception {
-		// TODO Auto-generated method stub
-		
+		logMessage("Test");
+		super.registrationOutboundPort.registerTerminalNode(super.addr, "", super.pos, 100.);
+		logMessage("Debut");
 	}
 
 	@Override

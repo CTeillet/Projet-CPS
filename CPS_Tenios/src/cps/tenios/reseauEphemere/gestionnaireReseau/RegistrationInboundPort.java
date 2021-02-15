@@ -32,15 +32,21 @@ public class RegistrationInboundPort extends AbstractInboundPort implements Regi
 	@Override
 	public Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception {
-		// TODO a verfier
-		return this.getOwner().handleRequest(
+		System.out.println("AAAAA");
+		System.out.println(this.getOwner());
+		try {
+			return this.getOwner().handleRequest(
 				register -> ((RegistrationCI)register).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange));
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			return null;
+		}
 	}
 
 	@Override
 	public Set<ConnectionInfo> registerAccessPoint(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
-		// TODO a verfier
 		return this.getOwner().handleRequest(
 				register -> ((RegistrationCI)register).registerAccessPoint(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
 	}
