@@ -9,7 +9,9 @@ import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
-public class RegistrationInboundPort extends AbstractInboundPort implements RegistrationCI {
+public class RegistrationInboundPort 
+extends AbstractInboundPort 
+implements RegistrationCI {
 
 	/**
 	 * 
