@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
-import cps.tenios.reseauEphemere.Position;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.PositionI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
@@ -15,9 +14,9 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 @OfferedInterfaces(offered = {RegistrationCI.class})
 public class GestionnaireReseau extends AbstractComponent {
 	
-	public static final String  INBOUNDPORT_URI = "registrationInboundPort-uri";
+	//public static final String  INBOUNDPORT_URI = "registrationInboundPort-uri";
 	private RegistrationInboundPort registrationInboundPort;
-	String test = registrationInboundPort.get
+	//String test = registrationInboundPort.get
 
 	private Set<ConnectionInfo> tableNoeudTerminal;
 	private Set<ConnectionInfo> tableNoeudAccess;
@@ -25,7 +24,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	
 	protected GestionnaireReseau() throws Exception {
 		super(1, 0);
-		this.registrationInboundPort = new RegistrationInboundPort(INBOUNDPORT_URI, this);
+		this.registrationInboundPort = new RegistrationInboundPort(super.reflectionInboundPortURI, this);
 		this.registrationInboundPort.publishPort();
 		tableNoeudTerminal = new HashSet<ConnectionInfo>();
 		tableNoeudAccess = new HashSet<ConnectionInfo>();
@@ -36,6 +35,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	public synchronized void shutdown() throws ComponentShutdownException {
 		try {
 			this.registrationInboundPort.unpublishPort();
+			super.shutdown();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}
@@ -77,5 +77,10 @@ public class GestionnaireReseau extends AbstractComponent {
 		.forEach(x-> res.add(x));
 		tableNoeudRouting.add(c);
 		return res;
+	}
+	
+	@Override
+	public synchronized void execute() throws Exception {
+		
 	}
 }

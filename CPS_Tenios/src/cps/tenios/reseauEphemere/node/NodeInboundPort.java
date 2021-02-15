@@ -5,62 +5,52 @@ import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 public class NodeInboundPort extends AbstractInboundPort implements CommunicationCI {
 	
-	public NodeInboundPort(Class<? extends OfferedCI> implementedInterface, ComponentI owner, String pluginURI,
-			String executorServiceURI) throws Exception {
-		super(implementedInterface, owner, pluginURI, executorServiceURI);
-		// TODO Auto-generated constructor stub
-	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3226720899115114653L;
 
-	public NodeInboundPort(Class<? extends OfferedCI> implementedInterface, ComponentI owner) throws Exception {
-		super(implementedInterface, owner);
-		// TODO Auto-generated constructor stub
-	}
-
-	public NodeInboundPort(String uri, Class<? extends OfferedCI> implementedInterface, ComponentI owner,
-			String pluginURI, String executorServiceURI) throws Exception {
-		super(uri, implementedInterface, owner, pluginURI, executorServiceURI);
-		// TODO Auto-generated constructor stub
-	}
-
-	public NodeInboundPort(String uri, Class<? extends OfferedCI> implementedInterface, ComponentI owner)
-			throws Exception {
-		super(uri, implementedInterface, owner);
-		// TODO Auto-generated constructor stub
+	public NodeInboundPort(ComponentI owner) throws Exception {
+		super(NodeInboundPort.class, owner);
+		assert owner instanceof Node;
 	}
 	
+	public NodeInboundPort(String uri, ComponentI owner) throws Exception {
+		super(uri, NodeInboundPort.class, owner);
+		assert owner instanceof Node;
+	}
 
 	@Override
-	public void connect(NodeAddressI address, String communicationInboundPortURI) {
-		// TODO Auto-generated method stub
+	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
+		this.getOwner().handleRequest( c -> {((Node)c).connect(address, communicationInboundPortURI); return null;} );
 
 	}
 
 	@Override
-	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) {
-		// TODO Auto-generated method stub
+	public String connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception {
+		return this.getOwner().handleRequest( c -> ((Node)c).connectRouting(address, communicationInboundPortURI, routingInboundPortURI));
+
 
 	}
 
 	@Override
-	public void transmitMessage(MessageI m) {
-		// TODO Auto-generated method stub
+	public void transmitMessage(MessageI m) throws Exception {
+		this.getOwner().handleRequest( c -> {((Node)c).transmitMessage(m); return null;} );
 
 	}
 
 	@Override
-	public boolean hasRouteFor(AddressI address) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasRouteFor(AddressI address)  throws Exception{
+		return this.getOwner().handleRequest( c -> ((Node)c).hasRouteFor(address));
 	}
 
 	@Override
-	public void ping() {
-		// TODO Auto-generated method stub
+	public void ping()  throws Exception{
+		this.getOwner().handleRequest( c -> {((Node)c).ping(); return null;} );
 
 	}
 

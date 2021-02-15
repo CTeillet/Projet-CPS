@@ -6,6 +6,8 @@ import java.util.Set;
 import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
+import cps.tenios.reseauEphemere.interfaces.MessageI;
+import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
@@ -52,7 +54,13 @@ public abstract class  Node extends AbstractComponent{
 		super.shutdown();
 	}
 	
-
+	public abstract void connect (NodeAddressI address, String communicationInboundPortURI) throws Exception;
 	
-
+	public abstract String connectRouting (NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception;
+	
+	public abstract void transmitMessage(MessageI m) throws Exception;
+	
+	public abstract boolean hasRouteFor(AddressI address) throws Exception;
+	
+	public abstract void ping() throws Exception;
 }

@@ -15,9 +15,9 @@ public class NodeConnector extends AbstractConnector implements CommunicationCI 
 	}
 
 	@Override
-	public void connectRouting(NodeAddressI address, String communicationInboundPortURI,
+	public String connectRouting(NodeAddressI address, String communicationInboundPortURI,
 			String routingInboundPortURI)  throws Exception{
-		((CommunicationCI)this.offering).connectRouting(address, communicationInboundPortURI,
+		return ((CommunicationCI)this.offering).connectRouting(address, communicationInboundPortURI,
 														routingInboundPortURI);
 
 	}

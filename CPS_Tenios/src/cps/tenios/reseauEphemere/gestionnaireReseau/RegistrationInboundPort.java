@@ -14,37 +14,21 @@ public class RegistrationInboundPort extends AbstractInboundPort implements Regi
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = -5946152123825267062L;
+
 	public RegistrationInboundPort(ComponentI owner) throws Exception {
-		super(RegistrationCI.class, owner);
+		super(RegistrationCI.class,owner);
 		// verif owner est du bon type
-		assert owner instanceof RegistrationCI;
+		assert owner instanceof GestionnaireReseau;
 	}
 	
 	public RegistrationInboundPort(String uri, ComponentI owner)
 			throws Exception {
 		super(uri, RegistrationCI.class, owner);
 		// verif owner est du bon type
-		assert owner instanceof RegistrationCI;
+		assert owner instanceof GestionnaireReseau;
 	}
 	
-/*
- * Pour plugin TODO : a voir si necessaire
- * 
-	public RegistrationInboundPort(Class<? extends OfferedCI> implementedInterface, ComponentI owner, String pluginURI,
-			String executorServiceURI) throws Exception {
-		super(implementedInterface, owner, pluginURI, executorServiceURI);
-		// TODO Auto-generated constructor stub
-	}
-
-	public RegistrationInboundPort(String uri, Class<? extends OfferedCI> implementedInterface, ComponentI owner,
-			String pluginURI, String executorServiceURI) throws Exception {
-		super(uri, implementedInterface, owner, pluginURI, executorServiceURI);
-		// TODO Auto-generated constructor stub
-	}
-*/
-
 	@Override
 	public Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception {
