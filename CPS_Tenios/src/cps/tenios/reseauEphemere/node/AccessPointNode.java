@@ -1,20 +1,25 @@
 package cps.tenios.reseauEphemere.node;
 
+import java.sql.Connection;
+import java.util.Set;
+
+import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 
-public class RoutingNode extends Node {
+public class AccessPointNode extends Node {
 
-	protected RoutingNode() throws Exception {
+	protected AccessPointNode() throws Exception {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void execute() throws Exception {
-		// TODO Auto-generated method stub
-		
+		super.addr=new NodeAddress(0); // TODO Modifier le numéro
+
+				
 	}
 
 	@Override

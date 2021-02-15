@@ -1,5 +1,6 @@
 package cps.tenios.reseauEphemere.node;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,8 +15,7 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
-@OfferedInterfaces(offered = {CommunicationCI.class})
-@RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
+
 public abstract class  Node extends AbstractComponent{
 	
 	public static final String REGISTRATION_URI = "registrationOutboundPort-uri";
@@ -30,9 +30,12 @@ public abstract class  Node extends AbstractComponent{
 
 	protected Node() throws Exception {
 		super(0, 1);
+		nodesInboundPort = new ArrayList<NodeInboundPort>();
+		nodesOutboundPort = new ArrayList<NodeOutboundPort>();
 		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
-		// TODO initialiser nodes out/inbound port
+		this.toggleLogging();
+		this.toggleTracing();
 	}
 	
 	@Override
@@ -41,13 +44,18 @@ public abstract class  Node extends AbstractComponent{
 	@Override
 	public synchronized void finalise() throws Exception {
 		this.doPortDisconnection(REGISTRATION_URI);
+		for(NodeOutboundPort np : nodesOutboundPort) this.doPortDisconnection(np.getPortURI());
+		for(NodeInboundPort np : nodesInboundPort) this.doPortDisconnection(np.getPortURI());
 		super.finalise();
 	}
 
 	@Override
 	public synchronized void shutdown() throws ComponentShutdownException {
 		try {
-			this.registrationOutboundPort.unpublishPort();
+			this.registrationOutboundPort.unpublishPort();		
+			for(NodeOutboundPort np : nodesOutboundPort) np.unpublishPort();
+			for(NodeInboundPort np : nodesInboundPort)np.unpublishPort();
+			
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}

@@ -14,7 +14,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 @OfferedInterfaces(offered = {RegistrationCI.class})
 public class GestionnaireReseau extends AbstractComponent {
 	
-	//public static final String  INBOUNDPORT_URI = "registrationInboundPort-uri";
+	public static final String  INBOUNDPORT_URI = "registrationInboundPort-uri";
 	private RegistrationInboundPort registrationInboundPort;
 	//String test = registrationInboundPort.get
 
@@ -24,24 +24,14 @@ public class GestionnaireReseau extends AbstractComponent {
 	
 	protected GestionnaireReseau() throws Exception {
 		super(1, 0);
-		this.registrationInboundPort = new RegistrationInboundPort(super.reflectionInboundPortURI, this);
+		this.registrationInboundPort = new RegistrationInboundPort(INBOUNDPORT_URI, this);
 		this.registrationInboundPort.publishPort();
 		tableNoeudTerminal = new HashSet<ConnectionInfo>();
 		tableNoeudAccess = new HashSet<ConnectionInfo>();
 		tableNoeudRouting = new HashSet<ConnectionInfo>();
 	}
 	
-	@Override
-	public synchronized void shutdown() throws ComponentShutdownException {
-		try {
-			this.registrationInboundPort.unpublishPort();
-			super.shutdown();
-		} catch (Exception e) {
-			throw new ComponentShutdownException(e);
-		}
-		super.shutdown();
-	}
-	
+
 	public Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange){
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, false, "", initialPosition);
@@ -81,6 +71,24 @@ public class GestionnaireReseau extends AbstractComponent {
 	
 	@Override
 	public synchronized void execute() throws Exception {
+		super.execute();
 		
+	}
+	
+	@Override
+	public synchronized void shutdown() throws ComponentShutdownException {
+		try {
+			this.registrationInboundPort.unpublishPort();
+			super.shutdown();
+		} catch (Exception e) {
+			throw new ComponentShutdownException(e);
+		}
+		super.shutdown();
+	}
+	
+	@Override
+	public synchronized void finalise() throws Exception {
+		this.doPortDisconnection(INBOUNDPORT_URI);
+		super.finalise();
 	}
 }
