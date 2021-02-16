@@ -6,6 +6,11 @@ import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 
+/**
+ * Connecteur entre 2 composants de CommunicationCI
+ * @author Tenios
+ *
+ */
 public class NodeConnector extends AbstractConnector implements CommunicationCI {
 
 	@Override

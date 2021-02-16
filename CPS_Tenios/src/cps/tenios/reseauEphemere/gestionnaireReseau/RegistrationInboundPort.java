@@ -9,21 +9,37 @@ import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
+/**
+ * Port d'entre d'un composant offrant Registration
+ * @author Tenios
+ *
+ */
 public class RegistrationInboundPort 
 extends AbstractInboundPort 
 implements RegistrationCI {
 
 	/**
-	 * 
+	 * Serie de la class
 	 */
 	private static final long serialVersionUID = -5946152123825267062L;
-
+	
+	/**
+	 * Constructeur de RegistrationInboundPort
+	 * @param owner Propritaire du port
+	 * @throws Exception Si il y a un probleme
+	 */
 	public RegistrationInboundPort(ComponentI owner) throws Exception {
 		super(RegistrationCI.class,owner);
 		// verif owner est du bon type
 		assert owner instanceof GestionnaireReseau;
 	}
 	
+	/**
+	 * Constructeur de RegistrationInboundPort
+	 * @param uri URI du port
+	 * @param owner Propritaire du port
+	 * @throws Exception Si il y a un probleme
+	 */
 	public RegistrationInboundPort(String uri, ComponentI owner)
 			throws Exception {
 		super(uri, RegistrationCI.class, owner);

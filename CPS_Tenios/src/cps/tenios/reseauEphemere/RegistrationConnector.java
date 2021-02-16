@@ -7,6 +7,11 @@ import cps.tenios.reseauEphemere.interfaces.PositionI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 
+/**
+ * Connecteur entre un composant de RegistrationCI et CommunicationCI
+ * @author Tenios
+ *
+ */
 public class RegistrationConnector extends AbstractConnector implements RegistrationCI {
 
 	@Override

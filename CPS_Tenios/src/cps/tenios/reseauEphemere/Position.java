@@ -1,11 +1,26 @@
 package cps.tenios.reseauEphemere;
 
 import cps.tenios.reseauEphemere.interfaces.PositionI;
-
+/**
+ * Defini la position d'un noeud
+ * @author Tenios
+ *
+ */
 public class Position implements PositionI {
+	/**
+	 * abscisse
+	 */
 	protected double x;
+	/**
+	 * ordonnee
+	 */
 	private double y;
 	
+	/**
+	 * Constructeur de Position
+	 * @param x abscisse
+	 * @param y ordonnee
+	 */
 	public Position(double x, double y) {
 		this.x=x;
 		this.y=y;

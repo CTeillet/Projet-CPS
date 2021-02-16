@@ -3,9 +3,21 @@ package cps.tenios.reseauEphemere;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 
+/**
+ * 
+ * @author Tenios
+ *
+ */
 public class NodeAddress implements NodeAddressI {
+	/**
+	 * Addresse
+	 */
 	public final int addr;
 
+	/**
+	 * Constructeur de NodeAddress
+	 * @param addr Addresse
+	 */
 	public NodeAddress(int addr) {
 		this.addr = addr;
 	}
