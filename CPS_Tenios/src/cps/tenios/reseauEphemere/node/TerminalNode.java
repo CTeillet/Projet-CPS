@@ -12,8 +12,8 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class TerminalNode extends Node {
 
-	protected TerminalNode() throws Exception {
-		super();
+	protected TerminalNode(String uri) throws Exception {
+		super(uri);
 		logMessage(super.registrationOutboundPort.getPortURI());
 		// TODO Auto-generated constructor stub
 	}

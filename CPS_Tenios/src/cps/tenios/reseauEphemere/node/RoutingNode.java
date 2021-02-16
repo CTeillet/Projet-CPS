@@ -12,8 +12,8 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class RoutingNode extends Node {
 
-	protected RoutingNode() throws Exception {
-		super();
+	protected RoutingNode(String uri) throws Exception {
+		super(uri);
 		// TODO Auto-generated constructor stub
 	}
 

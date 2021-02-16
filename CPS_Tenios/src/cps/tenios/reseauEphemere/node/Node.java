@@ -22,7 +22,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
 public abstract class  Node extends AbstractComponent{
 	private static int cmp = 0;
-	public static final String REGISTRATION_URI = "registrationOutboundPort-uri";
+	public final String REGISTRATION_URI;
 	// TODO a verifier besoin d'un port par noeud rattacher 
 	protected List<NodeOutboundPort> nodesOutboundPort;
 	protected List<NodeInboundPort> nodesInboundPort;
@@ -33,8 +33,9 @@ public abstract class  Node extends AbstractComponent{
 	
 	protected Set<ConnectionInfo> voisin;
 
-	protected Node() throws Exception {
+	protected Node(String uri) throws Exception {
 		super(0, 1);
+		REGISTRATION_URI = uri;
 		nodesInboundPort = new ArrayList<NodeInboundPort>();
 		nodesOutboundPort = new ArrayList<NodeOutboundPort>();
 		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);

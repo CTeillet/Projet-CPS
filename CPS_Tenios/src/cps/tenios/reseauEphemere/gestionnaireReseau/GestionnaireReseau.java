@@ -14,7 +14,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 @OfferedInterfaces(offered = {RegistrationCI.class})
 public class GestionnaireReseau extends AbstractComponent {
 	
-	public final static String  INBOUNDPORT_URI = "registrationInboundPort-uri";
+	public final static String  INBOUNDPORT_URI = "registration-uri";
 	private RegistrationInboundPort registrationInboundPort;
 	//String test = registrationInboundPort.get
 

@@ -14,14 +14,14 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class AccessPointNode extends Node {
 
-	protected AccessPointNode() throws Exception {
-		super();
+	protected AccessPointNode(String uri) throws Exception {
+		super(uri);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void execute() throws Exception {
-		super.addr=new NodeAddress(0); // TODO Modifier le numéro
+		super.addr=new NodeAddress(0); // TODO Modifier le numï¿½ro
 
 				
 	}
