@@ -1,6 +1,7 @@
 package cps.tenios.reseauEphemere.node;
 
 
+import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
@@ -21,22 +22,14 @@ public class AccessPointNode extends Node {
 
 	@Override
 	public void execute() throws Exception {
-		super.addr=new NodeAddress(0); // TODO Modifier le num�ro
-
-				
-	}
-
-	@Override
-	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
-		// TODO Auto-generated method stub
+		voisin = super.registrationOutboundPort.registerAccessPoint(super.addr, super.INBOUNDPORT_URI, super.pos, 100.0, "");
+		for(ConnectionInfo c : voisin) {
+			NodeAddressI addr = c.getAddress();
+			String uriInbound = c.getCommunicationInboundURI(); //TODO modifier pour le routing
+			super.connection(uriInbound).connectRouting(addr, uriInbound, "");
+		}
 		
-	}
-
-	@Override
-	public String connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		super.registrationOutboundPort.unregister(super.addr);
 	}
 
 	@Override

@@ -33,8 +33,8 @@ public class NodeOutboundPort extends AbstractOutboundPort implements Communicat
 	}
 
 	@Override
-	public String connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception  {
-		return ((CommunicationCI)this.getConnector()).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);
+	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception  {
+		((CommunicationCI)this.getConnector()).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);
 	}
 
 	@Override

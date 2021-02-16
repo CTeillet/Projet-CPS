@@ -31,8 +31,8 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 	}
 
 	@Override
-	public String connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception {
-		return this.getOwner().handleRequest( c -> ((Node)c).connectRouting(address, communicationInboundPortURI, routingInboundPortURI));
+	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception {
+		this.getOwner().handleRequest( c -> {((Node)c).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);return null;});
 
 
 	}

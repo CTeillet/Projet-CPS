@@ -21,7 +21,7 @@ public interface CommunicationCI extends OfferedCI, RequiredCI {
 	 * @param communicationInboundPortURI
 	 * @param routingInboundPortURI
 	 */
-	String connectRouting (NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception;
+	void connectRouting (NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception;
 	/**
 	 * 
 	 * @param m

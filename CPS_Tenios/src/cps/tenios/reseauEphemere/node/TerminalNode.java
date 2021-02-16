@@ -1,5 +1,7 @@
 package cps.tenios.reseauEphemere.node;
 
+import cps.tenios.reseauEphemere.ConnectionInfo;
+import cps.tenios.reseauEphemere.NodeConnector;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
@@ -14,28 +16,20 @@ public class TerminalNode extends Node {
 
 	protected TerminalNode(String uri) throws Exception {
 		super(uri);
-		logMessage(super.registrationOutboundPort.getPortURI());
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute TerminalNode");
-		super.registrationOutboundPort.registerTerminalNode(super.addr, super.INBOUNDPORT_URI, super.pos, 100.);
+		voisin = super.registrationOutboundPort.registerTerminalNode(super.addr, super.INBOUNDPORT_URI, super.pos, 100.);
+		for(ConnectionInfo c : voisin) {
+			NodeAddressI addr = c.getAddress();
+			String uriInbound = c.getCommunicationInboundURI();
+			super.connection(uriInbound).connect(addr, uriInbound);
+			
+			
+		}
 		super.registrationOutboundPort.unregister(super.addr);
-	}
-
-	@Override
-	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

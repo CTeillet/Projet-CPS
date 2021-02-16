@@ -60,6 +60,12 @@ public class GestionnaireReseau extends AbstractComponent {
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, initialPosition);
 		res.addAll(tableNoeudAccess);
+		tableNoeudRouting.stream()
+		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+		.forEach(x-> res.add(x));
+		tableNoeudTerminal.stream()
+		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+		.forEach(x-> res.add(x));
 		tableNoeudAccess.add(c);
 		return res;
 	}
@@ -68,9 +74,16 @@ public class GestionnaireReseau extends AbstractComponent {
 			PositionI initialPosition, double initialRange, String routingInboundPortURI){
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, initialPosition);
+		tableNoeudAccess.stream()
+		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+		.forEach(x-> res.add(x));
 		tableNoeudRouting.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
+		tableNoeudTerminal.stream()
+		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+		.forEach(x-> res.add(x));
+		
 		tableNoeudRouting.add(c);
 		return res;
 	}
@@ -80,12 +93,6 @@ public class GestionnaireReseau extends AbstractComponent {
 		tableNoeudRouting.removeIf(c-> c.getAddress()==address);
 		tableNoeudTerminal.removeIf(c-> c.getAddress()==address);
 		logMessage("Unregister taille ensemble " + size());
-	}
-	
-	@Override
-	public synchronized void execute() throws Exception {
-		super.execute();
-		
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package cps.tenios.reseauEphemere.node;
 
+import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
@@ -22,21 +23,16 @@ public class RoutingNode extends Node {
 		logMessage("Debut Execute RoutingNode");
 		
 		//TODO routingInboundPort
-		super.registrationOutboundPort.registerRoutingNode(super.addr, super.INBOUNDPORT_URI, super.pos, 100.0, "");
-		super.registrationOutboundPort.unregister(super.addr);
-	}
-
-	@Override
-	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
-		// TODO Auto-generated method stub
+		voisin = super.registrationOutboundPort.registerRoutingNode(super.addr, super.INBOUNDPORT_URI, super.pos, 100.0, "");
+		logMessage("Taille voisin " + voisin.size());
+		for(ConnectionInfo c : voisin) {
+			NodeAddressI addr = c.getAddress();
+			String uriInbound = c.getCommunicationInboundURI(); //TODO modifier pour le routing
+			System.out.println("TETSTSTST");
+			super.connection(uriInbound).connectRouting(addr, uriInbound, "");
+		}
 		
-	}
-
-	@Override
-	public String connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		super.registrationOutboundPort.unregister(super.addr);
 	}
 
 	@Override

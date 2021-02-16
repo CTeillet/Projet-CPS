@@ -7,6 +7,7 @@ import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.NodeAddress;
+import cps.tenios.reseauEphemere.NodeConnector;
 import cps.tenios.reseauEphemere.Position;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
@@ -29,7 +30,6 @@ public abstract class  Node extends AbstractComponent{
 	public final String REGISTRATION_URI;
 	//inbound port
 	protected NodeInboundPort nodeInboundPort;
-	protected NodeOutboundPort nodeOutboundPort;
 	
 	// besoin d'un port par noeud rattacher 
 	protected List<NodeOutboundPort> nodesOutboundPort;
@@ -48,8 +48,7 @@ public abstract class  Node extends AbstractComponent{
 		
 		nodeInboundPort = new NodeInboundPort(INBOUNDPORT_URI,this);
 		nodeInboundPort.publishPort();
-		
-		//nodeOutboundPort = new NodeOutboundPort(this);
+	
 		
 		nodesOutboundPort = new ArrayList<NodeOutboundPort>();
 		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);
@@ -60,7 +59,7 @@ public abstract class  Node extends AbstractComponent{
 		
 		addr = new NodeAddress(cmp++);
 		Random r =new Random();
-		pos = new Position(r.nextInt(150), r.nextInt(150));
+		pos = new Position(r.nextInt(10), r.nextInt(10));
 	}
 	
 	@Override
@@ -88,13 +87,53 @@ public abstract class  Node extends AbstractComponent{
 		super.shutdown();
 	}
 	
-	public abstract void connect (NodeAddressI address, String communicationInboundPortURI) throws Exception;
 	
-	public abstract String connectRouting (NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception;
+	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
+		logMessage("Dans Connect");
+		voisin.add(new ConnectionInfo(address, communicationInboundPortURI, false, "", null));
+		
+		connection(communicationInboundPortURI);
+	}
+
+	protected NodeOutboundPort connection(String communicationInboundPortURI) throws Exception {
+		//Connexion à l'uriInbound
+		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
+		nodeOutbound.publishPort();
+		nodesOutboundPort.add(nodeOutbound);
+		doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
+		return nodeOutbound;
+	}
+
 	
-	public abstract void transmitMessage(MessageI m) throws Exception;
+	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI)
+			throws Exception {
+		logMessage("Dans Connect Routing");
+		voisin.add(new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, null));
+		connection(communicationInboundPortURI);
+	}
 	
-	public abstract boolean hasRouteFor(AddressI address) throws Exception;
+	public void transmitMessage(MessageI m) throws Exception{
+		m.decrementsGops();
+		if(m.getAddress().equals(addr) || !m.stillAlive()) {
+			return;
+		}
+		boolean temp = false;
+		for (NodeOutboundPort n : nodesOutboundPort) {
+			if(n.hasRouteFor(m.getAddress())) {
+				temp=true;
+			}
+		}
+		if(!temp) {
+			
+			for (NodeOutboundPort n : nodesOutboundPort) {
+				n.transmitMessage(m);
+			}
+		}
+	}
+	
+	public boolean hasRouteFor(AddressI address) throws Exception{
+		return false;
+	}
 	
 	public abstract void ping() throws Exception;
 }
