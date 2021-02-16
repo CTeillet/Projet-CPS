@@ -21,7 +21,7 @@ public class TerminalNode extends Node {
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute TerminalNode");
-		super.registrationOutboundPort.registerTerminalNode(super.addr, "", super.pos, 100.);
+		super.registrationOutboundPort.registerTerminalNode(super.addr, super.INBOUNDPORT_URI, super.pos, 100.);
 		super.registrationOutboundPort.unregister(super.addr);
 	}
 

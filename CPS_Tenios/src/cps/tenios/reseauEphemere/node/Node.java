@@ -15,6 +15,7 @@ import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.PositionI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
@@ -22,10 +23,14 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
 public abstract class  Node extends AbstractComponent{
 	private static int cmp = 0;
+	//uri
+	public final String INBOUNDPORT_URI;
 	public final String REGISTRATION_URI;
-	// TODO a verifier besoin d'un port par noeud rattacher 
+	//inbound port
+	protected NodeInboundPort nodeInboundPort;
+	// besoin d'un port par noeud rattacher 
 	protected List<NodeOutboundPort> nodesOutboundPort;
-	protected List<NodeInboundPort> nodesInboundPort;
+	
 	protected NodeAddressI addr;
 	protected PositionI pos;
 	//port vers le gestionnaire reseau
@@ -36,7 +41,9 @@ public abstract class  Node extends AbstractComponent{
 	protected Node(String uri) throws Exception {
 		super(0, 1);
 		REGISTRATION_URI = uri;
-		nodesInboundPort = new ArrayList<NodeInboundPort>();
+		INBOUNDPORT_URI = AbstractPort.generatePortURI();
+		
+		nodeInboundPort = new NodeInboundPort(INBOUNDPORT_URI,this);
 		nodesOutboundPort = new ArrayList<NodeOutboundPort>();
 		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
