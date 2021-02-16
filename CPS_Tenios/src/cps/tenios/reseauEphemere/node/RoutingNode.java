@@ -19,8 +19,11 @@ public class RoutingNode extends Node {
 
 	@Override
 	public void execute() throws Exception {
-		// TODO Auto-generated method stub
+		logMessage("Debut Execute RoutingNode");
 		
+		//TODO routingInboundPort
+		super.registrationOutboundPort.registerRoutingNode(super.addr, super.INBOUNDPORT_URI, super.pos, 100.0, "");
+		super.registrationOutboundPort.unregister(super.addr);
 	}
 
 	@Override

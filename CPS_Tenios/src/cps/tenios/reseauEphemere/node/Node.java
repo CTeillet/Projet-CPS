@@ -47,6 +47,7 @@ public abstract class  Node extends AbstractComponent{
 		nodesOutboundPort = new ArrayList<NodeOutboundPort>();
 		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
+		nodeInboundPort.publishPort();
 		this.toggleLogging();
 		this.toggleTracing();
 		
@@ -69,7 +70,8 @@ public abstract class  Node extends AbstractComponent{
 	@Override
 	public synchronized void shutdown() throws ComponentShutdownException {
 		try {
-			this.registrationOutboundPort.unpublishPort();		
+			this.registrationOutboundPort.unpublishPort();
+			this.nodeInboundPort.unpublishPort();
 			for(NodeOutboundPort np : nodesOutboundPort) np.unpublishPort();
 			//for(NodeInboundPort np : nodesInboundPort)np.unpublishPort();
 			
