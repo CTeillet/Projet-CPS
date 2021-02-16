@@ -2,6 +2,7 @@ package cps.tenios.reseauEphemere.node;
 
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
+import cps.tenios.reseauEphemere.NetworkAddress;
 import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
@@ -34,7 +35,10 @@ public class AccessPointNode extends Node {
 
 	@Override
 	public void transmitMessage(MessageI m) throws Exception {
-		// TODO Auto-generated method stub
+		if(m.getAddress() instanceof NetworkAddress) {
+			return ;
+		}
+		super.transmitMessage(m);
 		
 	}
 
