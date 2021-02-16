@@ -20,7 +20,8 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
-
+@OfferedInterfaces(offered = {CommunicationCI.class})
+@RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public abstract class  Node extends AbstractComponent{
 	private static int cmp = 0;
 	//uri
@@ -28,6 +29,8 @@ public abstract class  Node extends AbstractComponent{
 	public final String REGISTRATION_URI;
 	//inbound port
 	protected NodeInboundPort nodeInboundPort;
+	protected NodeOutboundPort nodeOutboundPort;
+	
 	// besoin d'un port par noeud rattacher 
 	protected List<NodeOutboundPort> nodesOutboundPort;
 	
@@ -44,10 +47,14 @@ public abstract class  Node extends AbstractComponent{
 		INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		
 		nodeInboundPort = new NodeInboundPort(INBOUNDPORT_URI,this);
+		nodeInboundPort.publishPort();
+		
+		//nodeOutboundPort = new NodeOutboundPort(this);
+		
 		nodesOutboundPort = new ArrayList<NodeOutboundPort>();
 		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
-		nodeInboundPort.publishPort();
+		
 		this.toggleLogging();
 		this.toggleTracing();
 		

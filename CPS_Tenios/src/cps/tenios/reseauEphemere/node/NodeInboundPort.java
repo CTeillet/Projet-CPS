@@ -15,12 +15,12 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 	private static final long serialVersionUID = 3226720899115114653L;
 
 	public NodeInboundPort(ComponentI owner) throws Exception {
-		super(NodeInboundPort.class, owner);
+		super(CommunicationCI.class, owner);
 		assert owner instanceof Node;
 	}
 	
 	public NodeInboundPort(String uri, ComponentI owner) throws Exception {
-		super(uri, NodeInboundPort.class, owner);
+		super(uri, CommunicationCI.class, owner);
 		assert owner instanceof Node;
 	}
 
