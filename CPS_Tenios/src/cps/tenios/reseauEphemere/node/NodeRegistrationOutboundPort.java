@@ -10,19 +10,35 @@ import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
+/**
+ * Classe représnetant un port sortant vers le gestionnaire réseau
+ * @author Tenios
+ *
+ */
 public class NodeRegistrationOutboundPort extends AbstractOutboundPort implements RegistrationCI {
 
 	/**
-	 * 
+	 * Verison de série de la classe
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4716039516988394345L;
 
+	/**
+	 * Cosntructeur du port prenant seulement le propriétaire
+	 * @param owner propriétaire du port
+	 * @throws Exception s'il y a un  probleme
+	 */
 	public NodeRegistrationOutboundPort(ComponentI owner)
 			throws Exception {
 		super(RegistrationCI.class, owner);
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Constructeur ou l'on peut spécifier l'URI de du port, ainsi que le propriétaire
+	 * @param uri URI voulue pour le port
+	 * @param owner propriétaire du port
+	 * @throws Exception s'il y a un probleme
+	 */
 	public NodeRegistrationOutboundPort(String uri, ComponentI owner)
 			throws Exception {
 		super(uri, RegistrationCI.class, owner);

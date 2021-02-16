@@ -4,27 +4,27 @@ import java.io.Serializable;
 
 /**
  * 
- * @author teill
+ * @author Tenios
  *
  */
 public interface MessageI {
 	/**
-	 * 
-	 * @return
+	 * Permet de retourner l'adresse de destination
+	 * @return l'adresse de destination
 	 */
 	AddressI getAddress();
 	/**
-	 * 
-	 * @return
+	 * Retourne le contenu du message
+	 * @return le contenu
 	 */
 	Serializable getContent();
 	/**
-	 * 
-	 * @return
+	 * Verifie si le message est toujours en vie
+	 * @return vraie ou faux en fonction de si le m
 	 */
 	boolean stillAlive();
 	/**
-	 * 
+	 * Decremente le nombre de saut
 	 */
 	void decrementsGops();
 }

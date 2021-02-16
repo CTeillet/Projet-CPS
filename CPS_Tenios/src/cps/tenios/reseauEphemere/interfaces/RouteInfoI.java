@@ -1,19 +1,19 @@
 package cps.tenios.reseauEphemere.interfaces;
 
 /**
- * 
- * @author teill
+ * Permet de représenter une route pour atteindre un adresse
+ * @author Tenios
  *
  */
 public interface RouteInfoI {
 	/**
-	 * 
-	 * @return
+	 * Retourne la destination de la route
+	 * @return la destiantion de la route
 	 */
 	AddressI getDestination();
 	/**
-	 * 
-	 * @return
+	 * Retourne le nombre de sauts pour arriver à destination
+	 * @return le nombre de sauts pour arriver à destination
 	 */
 	int getNumberOfHops();
 }

@@ -10,14 +10,25 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 public class NodeOutboundPort extends AbstractOutboundPort implements CommunicationCI {
 	
 	/**
-	 * 
+	 * Verison de série de la classe
 	 */
 	private static final long serialVersionUID = 3254624094913909113L;
 
+	/**
+	 * Constructeur prenant en argument le propriétaire de la classe
+	 * @param owner propriétaire du port
+	 * @throws Exception s'il y a un problème
+	 */
 	public NodeOutboundPort(ComponentI owner) throws Exception {
 		super(CommunicationCI.class, owner);
 	}
-
+	
+	/**
+	 * Constructeur prenant en arguments le propriétaire ainsi que le port voulue pour le port
+	 * @param uri voulue pour le port
+	 * @param owner propriétaire du port 
+	 * @throws Exception s'il y a un probleme
+	 */
 	public NodeOutboundPort(String uri,ComponentI owner)
 			throws Exception {
 		super(uri, CommunicationCI.class, owner);

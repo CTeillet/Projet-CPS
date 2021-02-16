@@ -9,10 +9,20 @@ import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 
+/**
+ * Classe représentant un noeud de routage
+ * @author Tenios
+ *
+ */
 @OfferedInterfaces(offered = {CommunicationCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class RoutingNode extends Node {
 
+	/**
+	 * Constructeur preant URI du port sortant vers le gestionnaire réseau
+	 * @param uri du port sortant vers le gestionnaire réseau
+	 * @throws Exception s'il y a un probleme
+	 */
 	protected RoutingNode(String uri) throws Exception {
 		super(uri);
 		// TODO Auto-generated constructor stub

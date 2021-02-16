@@ -1,28 +1,28 @@
 package cps.tenios.reseauEphemere.interfaces;
 
 /**
- * 
- * @author alexc
+ * Permet de representer une addresse
+ * @author Tenios
  *
  */
 public interface AddressI {
 	
 	/**
-	 * 
-	 * @return
+	 * Permet de vérifier si l'addresse est une addresse interne au réseau
+	 * @return retourne si c'est une adresse interne
 	 */
 	boolean isNodeAddress();
 	
 	/**
-	 * 
-	 * @return
+	 * Permet de vérifier si l'adresse est une addresse externe au réseau
+	 * @return si c'est une addresse externe
 	 */
 	boolean isNetworkAddress();
 	
 	/**
-	 * 
-	 * @param a
-	 * @return
+	 * Permet de comparer deux addresses
+	 * @param a l'addresse avec laquelle comparer
+	 * @return si les deux addresses sont identiques
 	 */
 	boolean equals(AddressI a);
 }

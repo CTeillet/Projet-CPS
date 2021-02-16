@@ -10,15 +10,26 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
 public class NodeInboundPort extends AbstractInboundPort implements CommunicationCI {
 	
 	/**
-	 * 
+	 *  Verison de série de la classe
 	 */
 	private static final long serialVersionUID = 3226720899115114653L;
-
+	
+	/**
+	 * Permet de créer un port entrant pour un noeud en spécifiant son propriétaire
+	 * @param owner propriétaire du noeud
+	 * @throws Exception s'il y a un probleme
+	 */
 	public NodeInboundPort(ComponentI owner) throws Exception {
 		super(CommunicationCI.class, owner);
 		assert owner instanceof Node;
 	}
 	
+	/**
+	 * Crée un port en prenant l'uri voulue pour le port, ainsi que son propriétaire
+	 * @param uri voulue pour le port
+	 * @param owner propriétaire de classe
+	 * @throws Exception s'il y a un probleme
+	 */
 	public NodeInboundPort(String uri, ComponentI owner) throws Exception {
 		super(uri, CommunicationCI.class, owner);
 		assert owner instanceof Node;

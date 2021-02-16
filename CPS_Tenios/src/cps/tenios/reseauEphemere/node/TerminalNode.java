@@ -10,10 +10,21 @@ import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 
+/**
+ * Classe représentant un noeud terminal
+ * @author Tenios
+ *
+ */
 @OfferedInterfaces(offered = {CommunicationCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class TerminalNode extends Node {
-
+	
+	
+	/**
+	 * Constructeur initialisant un noeud terminal
+	 * @param uri du port de registration
+	 * @throws Exception s'il y a un probleme
+	 */
 	protected TerminalNode(String uri) throws Exception {
 		super(uri);
 	}

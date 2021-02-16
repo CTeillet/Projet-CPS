@@ -28,6 +28,7 @@ public class Message implements MessageI {
 		gops--;
 	}
 	
+
 	@Override
 	public AddressI getAddress() {
 		return address;

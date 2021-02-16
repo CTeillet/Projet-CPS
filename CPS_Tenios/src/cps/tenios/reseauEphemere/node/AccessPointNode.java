@@ -11,11 +11,19 @@ import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
-
+/**
+ * Classe représentant un point d'accès
+ * @author Tenios
+ *
+ */
 @OfferedInterfaces(offered = {CommunicationCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class AccessPointNode extends Node {
-
+	/**
+	 * Permet de creer un composant point d'accès en spécifiant l'URI du port de registration sortant
+	 * @param uri du port de registration sortant
+	 * @throws Exception s'il y a un probleme
+	 */
 	protected AccessPointNode(String uri) throws Exception {
 		super(uri);
 		// TODO Auto-generated constructor stub
