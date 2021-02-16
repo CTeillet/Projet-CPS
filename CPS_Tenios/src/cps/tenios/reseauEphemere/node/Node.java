@@ -136,4 +136,14 @@ public abstract class  Node extends AbstractComponent{
 	}
 	
 	public abstract void ping() throws Exception;
+
+	public static int getCmp() {
+		return cmp;
+	}
+
+	public NodeAddressI getAddr() {
+		return addr;
+	}
+	
+	
 }
