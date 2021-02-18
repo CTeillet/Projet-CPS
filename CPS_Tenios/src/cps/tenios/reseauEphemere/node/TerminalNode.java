@@ -1,8 +1,7 @@
 package cps.tenios.reseauEphemere.node;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
-import cps.tenios.reseauEphemere.NodeConnector;
-import cps.tenios.reseauEphemere.interfaces.AddressI;
+import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
@@ -31,28 +30,29 @@ public class TerminalNode extends Node {
 
 	@Override
 	public void execute() throws Exception {
-		logMessage("Debut Execute TerminalNode");
-		voisin = super.registrationOutboundPort.registerTerminalNode(super.addr, super.INBOUNDPORT_URI, super.pos, 100.);
+		logMessage("Debut Execute TerminalNode "+ index);
+		voisin = this.registrationOutboundPort.registerTerminalNode(this.addr, this.INBOUNDPORT_URI, this.pos, 100.);
+		logMessage("voisisn " + voisin.size());
+		//Connexion a ses voisins
 		for(ConnectionInfo c : voisin) {
 			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI();
-			super.connection(uriInbound).connect(addr, uriInbound);
-			
-			
+			this.connection(uriInbound).connect(addr, uriInbound);
 		}
-		super.registrationOutboundPort.unregister(super.addr);
-	}
+		logMessage("ICI");
 
-	@Override
-	public void transmitMessage(MessageI m) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean hasRouteFor(AddressI address) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+//		if(this.index==2) {
+//			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
+//			logMessage("J'envoie le message " + m.getContent());
+//			try {
+//				this.transmitMessage(m);
+//			}catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			
+//		}
+		logMessage("Fin");
+		//super.registrationOutboundPort.unregister(super.addr);
 	}
 
 	@Override
@@ -60,5 +60,7 @@ public class TerminalNode extends Node {
 		// TODO Auto-generated method stub
 		
 	}
+
+
 
 }

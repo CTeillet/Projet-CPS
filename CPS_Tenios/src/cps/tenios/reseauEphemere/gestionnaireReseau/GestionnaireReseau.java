@@ -152,6 +152,7 @@ public class GestionnaireReseau extends AbstractComponent {
 			this.registrationInboundPort.unpublishPort();
 			super.shutdown();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ComponentShutdownException(e);
 		}
 		super.shutdown();

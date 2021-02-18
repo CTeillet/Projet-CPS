@@ -3,7 +3,6 @@ package cps.tenios.reseauEphemere.node;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.NetworkAddress;
-import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
@@ -31,14 +30,16 @@ public class AccessPointNode extends Node {
 
 	@Override
 	public void execute() throws Exception {
-		voisin = super.registrationOutboundPort.registerAccessPoint(super.addr, super.INBOUNDPORT_URI, super.pos, 100.0, "");
+		logMessage("Dans Access Point " + this.index);
+		voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.INBOUNDPORT_URI, this.pos, 100.0, "");
+		logMessage(voisin.size()+"");
 		for(ConnectionInfo c : voisin) {
 			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI(); //TODO modifier pour le routing
-			super.connection(uriInbound).connectRouting(addr, uriInbound, "");
+			this.connection(uriInbound).connectRouting(addr, uriInbound, "");
 		}
-		
-		super.registrationOutboundPort.unregister(super.addr);
+		logMessage("Fin");
+		//this.registrationOutboundPort.unregister(this.addr);
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public class AccessPointNode extends Node {
 		if(m.getAddress() instanceof NetworkAddress) {
 			return ;
 		}
-		super.transmitMessage(m);
+		this.transmitMessage(m);
 		
 	}
 

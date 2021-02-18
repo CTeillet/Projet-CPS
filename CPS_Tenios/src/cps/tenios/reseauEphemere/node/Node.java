@@ -68,7 +68,10 @@ public abstract class  Node extends AbstractComponent{
 	 * Ensemble des voisins du noeud
 	 */
 	protected Set<ConnectionInfo> voisin;
-	
+	/**
+	 * Index du noeud
+	 */
+	protected int index = cmp;
 	/**
 	 * permet de creer un Composant noeud
 	 * @param uri URI du port sortant vers le gestionnaire réseau
@@ -116,6 +119,7 @@ public abstract class  Node extends AbstractComponent{
 			//for(NodeInboundPort np : nodesInboundPort)np.unpublishPort();
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ComponentShutdownException(e);
 		}
 		super.shutdown();
@@ -128,10 +132,10 @@ public abstract class  Node extends AbstractComponent{
 	 * @throws Exception s'il y a un probleme
 	 */
 	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
-		logMessage("Dans Connect");
 		voisin.add(new ConnectionInfo(address, communicationInboundPortURI, false, "", null));
-		
+		logMessage("Ajout de voisin" + voisin.size());
 		connection(communicationInboundPortURI);
+		logMessage("Ajout de outbound" + nodesOutboundPort.size());
 	}
 	
 	/**
@@ -145,7 +149,12 @@ public abstract class  Node extends AbstractComponent{
 		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
 		nodeOutbound.publishPort();
 		nodesOutboundPort.add(nodeOutbound);
-		doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
+		try {
+			doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return nodeOutbound;
 	}
 
@@ -158,9 +167,10 @@ public abstract class  Node extends AbstractComponent{
 	 */
 	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI)
 			throws Exception {
-		logMessage("Dans Connect Routing");
 		voisin.add(new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, null));
+		logMessage("Ajout de voisin" + voisin.size());
 		connection(communicationInboundPortURI);
+		logMessage("Ajout de outbound" + nodesOutboundPort.size());
 	}
 	
 	/**
@@ -171,18 +181,27 @@ public abstract class  Node extends AbstractComponent{
 	 */
 	public void transmitMessage(MessageI m) throws Exception{
 		m.decrementsGops();
-		if(m.getAddress().equals(addr) || !m.stillAlive()) {
+		logMessage("Message en transit" + m);
+		if(m.getAddress().equals(addr)) {
+			logMessage("Message recue " + m.getContent());
+			return;
+		}
+		if(!m.stillAlive()) {
+			logMessage("Mort du Message");
 			return;
 		}
 		boolean temp = false;
-		for (NodeOutboundPort n : nodesOutboundPort) {
-			if(n.hasRouteFor(m.getAddress())) {
-				temp=true;
-			}
-		}
+//		for (NodeOutboundPort n : nodesOutboundPort) {
+//			if(n.hasRouteFor(m.getAddress())) {
+//				temp=true;
+//			}
+//		}
+//		
 		if(!temp) {
-			
+			logMessage("Taille Outbound " + nodesOutboundPort.size());
 			for (NodeOutboundPort n : nodesOutboundPort) {
+				logMessage("Dans For");
+				
 				n.transmitMessage(m);
 			}
 		}
