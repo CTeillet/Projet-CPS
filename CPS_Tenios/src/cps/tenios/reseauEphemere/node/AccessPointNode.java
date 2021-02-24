@@ -47,7 +47,7 @@ public class AccessPointNode extends Node {
 		if(m.getAddress() instanceof NetworkAddress) {
 			return ;
 		}
-		this.transmitMessage(m);
+		super.transmitMessage(m);
 		
 	}
 
