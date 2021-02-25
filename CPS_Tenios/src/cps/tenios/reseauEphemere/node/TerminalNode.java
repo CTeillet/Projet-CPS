@@ -41,16 +41,16 @@ public class TerminalNode extends Node {
 		}
 		logMessage("ICI");
 
-//		if(this.index==2) {
-//			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
-//			logMessage("J'envoie le message " + m.getContent());
-//			try {
-//				this.transmitMessage(m);
-//			}catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//			
-//		}
+		if(this.index==2) {
+			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
+			logMessage("J'envoie le message " + m.getContent());
+			try {
+				this.transmitMessage(m);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
 		logMessage("Fin");
 		//super.registrationOutboundPort.unregister(super.addr);
 	}
