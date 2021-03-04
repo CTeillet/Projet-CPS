@@ -27,4 +27,6 @@ public interface MessageI {
 	 * Decremente le nombre de saut
 	 */
 	void decrementsGops();
+	
+	public int aSupprimer();
 }

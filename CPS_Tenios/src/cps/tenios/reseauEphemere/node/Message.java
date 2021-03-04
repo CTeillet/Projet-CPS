@@ -39,6 +39,9 @@ public class Message implements MessageI {
 		return content;
 	}
 	
+	public int aSupprimer() {
+		return gops;
+	}
 	
 
 }

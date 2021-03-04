@@ -21,7 +21,7 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 /**
- * Classes représentant un noeud
+ * Classes reprï¿½sentant un noeud
  * @author Tenios
  *
  */
@@ -29,7 +29,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public abstract class  Node extends AbstractComponent{
 	/**
-	 * Compteur du nombre de noeud, utilisé pour les adresses
+	 * Compteur du nombre de noeud, utilisï¿½ pour les adresses
 	 */
 	private static int cmp = 0;
 	
@@ -38,7 +38,7 @@ public abstract class  Node extends AbstractComponent{
 	 */
 	protected final String INBOUNDPORT_URI;
 	/**
-	 * URI de port sortants vers le gestionnaire réseau
+	 * URI de port sortants vers le gestionnaire rï¿½seau
 	 */
 	private final String REGISTRATION_URI;
 	/**
@@ -74,7 +74,7 @@ public abstract class  Node extends AbstractComponent{
 	protected int index = cmp;
 	/**
 	 * permet de creer un Composant noeud
-	 * @param uri URI du port sortant vers le gestionnaire réseau
+	 * @param uri URI du port sortant vers le gestionnaire rï¿½seau
 	 * @throws Exception s'il y a un probleme
 	 */
 	protected Node(String uri) throws Exception {
@@ -126,7 +126,7 @@ public abstract class  Node extends AbstractComponent{
 	}
 	
 	/**
-	 * Se connecte avec le noeud d'adresse address, et le rajoute à ses voisins
+	 * Se connecte avec le noeud d'adresse address, et le rajoute ï¿½ ses voisins
 	 * @param address l'adresse du port avec lequel on veut se connecter 
 	 * @param communicationInboundPortURI l'uri du port avec lequel on veut se connecter
 	 * @throws Exception s'il y a un probleme
@@ -139,13 +139,13 @@ public abstract class  Node extends AbstractComponent{
 	}
 	
 	/**
-	 * Permet de se connecter avec le port entré du composant
+	 * Permet de se connecter avec le port entrï¿½ du composant
 	 * @param communicationInboundPortURI 
 	 * @return le port de sortie du composant
 	 * @throws Exception s'il y a un probleme
 	 */
 	protected NodeOutboundPort connection(String communicationInboundPortURI) throws Exception {
-		//Connexion à l'uriInbound
+		//Connexion ï¿½ l'uriInbound
 		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
 		nodeOutbound.publishPort();
 		nodesOutboundPort.add(nodeOutbound);
@@ -174,14 +174,16 @@ public abstract class  Node extends AbstractComponent{
 	}
 	
 	/**
-	 * Permet de recevoir un message. S'il nous est attribué ou qu'il n'a plus de saut, alors on arrete de le transmettre
-	 * sinon on le transmet à nos voisins
+	 * Permet de recevoir un message. S'il nous est attribuï¿½ ou qu'il n'a plus de saut, alors on arrete de le transmettre
+	 * sinon on le transmet ï¿½ nos voisins
 	 * @param m le message que l'on veut transmettre
 	 * @throws Exception s'il y a un probleme
 	 */
 	public void transmitMessage(MessageI m) throws Exception{
+		
+		logMessage("Message en transit, reste : " + m.aSupprimer());
 		m.decrementsGops();
-		logMessage("Message en transit" + m);
+		
 		if(m.getAddress().equals(addr)) {
 			logMessage("Message recue " + m.getContent());
 			return;
@@ -199,10 +201,16 @@ public abstract class  Node extends AbstractComponent{
 //		
 		if(!temp) {
 			logMessage("Taille Outbound " + nodesOutboundPort.size());
-			for (NodeOutboundPort n : nodesOutboundPort) {
-				logMessage("Dans For");
-				
-				n.transmitMessage(m);
+			int cpt = 0;
+			try {
+				for (NodeOutboundPort n : nodesOutboundPort) {
+					logMessage("Dans For " + cpt++);
+					logMessage("Taille Outbound " + nodesOutboundPort.size());
+					
+					n.transmitMessage(m);
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -218,13 +226,13 @@ public abstract class  Node extends AbstractComponent{
 	}
 	
 	/**
-	 * Permet de vérifier que les voisins sont 
+	 * Permet de vï¿½rifier que les voisins sont 
 	 * @throws Exception s'il y a un probleme
 	 */
 	public abstract void ping() throws Exception;
 	
 	/**
-	 * Permet de connaitre le nombre de noeud crée au total
+	 * Permet de connaitre le nombre de noeud crï¿½e au total
 	 * @return le nombre total de noeud
 	 */
 	public static int getCmp() {
@@ -238,5 +246,20 @@ public abstract class  Node extends AbstractComponent{
 	public NodeAddressI getAddr() {
 		return addr;
 	}
+
+	@Override
+	public String toString() {
+		return "Node [index=" + index + "]";
+	}
+	
+	protected void showNeighbourg(Set<ConnectionInfo> voisins) {
+		String str = "voisin  : \n";
+		for(ConnectionInfo v : voisins) {
+			str += v.getAddress() + "\n";
+		}
+		logMessage(str);
+	}
+	
+	
 	
 }

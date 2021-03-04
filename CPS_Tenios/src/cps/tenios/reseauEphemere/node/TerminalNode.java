@@ -10,7 +10,7 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 
 /**
- * Classe représentant un noeud terminal
+ * Classe reprï¿½sentant un noeud terminal
  * @author Tenios
  *
  */
@@ -45,6 +45,7 @@ public class TerminalNode extends Node {
 			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
 			logMessage("J'envoie le message " + m.getContent());
 			try {
+				showNeighbourg(voisin);
 				this.transmitMessage(m);
 			}catch (Exception e) {
 				e.printStackTrace();
@@ -61,6 +62,11 @@ public class TerminalNode extends Node {
 		
 	}
 
+	@Override
+	public String toString() {
+		return "TerminalNode ["+super.toString()+"t]";
+	}
 
+	
 
 }

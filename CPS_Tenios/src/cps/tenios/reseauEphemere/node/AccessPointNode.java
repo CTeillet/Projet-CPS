@@ -11,7 +11,7 @@ import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 /**
- * Classe représentant un point d'accès
+ * Classe reprï¿½sentant un point d'accï¿½s
  * @author Tenios
  *
  */
@@ -19,7 +19,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class AccessPointNode extends Node {
 	/**
-	 * Permet de creer un composant point d'accès en spécifiant l'URI du port de registration sortant
+	 * Permet de creer un composant point d'accï¿½s en spï¿½cifiant l'URI du port de registration sortant
 	 * @param uri du port de registration sortant
 	 * @throws Exception s'il y a un probleme
 	 */
@@ -32,12 +32,13 @@ public class AccessPointNode extends Node {
 	public void execute() throws Exception {
 		logMessage("Dans Access Point " + this.index);
 		voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.INBOUNDPORT_URI, this.pos, 100.0, "");
-		logMessage(voisin.size()+"");
 		for(ConnectionInfo c : voisin) {
 			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI(); //TODO modifier pour le routing
 			this.connection(uriInbound).connectRouting(addr, uriInbound, "");
 		}
+		
+		showNeighbourg(voisin);
 		logMessage("Fin");
 		//this.registrationOutboundPort.unregister(this.addr);
 	}
@@ -62,5 +63,11 @@ public class AccessPointNode extends Node {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String toString() {
+		return "AccessPointNode [" + super.toString() + "]";
+	}
+	
 
 }

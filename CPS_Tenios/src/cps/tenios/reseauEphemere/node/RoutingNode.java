@@ -8,7 +8,7 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 
 /**
- * Classe représentant un noeud de routage
+ * Classe reprï¿½sentant un noeud de routage
  * @author Tenios
  *
  */
@@ -17,8 +17,8 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 public class RoutingNode extends Node {
 
 	/**
-	 * Constructeur preant URI du port sortant vers le gestionnaire réseau
-	 * @param uri du port sortant vers le gestionnaire réseau
+	 * Constructeur preant URI du port sortant vers le gestionnaire rï¿½seau
+	 * @param uri du port sortant vers le gestionnaire rï¿½seau
 	 * @throws Exception s'il y a un probleme
 	 */
 	protected RoutingNode(String uri) throws Exception {
@@ -37,6 +37,7 @@ public class RoutingNode extends Node {
 			String uriInbound = c.getCommunicationInboundURI();
 			this.connection(uriInbound).connectRouting(addr, uriInbound, "");
 		}
+		showNeighbourg(voisin);
 		logMessage("Fin");
 		//this.registrationOutboundPort.unregister(this.addr);
 	}
@@ -45,4 +46,11 @@ public class RoutingNode extends Node {
 	public void ping() throws Exception {
 		// TODO Auto-generated method stub
 	}
+
+	@Override
+	public String toString() {
+		return "RoutingNode ["+ super.toString() +"]";
+	}
+	
+	
 }
