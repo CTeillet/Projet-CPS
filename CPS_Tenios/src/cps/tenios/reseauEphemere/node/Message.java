@@ -18,6 +18,12 @@ public class Message implements MessageI {
 		this.gops = gops;
 	}
 
+	public Message(Message m1) {
+		this.address = m1.address;
+		this.content = m1.content;
+		this.gops = m1.gops;
+	}
+
 	@Override
 	public boolean stillAlive() {
 		return gops>0;

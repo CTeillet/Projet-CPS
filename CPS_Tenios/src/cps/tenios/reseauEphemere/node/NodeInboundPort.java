@@ -50,8 +50,15 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 
 	@Override
 	public void transmitMessage(MessageI m) throws Exception {
-		this.getOwner().handleRequest( c -> {((Node)c).transmitMessage(m); return null;} );
-
+		//this.getOwner().handleRequest( c -> {((Node)c).transmitMessage(m); return null;} );
+		this.getOwner().runTask(c->{
+			try {
+				((Node)c).transmitMessage(m);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 	}
 
 	@Override

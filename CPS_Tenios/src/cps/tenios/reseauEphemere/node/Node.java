@@ -179,8 +179,8 @@ public abstract class  Node extends AbstractComponent{
 	 * @param m le message que l'on veut transmettre
 	 * @throws Exception s'il y a un probleme
 	 */
-	public void transmitMessage(MessageI m) throws Exception{
-		
+	public void transmitMessage(MessageI m1) throws Exception{
+		MessageI m = new Message((Message) m1);
 		logMessage("Message en transit, reste : " + m.aSupprimer());
 		m.decrementsGops();
 		
