@@ -32,20 +32,27 @@ public class TerminalNode extends Node {
 	public void execute() throws Exception {
 		logMessage("Debut Execute TerminalNode "+ index);
 		voisin = this.registrationOutboundPort.registerTerminalNode(this.addr, this.INBOUNDPORT_URI, this.pos, 100.);
+		
+		for(ConnectionInfo c : voisin) {
+			logMessage((c.getAddress()==this.addr) +"");
+		}
+		
 		logMessage("voisisn " + voisin.size());
 		//Connexion a ses voisins
 		for(ConnectionInfo c : voisin) {
 			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI();
-			this.connection(uriInbound).connect(addr, uriInbound);
+			this.connection(uriInbound).connect(this.addr, uriInbound); //Probleme sur l'un des deux
+			
+			logMessage("Moi " + this.addr + ", copain " + nodesOutboundPort.get(nodesOutboundPort.size()-1).getAddress()) ;
+			
 		}
-		logMessage("ICI");
 
 		if(this.index==2) {
 			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
 			logMessage("J'envoie le message " + m.getContent());
 			try {
-				showNeighbourg(voisin);
+				//showNeighbourg(voisin);
 				this.transmitMessage(m);
 			}catch (Exception e) {
 				e.printStackTrace();

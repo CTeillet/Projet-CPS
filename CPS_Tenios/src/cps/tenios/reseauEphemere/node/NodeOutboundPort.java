@@ -65,4 +65,9 @@ public class NodeOutboundPort extends AbstractOutboundPort implements Communicat
 
 	}
 
+	@Override
+	public AddressI getAddress() throws Exception {
+		return ((CommunicationCI)this.getConnector()).getAddress();
+	}
+
 }

@@ -31,11 +31,12 @@ public class RoutingNode extends Node {
 		
 		//TODO routingInboundPort
 		voisin = this.registrationOutboundPort.registerRoutingNode(this.addr, this.INBOUNDPORT_URI, this.pos, 100.0, "");
+		
 		logMessage("Taille voisin " + voisin.size());
 		for(ConnectionInfo c : voisin) {
 			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI();
-			this.connection(uriInbound).connectRouting(addr, uriInbound, "");
+			this.connection(uriInbound).connectRouting(this.addr, uriInbound, "");
 		}
 		showNeighbourg(voisin);
 		logMessage("Fin");

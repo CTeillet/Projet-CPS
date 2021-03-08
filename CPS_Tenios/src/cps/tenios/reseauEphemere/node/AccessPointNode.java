@@ -32,11 +32,13 @@ public class AccessPointNode extends Node {
 	public void execute() throws Exception {
 		logMessage("Dans Access Point " + this.index);
 		voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.INBOUNDPORT_URI, this.pos, 100.0, "");
+		
 		for(ConnectionInfo c : voisin) {
 			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI(); //TODO modifier pour le routing
-			this.connection(uriInbound).connectRouting(addr, uriInbound, "");
+			this.connection(uriInbound).connectRouting(this.addr, uriInbound, "");
 		}
+		
 		
 		showNeighbourg(voisin);
 		logMessage("Fin");

@@ -72,4 +72,10 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 
 	}
 
+	@Override
+	public AddressI getAddress() throws Exception {
+		return this.getOwner().handleRequest( c -> ((Node)c).getAddr() );
+
+	}
+
 }

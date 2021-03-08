@@ -44,4 +44,9 @@ public class NodeConnector extends AbstractConnector implements CommunicationCI 
 
 	}
 
+	@Override
+	public AddressI getAddress() throws Exception {
+		return ((CommunicationCI)this.offering).getAddress();
+	}
+
 }

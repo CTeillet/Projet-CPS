@@ -105,6 +105,7 @@ public abstract class  Node extends AbstractComponent{
 	@Override
 	public synchronized void finalise() throws Exception {
 		this.doPortDisconnection(REGISTRATION_URI);
+		//for(NodeOutboundPort n : nodesOutboundPort) System.out.println("Moi " + this.addr + ", Copain " + n.getAddress() );
 		for(NodeOutboundPort np : nodesOutboundPort) this.doPortDisconnection(np.getPortURI());
 		//for(NodeInboundPort np : nodesInboundPort) this.doPortDisconnection(np.getPortURI());
 		super.finalise();
@@ -132,7 +133,30 @@ public abstract class  Node extends AbstractComponent{
 	 * @throws Exception s'il y a un probleme
 	 */
 	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
+		
+		logMessage("Dans connect " + this.addr + ", " + address);
+		
 		voisin.add(new ConnectionInfo(address, communicationInboundPortURI, false, "", null));
+		logMessage("Ajout de voisin" + voisin.size());
+		connection(communicationInboundPortURI);
+		logMessage("Ajout de outbound" + nodesOutboundPort.size());
+		
+	}
+	
+	
+
+	/**
+	 * Permet de connecter un noeud de routage
+	 * @param address l'adresse du noeud
+	 * @param communicationInboundPortURI l'adresse du port de communication de l'autre noeud
+	 * @param routingInboundPortURI l'adresse de routage de l'autre noeud
+	 * @throws Exception s'il y a un probleme
+	 */
+	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI)
+			throws Exception {
+		logMessage("Dans connectRouting " + this.addr + ", " + address);
+		
+		voisin.add(new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, null));
 		logMessage("Ajout de voisin" + voisin.size());
 		connection(communicationInboundPortURI);
 		logMessage("Ajout de outbound" + nodesOutboundPort.size());
@@ -158,20 +182,6 @@ public abstract class  Node extends AbstractComponent{
 		return nodeOutbound;
 	}
 
-	/**
-	 * Permet de connecter un noeud de routage
-	 * @param address l'adresse du noeud
-	 * @param communicationInboundPortURI l'adresse du port de communication de l'autre noeud
-	 * @param routingInboundPortURI l'adresse de routage de l'autre noeud
-	 * @throws Exception s'il y a un probleme
-	 */
-	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI)
-			throws Exception {
-		voisin.add(new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, null));
-		logMessage("Ajout de voisin" + voisin.size());
-		connection(communicationInboundPortURI);
-		logMessage("Ajout de outbound" + nodesOutboundPort.size());
-	}
 	
 	/**
 	 * Permet de recevoir un message. S'il nous est attribu� ou qu'il n'a plus de saut, alors on arrete de le transmettre
