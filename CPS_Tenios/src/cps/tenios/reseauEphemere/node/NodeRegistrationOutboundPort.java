@@ -30,7 +30,6 @@ public class NodeRegistrationOutboundPort extends AbstractOutboundPort implement
 	public NodeRegistrationOutboundPort(ComponentI owner)
 			throws Exception {
 		super(RegistrationCI.class, owner);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
