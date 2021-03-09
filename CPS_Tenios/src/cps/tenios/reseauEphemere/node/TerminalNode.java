@@ -42,7 +42,9 @@ public class TerminalNode extends Node {
 		for(ConnectionInfo c : voisin) {
 			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI();
-			this.connection(uriInbound).connect(this.addr, uriInbound); //Probleme sur l'un des deux
+			
+			NodeOutboundPort out = this.connection(uriInbound);
+			out.connect(this.addr, this.INBOUNDPORT_URI); //Probleme sur l'un des deux
 			
 			logMessage("Moi " + this.addr + ", copain " + nodesOutboundPort.get(nodesOutboundPort.size()-1).getAddress()) ;
 			

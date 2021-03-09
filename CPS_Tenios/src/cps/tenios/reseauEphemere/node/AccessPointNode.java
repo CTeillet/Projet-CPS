@@ -36,7 +36,7 @@ public class AccessPointNode extends Node {
 		for(ConnectionInfo c : voisin) {
 			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI(); //TODO modifier pour le routing
-			this.connection(uriInbound).connectRouting(this.addr, uriInbound, "");
+			this.connection(uriInbound).connectRouting(this.addr, this.INBOUNDPORT_URI, "");
 		}
 		
 		

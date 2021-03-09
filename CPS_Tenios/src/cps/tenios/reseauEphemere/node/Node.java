@@ -78,7 +78,7 @@ public abstract class  Node extends AbstractComponent{
 	 * @throws Exception s'il y a un probleme
 	 */
 	protected Node(String uri) throws Exception {
-		super(0, 1);
+		super(5, 10);
 		REGISTRATION_URI = uri;
 		INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		

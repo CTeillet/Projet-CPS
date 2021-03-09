@@ -36,7 +36,7 @@ public class RoutingNode extends Node {
 		for(ConnectionInfo c : voisin) {
 			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI();
-			this.connection(uriInbound).connectRouting(this.addr, uriInbound, "");
+			this.connection(uriInbound).connectRouting(this.addr, this.INBOUNDPORT_URI, "");
 		}
 		showNeighbourg(voisin);
 		logMessage("Fin");
