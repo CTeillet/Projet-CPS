@@ -34,7 +34,6 @@ public class AccessPointNode extends Node {
 		voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.INBOUNDPORT_URI, this.pos, 100.0, "");
 		
 		for(ConnectionInfo c : voisin) {
-			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI(); //TODO modifier pour le routing
 			this.connection(uriInbound).connectRouting(this.addr, this.INBOUNDPORT_URI, "");
 		}

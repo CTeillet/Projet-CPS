@@ -4,7 +4,6 @@ import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
@@ -40,7 +39,6 @@ public class TerminalNode extends Node {
 		logMessage("voisisn " + voisin.size());
 		//Connexion a ses voisins
 		for(ConnectionInfo c : voisin) {
-			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI();
 			
 			NodeOutboundPort out = this.connection(uriInbound);

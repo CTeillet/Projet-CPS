@@ -7,24 +7,23 @@ import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.PositionI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 /**
- * Classe représnetant un port sortant vers le gestionnaire réseau
+ * Classe reprï¿½snetant un port sortant vers le gestionnaire rï¿½seau
  * @author Tenios
  *
  */
 public class NodeRegistrationOutboundPort extends AbstractOutboundPort implements RegistrationCI {
 
 	/**
-	 * Verison de série de la classe
+	 * Verison de sï¿½rie de la classe
 	 */
 	private static final long serialVersionUID = -4716039516988394345L;
 
 	/**
-	 * Cosntructeur du port prenant seulement le propriétaire
-	 * @param owner propriétaire du port
+	 * Cosntructeur du port prenant seulement le propriï¿½taire
+	 * @param owner propriï¿½taire du port
 	 * @throws Exception s'il y a un  probleme
 	 */
 	public NodeRegistrationOutboundPort(ComponentI owner)
@@ -33,9 +32,9 @@ public class NodeRegistrationOutboundPort extends AbstractOutboundPort implement
 	}
 
 	/**
-	 * Constructeur ou l'on peut spécifier l'URI de du port, ainsi que le propriétaire
+	 * Constructeur ou l'on peut spï¿½cifier l'URI de du port, ainsi que le propriï¿½taire
 	 * @param uri URI voulue pour le port
-	 * @param owner propriétaire du port
+	 * @param owner propriï¿½taire du port
 	 * @throws Exception s'il y a un probleme
 	 */
 	public NodeRegistrationOutboundPort(String uri, ComponentI owner)

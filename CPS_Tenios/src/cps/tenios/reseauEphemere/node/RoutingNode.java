@@ -1,9 +1,13 @@
 package cps.tenios.reseauEphemere.node;
 
+import java.util.Set;
+
 import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
+import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
+import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 
@@ -12,7 +16,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
  * @author Tenios
  *
  */
-@OfferedInterfaces(offered = {CommunicationCI.class})
+@OfferedInterfaces(offered = {CommunicationCI.class, RoutingCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class RoutingNode extends Node {
 
@@ -34,7 +38,6 @@ public class RoutingNode extends Node {
 		
 		logMessage("Taille voisin " + voisin.size());
 		for(ConnectionInfo c : voisin) {
-			NodeAddressI addr = c.getAddress();
 			String uriInbound = c.getCommunicationInboundURI();
 			this.connection(uriInbound).connectRouting(this.addr, this.INBOUNDPORT_URI, "");
 		}
@@ -53,5 +56,13 @@ public class RoutingNode extends Node {
 		return "RoutingNode ["+ super.toString() +"]";
 	}
 	
+	void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
+		// TODO
+	}
+	
+	void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
+		// TODO
+	}
+
 	
 }
