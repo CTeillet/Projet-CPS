@@ -1,5 +1,6 @@
 package cps.tenios.reseauEphemere.node;
 
+import java.util.HashMap;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
@@ -20,6 +21,9 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class RoutingNode extends Node {
 
+	
+	protected HashMap<NodeAddressI, Chemin> routingTable;
+	protected Chemin path2Network;
 	/**
 	 * Constructeur preant URI du port sortant vers le gestionnaire r�seau
 	 * @param uri du port sortant vers le gestionnaire r�seau
@@ -27,8 +31,11 @@ public class RoutingNode extends Node {
 	 */
 	protected RoutingNode(String uri) throws Exception {
 		super(uri);
+		routingTable = new HashMap<NodeAddressI, Chemin>();
+		path2Network = null;
 	}
 
+	
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute RoutingNode " + this.index);
@@ -64,5 +71,6 @@ public class RoutingNode extends Node {
 		// TODO
 	}
 
+	
 	
 }
