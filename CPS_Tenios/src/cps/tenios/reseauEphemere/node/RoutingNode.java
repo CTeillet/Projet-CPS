@@ -41,7 +41,7 @@ public class RoutingNode extends Node {
 		logMessage("Debut Execute RoutingNode " + this.index);
 		
 		//TODO routingInboundPort
-		voisin = this.registrationOutboundPort.registerRoutingNode(this.addr, this.INBOUNDPORT_URI, this.pos, 100.0, "");
+		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerRoutingNode(this.addr, this.INBOUNDPORT_URI, this.pos, 100.0, "");
 		
 		logMessage("Taille voisin " + voisin.size());
 		for(ConnectionInfo c : voisin) {
@@ -63,14 +63,26 @@ public class RoutingNode extends Node {
 		return "RoutingNode ["+ super.toString() +"]";
 	}
 	
-	void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
-		// TODO
+	
+	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
+		for(RouteInfoI ri : routes) {
+			if (ri.getDestination().isNodeAddress()) {
+				Chemin tmp = routingTable.get(ri.getDestination());
+				//Si pas de route vers address => creation d'un nouveau chemin
+				if(tmp == null) {
+					routingTable.put( (NodeAddressI)ri.getDestination(), new Chemin(this.getNodeOutboundPort(neighbour), ri.getNumberOfHops()));
+				// Si meilleur route => Maj
+				} else if (tmp.getNumberOfHops() > ri.getNumberOfHops()){
+					tmp.setNext(this.getNodeOutboundPort(neighbour));
+					tmp.setNumberOfHops(ri.getNumberOfHops());
+				}
+			}
+		}
 	}
 	
-	void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
-		// TODO
+	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
+		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops) {
+			path2Network = new Chemin(this.getNodeOutboundPort(neighbour), numberOfHops);
+		} 
 	}
-
-	
-	
 }

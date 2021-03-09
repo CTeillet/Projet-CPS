@@ -1,6 +1,8 @@
 package cps.tenios.reseauEphemere.node;
 
 
+import java.util.Set;
+
 import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.NetworkAddress;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
@@ -31,7 +33,7 @@ public class AccessPointNode extends Node {
 	@Override
 	public void execute() throws Exception {
 		logMessage("Dans Access Point " + this.index);
-		voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.INBOUNDPORT_URI, this.pos, 100.0, "");
+		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.INBOUNDPORT_URI, this.pos, 100.0, "");
 		
 		for(ConnectionInfo c : voisin) {
 			String uriInbound = c.getCommunicationInboundURI(); //TODO modifier pour le routing

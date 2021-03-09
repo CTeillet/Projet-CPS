@@ -1,5 +1,7 @@
 package cps.tenios.reseauEphemere.node;
 
+import java.util.Set;
+
 import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
@@ -30,22 +32,14 @@ public class TerminalNode extends Node {
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute TerminalNode "+ index);
-		voisin = this.registrationOutboundPort.registerTerminalNode(this.addr, this.INBOUNDPORT_URI, this.pos, 100.);
-		
-		for(ConnectionInfo c : voisin) {
-			logMessage((c.getAddress()==this.addr) +"");
-		}
+		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerTerminalNode(this.addr, this.INBOUNDPORT_URI, this.pos, 100.);
 		
 		logMessage("voisisn " + voisin.size());
 		//Connexion a ses voisins
 		for(ConnectionInfo c : voisin) {
 			String uriInbound = c.getCommunicationInboundURI();
 			
-			NodeOutboundPort out = this.connection(uriInbound);
-			out.connect(this.addr, this.INBOUNDPORT_URI); //Probleme sur l'un des deux
-			
-			logMessage("Moi " + this.addr + ", copain " + nodesOutboundPort.get(nodesOutboundPort.size()-1).getAddress()) ;
-			
+			this.connection(uriInbound).connect(this.addr, this.INBOUNDPORT_URI); 	
 		}
 
 		if(this.index==2) {
