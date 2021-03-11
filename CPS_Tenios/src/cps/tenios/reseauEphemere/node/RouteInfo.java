@@ -16,14 +16,12 @@ public class RouteInfo implements RouteInfoI {
 
 	@Override
 	public AddressI getDestination() {
-		// TODO Auto-generated method stub
-		return null;
+		return destination;
 	}
 
 	@Override
 	public int getNumberOfHops() {
-		// TODO Auto-generated method stub
-		return 0;
+		return numberOfHops;
 	}
 
 }
