@@ -38,7 +38,7 @@ public abstract class  Node extends AbstractComponent{
 	/**
 	 * URI du port entrants de communication
 	 */
-	protected final String INBOUNDPORT_URI;
+	protected final String COMM_INBOUNDPORT_URI;
 	/**
 	 * URI de port sortants vers le gestionnaire r�seau
 	 */
@@ -82,9 +82,9 @@ public abstract class  Node extends AbstractComponent{
 	protected Node(String uri) throws Exception {
 		super(5, 10);
 		REGISTRATION_URI = uri;
-		INBOUNDPORT_URI = AbstractPort.generatePortURI();
+		COMM_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		
-		nodeInboundPort = new NodeInboundPort(INBOUNDPORT_URI,this);
+		nodeInboundPort = new NodeInboundPort(COMM_INBOUNDPORT_URI,this);
 		nodeInboundPort.publishPort();
 	
 		
@@ -223,40 +223,29 @@ public abstract class  Node extends AbstractComponent{
 	 * @param m le message que l'on veut transmettre
 	 * @throws Exception s'il y a un probleme
 	 */
-	public void transmitMessage(MessageI m1) throws Exception{
-		MessageI m = new Message((Message) m1);
-		logMessage("Message en transit, reste : " + m.aSupprimer());
+	public void transmitMessage(MessageI msg) throws Exception{
+		//Copie du message 
+		MessageI m = new Message((Message) msg);;
 		m.decrementsGops();
-		
+		//arriver a destination
 		if(m.getAddress().equals(addr)) {
-			logMessage("Message recue " + m.getContent());
+			logMessage("Message recue : " + m.getContent());
 			return;
 		}
+		//Destruction 
 		if(!m.stillAlive()) {
 			logMessage("Mort du Message");
 			return;
 		}
-		boolean temp = false;
-//		for (NodeOutboundPort n : nodesOutboundPort) {
-//			if(n.hasRouteFor(m.getAddress())) {
-//				temp=true;
-//			}
-//		}
-//		// TODO a refaire
-		if(!temp) {
-			logMessage("Taille Outbound " + nodesOutboundPort.size());
-			int cpt = 0;
-			try {
-				for (NodeOutboundPort n : nodesOutboundPort) {
-					logMessage("Dans For " + cpt++);
-					logMessage("Taille Outbound " + nodesOutboundPort.size());
-					
-					n.transmitMessage(m);
-				}
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+		
+		//inondation 
+		for (Triplet<NodeAddressI, NodeOutboundPort, RoutingNodeOutboundPort> n : routingNodes) {
+
+			n.getNode().transmitMessage(m);
 		}
+		
+		// TODO verfier faire pareil avec noeud Terminal 
+		
 	}
 	
 	/**

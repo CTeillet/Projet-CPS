@@ -32,14 +32,14 @@ public class TerminalNode extends Node {
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute TerminalNode "+ index);
-		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerTerminalNode(this.addr, this.INBOUNDPORT_URI, this.pos, 100.);
+		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerTerminalNode(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, 100.);
 		
 		logMessage("voisisn " + voisin.size());
 		//Connexion a ses voisins
 		for(ConnectionInfo c : voisin) {
 			String uriInbound = c.getCommunicationInboundURI();
 			
-			this.connection(uriInbound).connect(this.addr, this.INBOUNDPORT_URI); 	
+			this.connection(uriInbound).connect(this.addr, this.COMM_INBOUNDPORT_URI); 	
 		}
 
 		if(this.index==2) {

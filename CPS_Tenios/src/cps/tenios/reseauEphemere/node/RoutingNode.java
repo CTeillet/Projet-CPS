@@ -9,6 +9,7 @@ import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
+import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 
@@ -24,6 +25,7 @@ public class RoutingNode extends Node {
 	
 	protected HashMap<NodeAddressI, Chemin> routingTable;
 	protected Chemin path2Network;
+	protected final String ROUTING_INBOUNDPORT_URI;
 	/**
 	 * Constructeur preant URI du port sortant vers le gestionnaire r�seau
 	 * @param uri du port sortant vers le gestionnaire r�seau
@@ -33,24 +35,32 @@ public class RoutingNode extends Node {
 		super(uri);
 		routingTable = new HashMap<NodeAddressI, Chemin>();
 		path2Network = null;
+		ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 	}
 
 	
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute RoutingNode " + this.index);
-		
-		//TODO routingInboundPort
-		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerRoutingNode(this.addr, this.INBOUNDPORT_URI, this.pos, 100.0, "");
+
+		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerRoutingNode(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, 100.0, ROUTING_INBOUNDPORT_URI);
 		
 		logMessage("Taille voisin " + voisin.size());
 		for(ConnectionInfo c : voisin) {
 			String uriInbound = c.getCommunicationInboundURI();
-			this.connection(uriInbound).connectRouting(this.addr, this.INBOUNDPORT_URI, "");
+			NodeOutboundPort out = this.connection(uriInbound);
+			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
+			// TODO fair ajout dans connection & connectionRouting
+			if (c.isRouting()) {
+				// ajout d'un voisin routeur
+				RoutingNodeOutboundPort rout = this.connectionRouting(c.getRoutingInboundPortURI());
+				this.routingNodes.add(new Triplet<NodeAddressI, NodeOutboundPort, RoutingNodeOutboundPort>(c.getAddress(), out, rout));
+			} else {
+				// ajout d'un voisin terminal
+				this.terminalNodes.add(new Pair<NodeAddressI, NodeOutboundPort>(c.getAddress(), out));
+			}
 		}
-		showNeighbourg(voisin);
 		logMessage("Fin");
-		//this.registrationOutboundPort.unregister(this.addr);
 	}
 
 	@Override
