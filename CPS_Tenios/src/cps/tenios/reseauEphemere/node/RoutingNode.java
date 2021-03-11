@@ -118,17 +118,17 @@ public class RoutingNode extends Node {
 				if(tmp == null) {
 					routingTable.put( (NodeAddressI)ri.getDestination(), new Chemin(this.getNodeOutboundPort(neighbour), ri.getNumberOfHops()));
 				// Si meilleur route => Maj
-				} else if (tmp.getNumberOfHops() > ri.getNumberOfHops()){
+				} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
 					tmp.setNext(this.getNodeOutboundPort(neighbour));
-					tmp.setNumberOfHops(ri.getNumberOfHops());
+					tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
 				}
 			}
 		}
 	}
 	
 	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
-		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops) {
-			path2Network = new Chemin(this.getNodeOutboundPort(neighbour), numberOfHops);
+		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
+			path2Network = new Chemin(this.getNodeOutboundPort(neighbour), numberOfHops + 1);
 		} 
 	}
 	
