@@ -25,13 +25,13 @@ public class CVM extends AbstractCVM {
 		
 		AbstractComponent.createComponent(GestionnaireReseau.class.getCanonicalName(),new Object[] {});
 		
-		String terminalURI =  AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(),new Object[] {uriTerminal1}); // Calculator dan
-		String terminalURI2 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(), new Object[] {uriTerminal2});
-		String terminalURI3 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(), new Object[] {uriTerminal3});
+		String terminalURI =  AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(),new Object[] {uriTerminal1, 0, 0, 15.}); // Calculator dan
+		String terminalURI2 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(), new Object[] {uriTerminal2, 5, 5, 15.});
+		String terminalURI3 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(), new Object[] {uriTerminal3, 20, 20, 15.});
 		
-		String routingURI1 = AbstractComponent.createComponent(RoutingNode.class.getCanonicalName(), new Object[] {uriRouting1});
+		String routingURI1 = AbstractComponent.createComponent(RoutingNode.class.getCanonicalName(), new Object[] {uriRouting1, 0, 10, 15.});
 		
-		String accessURI1 = AbstractComponent.createComponent(AccessPointNode.class.getCanonicalName(), new Object[] {uriAccess1});
+		String accessURI1 = AbstractComponent.createComponent(AccessPointNode.class.getCanonicalName(), new Object[] {uriAccess1, 10, 10, 15.});
 
 		this.doPortConnection(terminalURI, uriTerminal1, GestionnaireReseau.INBOUNDPORT_URI, RegistrationConnector.class.getCanonicalName());
 		this.doPortConnection(routingURI1, uriRouting1,  GestionnaireReseau.INBOUNDPORT_URI, RegistrationConnector.class.getCanonicalName());

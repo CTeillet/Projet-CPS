@@ -20,33 +20,37 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 public class TerminalNode extends Node {
 	
 	
+	
 	/**
 	 * Constructeur initialisant un noeud terminal
 	 * @param uri du port de registration
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected TerminalNode(String uri) throws Exception {
-		super(uri);
+	protected TerminalNode(String uri, int i, int j, double r) throws Exception {
+		super(uri, i, j, r);
 	}
 
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute TerminalNode "+ index);
-		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerTerminalNode(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, 100.);
-		
-		logMessage("voisisn " + voisin.size());
+		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerTerminalNode(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, this.range);
+		logMessage("1");
 		//Connexion a ses voisins
 		for(ConnectionInfo c : voisin) {
-			String uriInbound = c.getCommunicationInboundURI();
-			
-			this.connection(uriInbound).connect(this.addr, this.COMM_INBOUNDPORT_URI); 	
+			NodeOutboundPort out;
+			if(c.isRouting()) {
+				out = this.connectionRouting(c.getCommunicationInboundURI(), c.getAddress(), c.getRoutingInboundPortURI()).getNode();
+			}else {
+				out = this.connection(c.getCommunicationInboundURI(), c.getAddress());
+			}
+			out.connect(this.addr, this.COMM_INBOUNDPORT_URI);
+		//	logMessage("Connect " + );
 		}
-
+		logMessage("1");
 		if(this.index==2) {
 			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
 			logMessage("J'envoie le message " + m.getContent());
 			try {
-				//showNeighbourg(voisin);
 				this.transmitMessage(m);
 			}catch (Exception e) {
 				e.printStackTrace();

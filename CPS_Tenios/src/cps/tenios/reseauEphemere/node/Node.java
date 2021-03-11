@@ -1,5 +1,6 @@
 package cps.tenios.reseauEphemere.node;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -62,6 +63,8 @@ public abstract class  Node extends AbstractComponent{
 	 */
 	protected NodeRegistrationOutboundPort registrationOutboundPort;
 	
+	protected double range;
+	
 	// TODO : refair jav doc et voir si util
 	protected List<Pair<NodeAddressI, NodeOutboundPort>> terminalNodes;
 	protected List<Triplet<NodeAddressI, NodeOutboundPort, RoutingNodeOutboundPort>> routingNodes;
@@ -75,26 +78,30 @@ public abstract class  Node extends AbstractComponent{
 	 * @param uri URI du port sortant vers le gestionnaire rï¿½seau
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected Node(String uri) throws Exception {
-		super(5, 10);
+	protected Node(String uri, int i, int j, double r) throws Exception {
+		super(100, 200);
 		REGISTRATION_URI = uri;
 		COMM_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		
 		nodeInboundPort = new NodeInboundPort(COMM_INBOUNDPORT_URI,this);
 		nodeInboundPort.publishPort();
-	
-		
-		//nodesOutboundPort = new ArrayList<NodeOutboundPort>();
 		
 		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
 		
+		terminalNodes = new ArrayList<Pair<NodeAddressI,NodeOutboundPort>>();
+		routingNodes = new ArrayList<Triplet<NodeAddressI,NodeOutboundPort,RoutingNodeOutboundPort>>();
+		
 		this.toggleLogging();
 		this.toggleTracing();
 		
+		this.range=r;
 		addr = new NodeAddress(cmp++);
-		Random r =new Random();
-		pos = new Position(r.nextInt(10), r.nextInt(10));
+		pos = new Position(i, j);
+	}
+	
+	protected Node(String uri) throws Exception {
+		this(uri, (new Random()).nextInt(20), (new Random()).nextInt(20), (new Random()).nextDouble());
 	}
 	
 	@Override
@@ -149,9 +156,8 @@ public abstract class  Node extends AbstractComponent{
 		logMessage("Dans connect " + this.addr + ", " + address);
 		
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, false, "", null));
-		//logMessage("Ajout de voisin" + voisin.size());
-		NodeOutboundPort nodeOutboundPort = connection(communicationInboundPortURI);
-		terminalNodes.add(new Pair<NodeAddressI, NodeOutboundPort>(address, nodeOutboundPort));
+		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
+		connection(communicationInboundPortURI, address);
 		
 	}
 	
@@ -170,11 +176,9 @@ public abstract class  Node extends AbstractComponent{
 		assert this.addr != address;
 		
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, null));
-		//logMessage("Ajout de voisin" + voisin.size());
+		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
 		
-		NodeOutboundPort nodeOutboundPort = connection(communicationInboundPortURI);
-		RoutingNodeOutboundPort routingOutboundPort = connectionRouting(routingInboundPortURI);
-		routingNodes.add(new Triplet<NodeAddressI, NodeOutboundPort, RoutingNodeOutboundPort>(address, nodeOutboundPort, routingOutboundPort));
+		connectionRouting(routingInboundPortURI, address, routingInboundPortURI);
 	}
 	
 	/**
@@ -183,22 +187,31 @@ public abstract class  Node extends AbstractComponent{
 	 * @return le port de sortie du composant
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected NodeOutboundPort connection(String communicationInboundPortURI) throws Exception {
+	protected NodeOutboundPort connection(String communicationInboundPortURI, NodeAddressI address) throws Exception {
 		//Connexion a l'uriInbound
 		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
 		nodeOutbound.publishPort();
-		//nodesOutboundPort.add(nodeOutbound);
+
 		try {
 			doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		terminalNodes.add(new Pair<>(address, nodeOutbound));
 		return nodeOutbound;
 	}
 	
 	//TODO javadoc
-	protected RoutingNodeOutboundPort connectionRouting(String routingInboundPortURI) throws Exception {
+	protected Pair<RoutingNodeOutboundPort, NodeOutboundPort> connectionRouting(String routingInboundPortURI, NodeAddressI addr, String nodeInboundPortURI) throws Exception {
+		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
+		nodeOutbound.publishPort();
+
+		try {
+			doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		//Connexion au RoutingNodeOutboundPort
 		RoutingNodeOutboundPort outbound = new RoutingNodeOutboundPort(this);
 		outbound.publishPort();
@@ -208,8 +221,8 @@ public abstract class  Node extends AbstractComponent{
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return outbound;
+		routingNodes.add(new Triplet<>(addr, nodeOutbound, outbound));
+		return new Pair<>(outbound, nodeOutbound);
 	}
 
 	
@@ -223,6 +236,7 @@ public abstract class  Node extends AbstractComponent{
 		//Copie du message 
 		MessageI m = new Message((Message) msg);;
 		//arriver a destination
+		logMessage("Dans transmit");
 		if(m.getAddress().equals(addr)) {
 			logMessage("Message recue : " + m.getContent());
 			return;
@@ -236,7 +250,7 @@ public abstract class  Node extends AbstractComponent{
 		
 		//inondation 
 		for (Triplet<NodeAddressI, NodeOutboundPort, RoutingNodeOutboundPort> n : routingNodes) {
-
+			logMessage("Je transfere à " + n.getLabel());
 			n.getNode().transmitMessage(m);
 		}
 		

@@ -35,8 +35,8 @@ public class RoutingNode extends Node {
 	 * @param uri du port sortant vers le gestionnaire r�seau
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected RoutingNode(String uri) throws Exception {
-		super(uri);
+	protected RoutingNode(String uri, int i, int j, double r) throws Exception {
+		super(uri, i, j, r);
 		routingTable = new HashMap<NodeAddressI, Chemin>();
 		path2Network = null;
 		ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
@@ -46,24 +46,27 @@ public class RoutingNode extends Node {
 	public void execute() throws Exception {
 		logMessage("Debut Execute RoutingNode " + this.index);
 
-		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerRoutingNode(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, 100.0, ROUTING_INBOUNDPORT_URI);
+		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerRoutingNode(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, this.range, ROUTING_INBOUNDPORT_URI);
 		
 		logMessage("Taille voisin " + voisin.size());
 		for(ConnectionInfo c : voisin) {
 			String uriInbound = c.getCommunicationInboundURI();
-			NodeOutboundPort out = this.connection(uriInbound);
-			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
-			// TODO fair ajout dans connection & connectionRouting 
-			// TODO Maj tab de hash
+			NodeOutboundPort out;
+			
+			// TODO faire ajout dans connection & connectionRouting 
+			
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
-				RoutingNodeOutboundPort rout = this.connectionRouting(c.getRoutingInboundPortURI());
-				this.routingNodes.add(new Triplet<NodeAddressI, NodeOutboundPort, RoutingNodeOutboundPort>(c.getAddress(), out, rout));
+				Pair<RoutingNodeOutboundPort, NodeOutboundPort> rout = this.connectionRouting(c.getRoutingInboundPortURI(), c.getAddress(), c.getCommunicationInboundURI());
+				out = rout.getNode();
 				// TODO updateRouting + update AcessPoint
 			} else {
 				// ajout d'un voisin terminal
+				out = this.connection(uriInbound, c.getAddress());
 				this.terminalNodes.add(new Pair<NodeAddressI, NodeOutboundPort>(c.getAddress(), out));
 			}
+			routingTable.put(c.getAddress(), new Chemin(out, 1));
+			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
 		}
 		logMessage("Fin");
 	}
@@ -89,6 +92,7 @@ public class RoutingNode extends Node {
 		//Copie du message 
 		MessageI m = new Message((Message) msg);;
 		//arriver a destination
+		logMessage("Dans transmit");
 		if(m.getAddress().equals(addr)) {
 			logMessage("Message recue : " + m.getContent());
 			return;
@@ -98,6 +102,7 @@ public class RoutingNode extends Node {
 			logMessage("Mort du Message");
 			return;
 		}
+		logMessage("Envoie vers " + m.getAddress());
 		// envoie vers le reseau
 		if (m.getAddress().isNetworkAddress()) {
 			if(path2Network != null) {
@@ -105,12 +110,14 @@ public class RoutingNode extends Node {
 				this.path2Network.getNext().transmitMessage(m);
 				return;
 			}
+			
 			super.transmitMessage(msg);
 			return ;
 		}
 		// Cherche l'adresse dans la table 
 		Chemin path = routingTable.get(m.getAddress());
 		if(path != null) {
+			logMessage("Gagner");
 			m.decrementsGops();
 			path.getNext().transmitMessage(m);
 			return ;

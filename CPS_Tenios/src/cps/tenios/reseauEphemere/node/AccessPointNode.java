@@ -33,8 +33,8 @@ public class AccessPointNode extends Node {
 	 * @param uri du port de registration sortant
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected AccessPointNode(String uri) throws Exception {
-		super(uri);
+	protected AccessPointNode(String uri, int i, int j, double r) throws Exception {
+		super(uri, i, j, r);
 		this.ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		routingTable = new HashMap<NodeAddressI, Chemin>();
 	}
@@ -45,8 +45,23 @@ public class AccessPointNode extends Node {
 		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, 100.0, "");
 		
 		for(ConnectionInfo c : voisin) {
-			String uriInbound = c.getCommunicationInboundURI(); //TODO modifier pour le routing
-			this.connection(uriInbound).connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, this.ROUTING_INBOUNDPORT_URI);
+			String uriInbound = c.getCommunicationInboundURI();
+			NodeOutboundPort out;
+			
+			// TODO faire ajout dans connection & connectionRouting 
+			
+			if (c.isRouting()) {
+				// ajout d'un voisin routeur
+				Pair<RoutingNodeOutboundPort, NodeOutboundPort> rout = this.connectionRouting(c.getRoutingInboundPortURI(), c.getAddress(), c.getCommunicationInboundURI());
+				out = rout.getNode();
+				// TODO updateRouting + update AcessPoint
+			} else {
+				// ajout d'un voisin terminal
+				out = this.connection(uriInbound, c.getAddress());
+				this.terminalNodes.add(new Pair<NodeAddressI, NodeOutboundPort>(c.getAddress(), out));
+			}
+			routingTable.put(c.getAddress(), new Chemin(out, 1));
+			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
 		}
 		
 		
@@ -58,6 +73,7 @@ public class AccessPointNode extends Node {
 	@Override
 	public void transmitMessage(MessageI msg) throws Exception {
 		//Copie du message 
+		logMessage("Dans transmit");
 		MessageI m = new Message((Message) msg);;
 		//arriver a destination
 		if(m.getAddress().equals(addr)) {

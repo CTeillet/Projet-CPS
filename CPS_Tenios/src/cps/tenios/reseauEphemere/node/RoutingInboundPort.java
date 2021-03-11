@@ -18,24 +18,24 @@ public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI
 
 	public RoutingInboundPort(ComponentI owner) throws Exception {
 		super(RoutingCI.class, owner);
-		assert owner instanceof Routing;
+		assert owner instanceof RoutingCI;
 	}
 	
 	public RoutingInboundPort(String uri, ComponentI owner)  throws Exception{
 		super(uri, RegistrationCI.class, owner);
-		assert owner instanceof Routing;
+		assert owner instanceof RoutingCI;
 	}
 
 	@Override
 	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
-		this.getOwner().handleRequest( r-> { ((Routing)r).updateRouting(neighbour, routes); return null;});
+		this.getOwner().handleRequest( r-> { ((RoutingCI)r).updateRouting(neighbour, routes); return null;});
 		
 	}
 
 	@Override
 	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
 		
-		this.getOwner().handleRequest( r-> {((Routing)r).updateAccessPoint(neighbour, numberOfHops); return null;});
+		this.getOwner().handleRequest( r-> {((RoutingCI)r).updateAccessPoint(neighbour, numberOfHops); return null;});
 		
 	}
 
