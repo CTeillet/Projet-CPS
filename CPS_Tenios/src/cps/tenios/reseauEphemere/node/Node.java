@@ -222,7 +222,6 @@ public abstract class  Node extends AbstractComponent{
 	public void transmitMessage(MessageI msg) throws Exception{
 		//Copie du message 
 		MessageI m = new Message((Message) msg);;
-		m.decrementsGops();
 		//arriver a destination
 		if(m.getAddress().equals(addr)) {
 			logMessage("Message recue : " + m.getContent());
@@ -233,6 +232,7 @@ public abstract class  Node extends AbstractComponent{
 			logMessage("Mort du Message");
 			return;
 		}
+		m.decrementsGops();
 		
 		//inondation 
 		for (Triplet<NodeAddressI, NodeOutboundPort, RoutingNodeOutboundPort> n : routingNodes) {

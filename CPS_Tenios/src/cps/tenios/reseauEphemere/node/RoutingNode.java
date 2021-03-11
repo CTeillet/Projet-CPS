@@ -6,6 +6,7 @@ import java.util.Set;
 import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
+import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
@@ -38,7 +39,6 @@ public class RoutingNode extends Node {
 		path2Network = null;
 		ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 	}
-
 	
 	@Override
 	public void execute() throws Exception {
@@ -79,6 +79,34 @@ public class RoutingNode extends Node {
 		return routingTable.get(address) != null;
 	}
 	
+	@Override
+	public void transmitMessage(MessageI msg) throws Exception {
+		//Copie du message 
+				MessageI m = new Message((Message) msg);;
+				//arriver a destination
+				if(m.getAddress().equals(addr)) {
+					logMessage("Message recue : " + m.getContent());
+					return;
+				}
+				//Destruction 
+				if(!m.stillAlive()) {
+					logMessage("Mort du Message");
+					return;
+				}
+				
+				if (this.hasRouteFor(m.getAddress())) {
+					m.decrementsGops();
+					//TODO recupere le vosin et envoyer m 
+					Chemin path = routingTable.get(m.getAddress());
+					path.getNext().transmitMessage(m);
+					
+				} else {
+					//aucune route => inondation
+					super.transmitMessage(msg);
+				}
+				
+		
+	}
 	
 	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 		for(RouteInfoI ri : routes) {
