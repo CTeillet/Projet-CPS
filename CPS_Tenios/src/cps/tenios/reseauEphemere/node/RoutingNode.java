@@ -1,6 +1,10 @@
 package cps.tenios.reseauEphemere.node;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
@@ -25,7 +29,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 public class RoutingNode extends Node {
 
 	protected Chemin path2Network;
-	protected HashMap<NodeAddressI, Chemin> routingTable;
+	protected Map<NodeAddressI, Chemin> routingTable;
 	protected final String ROUTING_INBOUNDPORT_URI;
 	/**
 	 * Constructeur preant URI du port sortant vers le gestionnaire r�seau
@@ -135,10 +139,23 @@ public class RoutingNode extends Node {
 			}
 		}
 		if(hasChanged) {
-			// TODO propagation
+			propageUpdate(neighbour);
 		}
 	}
 	
+	private void propageUpdate(NodeAddressI neighbour) throws Exception{
+		Set<RouteInfoI> r = new HashSet<RouteInfoI>();
+		
+		for(Entry<NodeAddressI, Chemin>  t :routingTable.entrySet()) {
+			r.add(new RouteInfo(t.getKey(), t.getValue().getNumberOfHops()));
+		}
+		for(Triplet<NodeAddressI, NodeOutboundPort, RoutingNodeOutboundPort>  rn : routingNodes) {
+			if(!rn.getLabel().equals(neighbour)) {
+				rn.getRout().updateRouting(this.getAddr(), r);
+			}
+		}
+	}
+
 	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
 		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
 			path2Network = new Chemin(this.getNodeOutboundPort(neighbour), numberOfHops + 1);
