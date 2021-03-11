@@ -114,6 +114,7 @@ public class RoutingNode extends Node {
 		if(path != null) {
 			m.decrementsGops();
 			path.getNext().transmitMessage(m);
+			return ;
 		}
 
 		//aucune route => inondation
