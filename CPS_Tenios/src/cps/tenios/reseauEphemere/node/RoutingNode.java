@@ -95,22 +95,27 @@ public class RoutingNode extends Node {
 			logMessage("Mort du Message");
 			return;
 		}
-
-		if (this.hasRouteFor(m.getAddress())) {
-			m.decrementsGops();
-			// recupere le vosin et envoyer m 
-			if (m.getAddress().isNetworkAddress()) {
+		// envoie vers le reseau
+		if (m.getAddress().isNetworkAddress()) {
+			if(path2Network != null) {
+				m.decrementsGops();
 				this.path2Network.getNext().transmitMessage(m);
 				return;
 			}
-			Chemin path = routingTable.get(m.getAddress());
-			path.getNext().transmitMessage(m);
-
-		} else {
-			//aucune route => inondation
 			super.transmitMessage(msg);
+			return ;
 		}
+		// Cherche l'adresse dans la table 
+		Chemin path = routingTable.get(m.getAddress());
+		if(path != null) {
+			m.decrementsGops();
+			path.getNext().transmitMessage(m);
+		}
+
+		//aucune route => inondation
+		super.transmitMessage(msg);
 	}
+	
 	
 	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 		boolean hasChanged = false;
