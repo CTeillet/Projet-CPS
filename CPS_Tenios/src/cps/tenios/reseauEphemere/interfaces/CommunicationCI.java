@@ -24,17 +24,17 @@ public interface CommunicationCI extends OfferedCI, RequiredCI {
 	void connectRouting (NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception;
 	/**
 	 * Permet de transmettre un message vers son destinataire
-	 * @param m le message à transmettre
+	 * @param m le message ï¿½ transmettre
 	 */
 	void transmitMessage(MessageI m) throws Exception;
 	/**
-	 * Permet de vérifier si une route existe vers une addresse
+	 * Permet de vï¿½rifier si une route existe vers une addresse
 	 * @param address addresse de destination
 	 * @return
 	 */
-	boolean hasRouteFor(AddressI address) throws Exception;
+	int hasRouteFor(AddressI address) throws Exception;
 	/**
-	 * Permet de vérifier si un noeud voisin est toujours vivant
+	 * Permet de vï¿½rifier si un noeud voisin est toujours vivant
 	 */
 	void ping() throws Exception;
 	

@@ -250,8 +250,8 @@ public abstract class  Node extends AbstractComponent{
 	 * @return si une jonction existe
 	 * @throws Exception s'il y a un probleme
 	 */
-	public boolean hasRouteFor(AddressI address) throws Exception{
-		return false;
+	public int hasRouteFor(AddressI address) throws Exception{
+		return -1;
 	}
 	
 	/**

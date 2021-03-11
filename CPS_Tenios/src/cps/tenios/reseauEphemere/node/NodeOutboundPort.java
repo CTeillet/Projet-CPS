@@ -10,23 +10,23 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 public class NodeOutboundPort extends AbstractOutboundPort implements CommunicationCI {
 	
 	/**
-	 * Verison de série de la classe
+	 * Verison de sï¿½rie de la classe
 	 */
 	private static final long serialVersionUID = 3254624094913909113L;
 
 	/**
-	 * Constructeur prenant en argument le propriétaire de la classe
-	 * @param owner propriétaire du port
-	 * @throws Exception s'il y a un problème
+	 * Constructeur prenant en argument le propriï¿½taire de la classe
+	 * @param owner propriï¿½taire du port
+	 * @throws Exception s'il y a un problï¿½me
 	 */
 	public NodeOutboundPort(ComponentI owner) throws Exception {
 		super(CommunicationCI.class, owner);
 	}
 	
 	/**
-	 * Constructeur prenant en arguments le propriétaire ainsi que le port voulue pour le port
+	 * Constructeur prenant en arguments le propriï¿½taire ainsi que le port voulue pour le port
 	 * @param uri voulue pour le port
-	 * @param owner propriétaire du port 
+	 * @param owner propriï¿½taire du port 
 	 * @throws Exception s'il y a un probleme
 	 */
 	public NodeOutboundPort(String uri,ComponentI owner)
@@ -55,7 +55,7 @@ public class NodeOutboundPort extends AbstractOutboundPort implements Communicat
 	}
 
 	@Override
-	public boolean hasRouteFor(AddressI address) throws Exception {
+	public int hasRouteFor(AddressI address) throws Exception {
 		return ((CommunicationCI)this.getConnector()).hasRouteFor(address);
 	}
 

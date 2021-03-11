@@ -10,13 +10,13 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
 public class NodeInboundPort extends AbstractInboundPort implements CommunicationCI {
 	
 	/**
-	 *  Verison de série de la classe
+	 *  Verison de sï¿½rie de la classe
 	 */
 	private static final long serialVersionUID = 3226720899115114653L;
 	
 	/**
-	 * Permet de créer un port entrant pour un noeud en spécifiant son propriétaire
-	 * @param owner propriétaire du noeud
+	 * Permet de crï¿½er un port entrant pour un noeud en spï¿½cifiant son propriï¿½taire
+	 * @param owner propriï¿½taire du noeud
 	 * @throws Exception s'il y a un probleme
 	 */
 	public NodeInboundPort(ComponentI owner) throws Exception {
@@ -25,9 +25,9 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 	}
 	
 	/**
-	 * Crée un port en prenant l'uri voulue pour le port, ainsi que son propriétaire
+	 * Crï¿½e un port en prenant l'uri voulue pour le port, ainsi que son propriï¿½taire
 	 * @param uri voulue pour le port
-	 * @param owner propriétaire de classe
+	 * @param owner propriï¿½taire de classe
 	 * @throws Exception s'il y a un probleme
 	 */
 	public NodeInboundPort(String uri, ComponentI owner) throws Exception {
@@ -62,7 +62,7 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 	}
 
 	@Override
-	public boolean hasRouteFor(AddressI address)  throws Exception{
+	public int hasRouteFor(AddressI address)  throws Exception{
 		return this.getOwner().handleRequest( c -> ((Node)c).hasRouteFor(address));
 	}
 

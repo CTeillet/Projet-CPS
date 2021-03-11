@@ -21,12 +21,11 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
  *
  */
 @OfferedInterfaces(offered = {CommunicationCI.class, RoutingCI.class})
-@RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
+@RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class, RoutingCI.class})
 public class RoutingNode extends Node {
 
-	
-	protected HashMap<NodeAddressI, Chemin> routingTable;
 	protected Chemin path2Network;
+	protected HashMap<NodeAddressI, Chemin> routingTable;
 	protected final String ROUTING_INBOUNDPORT_URI;
 	/**
 	 * Constructeur preant URI du port sortant vers le gestionnaire r�seau
@@ -72,11 +71,14 @@ public class RoutingNode extends Node {
 	}
 
 	@Override
-	public boolean hasRouteFor(AddressI address) throws Exception {
+	public int hasRouteFor(AddressI address) throws Exception {
 		if(address.isNetworkAddress()) {
-			return path2Network != null;
+			if (path2Network != null) {
+				return -1;
+			}
+			return path2Network.getNumberOfHops();
 		}
-		return routingTable.get(address) != null;
+		return routingTable.get(address).getNumberOfHops();
 	}
 	
 	@Override

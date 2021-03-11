@@ -34,7 +34,7 @@ public class NodeConnector extends AbstractConnector implements CommunicationCI 
 	}
 
 	@Override
-	public boolean hasRouteFor(AddressI address)  throws Exception{
+	public int hasRouteFor(AddressI address)  throws Exception{
 		return ((CommunicationCI)this.offering).hasRouteFor(address);
 	}
 
