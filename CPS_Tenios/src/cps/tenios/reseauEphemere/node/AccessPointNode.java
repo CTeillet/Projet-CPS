@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
-import cps.tenios.reseauEphemere.NetworkAddress;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
-import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;

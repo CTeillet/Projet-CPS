@@ -6,7 +6,6 @@ import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 public class RoutingNodeOutboundPort extends AbstractOutboundPort implements RoutingCI {
