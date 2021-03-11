@@ -58,13 +58,34 @@ public class AccessPointNode extends Node {
 	}
 
 	@Override
-	public void transmitMessage(MessageI m) throws Exception {
+	public void transmitMessage(MessageI msg) throws Exception {
+		//Copie du message 
+		MessageI m = new Message((Message) msg);;
+		//arriver a destination
+		if(m.getAddress().equals(addr)) {
+			logMessage("Message recue : " + m.getContent());
+			return;
+		}
+		// Message pour le reseau
 		if(m.getAddress().isNetworkAddress()) {
 			logMessage("Le message a atteint le reseau :" + m.getContent());
 			return ;
 		}
-		super.transmitMessage(m);
-		
+		//Destruction 
+		if(!m.stillAlive()) {
+			logMessage("Mort du Message");
+			return;
+		}
+		// Cherche l'adresse dans la table 
+		Chemin path = routingTable.get(m.getAddress());
+		if(path != null) {
+			m.decrementsGops();
+			path.getNext().transmitMessage(m);
+			return;
+		}
+
+		//aucune route => inondation
+		super.transmitMessage(msg);
 	}
 
 	@Override
@@ -72,7 +93,11 @@ public class AccessPointNode extends Node {
 		if(address.isNetworkAddress()) {
 			return 0;
 		}
-		return ;
+		Chemin path = routingTable.get(address);
+		if(path!=null) {
+			return path.getNumberOfHops();
+		}
+		return -1;
 	}
 
 	@Override
