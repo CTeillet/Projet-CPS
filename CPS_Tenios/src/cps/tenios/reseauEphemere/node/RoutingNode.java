@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
@@ -50,11 +51,13 @@ public class RoutingNode extends Node {
 			String uriInbound = c.getCommunicationInboundURI();
 			NodeOutboundPort out = this.connection(uriInbound);
 			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
-			// TODO fair ajout dans connection & connectionRouting
+			// TODO fair ajout dans connection & connectionRouting 
+			// TODO Maj tab de hash
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
 				RoutingNodeOutboundPort rout = this.connectionRouting(c.getRoutingInboundPortURI());
 				this.routingNodes.add(new Triplet<NodeAddressI, NodeOutboundPort, RoutingNodeOutboundPort>(c.getAddress(), out, rout));
+				// TODO updateRouting + update AcessPoint
 			} else {
 				// ajout d'un voisin terminal
 				this.terminalNodes.add(new Pair<NodeAddressI, NodeOutboundPort>(c.getAddress(), out));
@@ -69,8 +72,11 @@ public class RoutingNode extends Node {
 	}
 
 	@Override
-	public String toString() {
-		return "RoutingNode ["+ super.toString() +"]";
+	public boolean hasRouteFor(AddressI address) throws Exception {
+		if(address.isNetworkAddress()) {
+			return path2Network != null;
+		}
+		return routingTable.get(address) != null;
 	}
 	
 	
@@ -94,5 +100,10 @@ public class RoutingNode extends Node {
 		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops) {
 			path2Network = new Chemin(this.getNodeOutboundPort(neighbour), numberOfHops);
 		} 
+	}
+	
+	@Override
+	public String toString() {
+		return "RoutingNode ["+ super.toString() +"]";
 	}
 }
