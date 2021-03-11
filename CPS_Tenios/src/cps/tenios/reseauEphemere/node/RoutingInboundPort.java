@@ -1,4 +1,4 @@
-package cps.tenios.reseauEphemere.routing;
+package cps.tenios.reseauEphemere.node;
 
 import java.util.Set;
 
