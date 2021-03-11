@@ -82,30 +82,32 @@ public class RoutingNode extends Node {
 	@Override
 	public void transmitMessage(MessageI msg) throws Exception {
 		//Copie du message 
-				MessageI m = new Message((Message) msg);;
-				//arriver a destination
-				if(m.getAddress().equals(addr)) {
-					logMessage("Message recue : " + m.getContent());
-					return;
-				}
-				//Destruction 
-				if(!m.stillAlive()) {
-					logMessage("Mort du Message");
-					return;
-				}
-				
-				if (this.hasRouteFor(m.getAddress())) {
-					m.decrementsGops();
-					//TODO recupere le vosin et envoyer m 
-					Chemin path = routingTable.get(m.getAddress());
-					path.getNext().transmitMessage(m);
-					
-				} else {
-					//aucune route => inondation
-					super.transmitMessage(msg);
-				}
-				
-		
+		MessageI m = new Message((Message) msg);;
+		//arriver a destination
+		if(m.getAddress().equals(addr)) {
+			logMessage("Message recue : " + m.getContent());
+			return;
+		}
+		//Destruction 
+		if(!m.stillAlive()) {
+			logMessage("Mort du Message");
+			return;
+		}
+
+		if (this.hasRouteFor(m.getAddress())) {
+			m.decrementsGops();
+			// recupere le vosin et envoyer m 
+			if (m.getAddress().isNetworkAddress()) {
+				this.path2Network.getNext().transmitMessage(m);
+				return;
+			}
+			Chemin path = routingTable.get(m.getAddress());
+			path.getNext().transmitMessage(m);
+
+		} else {
+			//aucune route => inondation
+			super.transmitMessage(msg);
+		}
 	}
 	
 	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
