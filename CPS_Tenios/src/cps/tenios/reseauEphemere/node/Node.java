@@ -1,12 +1,8 @@
 package cps.tenios.reseauEphemere.node;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
-import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.NodeConnector;
 import cps.tenios.reseauEphemere.Position;
