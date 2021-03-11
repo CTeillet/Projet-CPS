@@ -113,24 +113,31 @@ public class RoutingNode extends Node {
 	}
 	
 	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
+		boolean hasChanged = false;
 		for(RouteInfoI ri : routes) {
 			if (ri.getDestination().isNodeAddress()) {
 				Chemin tmp = routingTable.get(ri.getDestination());
 				//Si pas de route vers address => creation d'un nouveau chemin
 				if(tmp == null) {
+					hasChanged = true;
 					routingTable.put( (NodeAddressI)ri.getDestination(), new Chemin(this.getNodeOutboundPort(neighbour), ri.getNumberOfHops()));
 				// Si meilleur route => Maj
 				} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
+					hasChanged = true;
 					tmp.setNext(this.getNodeOutboundPort(neighbour));
 					tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
 				}
 			}
+		}
+		if(hasChanged) {
+			// TODO propagation
 		}
 	}
 	
 	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
 		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
 			path2Network = new Chemin(this.getNodeOutboundPort(neighbour), numberOfHops + 1);
+			// TODO propagation
 		} 
 	}
 	

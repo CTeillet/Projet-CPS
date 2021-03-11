@@ -60,6 +60,7 @@ public class AccessPointNode extends Node {
 	@Override
 	public void transmitMessage(MessageI m) throws Exception {
 		if(m.getAddress().isNetworkAddress()) {
+			logMessage("Le message a atteint le reseau :" + m.getContent());
 			return ;
 		}
 		super.transmitMessage(m);
