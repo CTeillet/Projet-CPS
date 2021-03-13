@@ -46,14 +46,14 @@ public class TerminalNode extends Node {
 			}
 			out.connect(this.addr, this.COMM_INBOUNDPORT_URI);
 		}
-		/*
+		
 		logMessage("1");
 		if(this.index==2) {
 			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
 			logMessage("J'envoie le message " + m.getContent());
 						this.transmitMessage(m);
 		}
-		*/
+		
 		logMessage("Fin");
 	}
 

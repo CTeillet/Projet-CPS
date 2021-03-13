@@ -157,7 +157,7 @@ public abstract class  Node extends AbstractComponent{
 		
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, false, "", null));
 		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
-		connection(communicationInboundPortURI, address);
+		this.connection(address, communicationInboundPortURI);
 		
 	}
 	
@@ -249,6 +249,10 @@ public abstract class  Node extends AbstractComponent{
 		}
 		
 		// TODO verfier faire pareil avec noeud Terminal 
+		for (Pair<NodeAddressI, NodeOutboundPort> n : terminalNodes) {
+			logMessage("Je transfere � " + n.getLabel());
+			n.getNode().transmitMessage(m);
+		}
 		
 	}
 	

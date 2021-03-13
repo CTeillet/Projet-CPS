@@ -1,5 +1,6 @@
-package cps.tenios.reseauEphemere;
+package cps.tenios.reseauEphemere.Test;
 
+import cps.tenios.reseauEphemere.RegistrationConnector;
 import cps.tenios.reseauEphemere.gestionnaireReseau.GestionnaireReseau;
 import cps.tenios.reseauEphemere.node.AccessPointNode;
 import cps.tenios.reseauEphemere.node.RoutingNode;
