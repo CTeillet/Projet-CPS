@@ -52,7 +52,7 @@ public class AccessPointNode extends Node {
 			
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
-				Pair<RoutingNodeOutboundPort, NodeOutboundPort> rout = this.connectionRouting(c.getRoutingInboundPortURI(), c.getAddress(), c.getCommunicationInboundURI());
+				Pair<RoutingOutboundPort, NodeOutboundPort> rout = this.connectionRouting(c.getRoutingInboundPortURI(), c.getAddress(), c.getCommunicationInboundURI());
 				out = rout.getNode();
 				// TODO updateRouting + update AcessPoint
 			} else {

@@ -57,7 +57,7 @@ public class RoutingNode extends Node {
 			
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
-				Pair<RoutingNodeOutboundPort, NodeOutboundPort> rout = this.connectionRouting(c.getRoutingInboundPortURI(), c.getAddress(), c.getCommunicationInboundURI());
+				Pair<RoutingOutboundPort, NodeOutboundPort> rout = this.connectionRouting(c.getRoutingInboundPortURI(), c.getAddress(), c.getCommunicationInboundURI());
 				out = rout.getNode();
 				// TODO updateRouting + update AcessPoint
 			} else {
@@ -156,7 +156,7 @@ public class RoutingNode extends Node {
 		for(Entry<NodeAddressI, Chemin>  t :routingTable.entrySet()) {
 			r.add(new RouteInfo(t.getKey(), t.getValue().getNumberOfHops()));
 		}
-		for(Triplet<NodeAddressI, NodeOutboundPort, RoutingNodeOutboundPort>  rn : routingNodes) {
+		for(Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort>  rn : routingNodes) {
 			if(!rn.getLabel().equals(neighbour)) {
 				rn.getRout().updateRouting(this.getAddr(), r);
 			}

@@ -7,7 +7,7 @@ import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 
-public class RoutingNodeConnector extends AbstractConnector implements RoutingCI {
+public class RoutingConnector extends AbstractConnector implements RoutingCI {
 
 	@Override
 	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
