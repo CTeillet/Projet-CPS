@@ -172,13 +172,13 @@ public abstract class  Node extends AbstractComponent{
 	 */
 	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI)
 			throws Exception {
-		
+		logMessage("connectR " + addr);
 		assert this.addr != address;
 		
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, null));
 		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
 		
-		connectionRouting(routingInboundPortURI, address, routingInboundPortURI);
+		connectionRouting(address, communicationInboundPortURI, routingInboundPortURI);
 	}
 	
 	/**
@@ -187,7 +187,9 @@ public abstract class  Node extends AbstractComponent{
 	 * @return le port de sortie du composant
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected NodeOutboundPort connection(String communicationInboundPortURI, NodeAddressI address) throws Exception {
+	protected NodeOutboundPort connection(NodeAddressI address, String communicationInboundPortURI) throws Exception {
+		logMessage("connect " + addr);
+		assert this.addr != address;
 		//Connexion a l'uriInbound
 		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
 		nodeOutbound.publishPort();
@@ -201,25 +203,20 @@ public abstract class  Node extends AbstractComponent{
 		return nodeOutbound;
 	}
 	
-	//TODO javadoc
-	protected Pair<RoutingOutboundPort, NodeOutboundPort> connectionRouting(String routingInboundPortURI, NodeAddressI addr, String nodeInboundPortURI) throws Exception {
+	//TODO java doc
+	protected NodeOutboundPort connectionRouting(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+		logMessage("connectionRouting " + addr);
 		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
 		nodeOutbound.publishPort();
-
-		try {
-			doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
+		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
+		
 		
 		//Connexion au RoutingNodeOutboundPort
-		RoutingOutboundPort outbound = new RoutingOutboundPort(this);
-		outbound.publishPort();
-		//nodesOutboundPort.add(nodeOutbound);
-		
-		doPortConnection(outbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
-		routingNodes.add(new Triplet<>(addr, nodeOutbound, outbound));
-		return new Pair<>(outbound, nodeOutbound);
+		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
+		routOutbound.publishPort();
+		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+		routingNodes.add(new Triplet<>(addr, nodeOutbound, routOutbound));
+		return nodeOutbound;
 	}
 
 	

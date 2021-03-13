@@ -50,23 +50,21 @@ public class RoutingNode extends Node {
 		
 		logMessage("Taille voisin " + voisin.size());
 		for(ConnectionInfo c : voisin) {
-			String uriInbound = c.getCommunicationInboundURI();
 			NodeOutboundPort out;
 			
 			// TODO faire ajout dans connection & connectionRouting 
 			
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
-				Pair<RoutingOutboundPort, NodeOutboundPort> rout = this.connectionRouting(c.getRoutingInboundPortURI(), c.getAddress(), c.getCommunicationInboundURI());
-				out = rout.getNode();
+				out = this.connectionRouting(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
+				
 				// TODO updateRouting + update AcessPoint
 			} else {
 				// ajout d'un voisin terminal
-				out = this.connection(uriInbound, c.getAddress());
-				this.terminalNodes.add(new Pair<NodeAddressI, NodeOutboundPort>(c.getAddress(), out));
+				out = this.connection(c.getAddress(), c.getCommunicationInboundURI());
 			}
 			routingTable.put(c.getAddress(), new Chemin(out, 1));
-			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
+			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, this.ROUTING_INBOUNDPORT_URI);
 		}
 		logMessage("Fin");
 	}

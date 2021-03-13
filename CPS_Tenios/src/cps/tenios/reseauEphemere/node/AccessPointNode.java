@@ -45,19 +45,17 @@ public class AccessPointNode extends Node {
 		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, 100.0, "");
 		
 		for(ConnectionInfo c : voisin) {
-			String uriInbound = c.getCommunicationInboundURI();
 			NodeOutboundPort out;
 			
 			// TODO faire ajout dans connection & connectionRouting 
 			
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
-				Pair<RoutingOutboundPort, NodeOutboundPort> rout = this.connectionRouting(c.getRoutingInboundPortURI(), c.getAddress(), c.getCommunicationInboundURI());
-				out = rout.getNode();
+				out = this.connectionRouting(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
 				// TODO updateRouting + update AcessPoint
 			} else {
 				// ajout d'un voisin terminal
-				out = this.connection(uriInbound, c.getAddress());
+				out = this.connection(c.getAddress(), c.getCommunicationInboundURI());
 				this.terminalNodes.add(new Pair<NodeAddressI, NodeOutboundPort>(c.getAddress(), out));
 			}
 			routingTable.put(c.getAddress(), new Chemin(out, 1));

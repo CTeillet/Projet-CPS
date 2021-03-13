@@ -37,28 +37,24 @@ public class TerminalNode extends Node {
 		logMessage("1");
 		//Connexion a ses voisins
 		for(ConnectionInfo c : voisin) {
+			logMessage("voisin : " + c.getAddress());
 			NodeOutboundPort out;
 			if(c.isRouting()) {
-				out = this.connectionRouting(c.getCommunicationInboundURI(), c.getAddress(), c.getRoutingInboundPortURI()).getNode();
+				out = this.connectionRouting(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
 			}else {
-				out = this.connection(c.getCommunicationInboundURI(), c.getAddress());
+				out = this.connection(c.getAddress(),c.getCommunicationInboundURI());
 			}
 			out.connect(this.addr, this.COMM_INBOUNDPORT_URI);
-		//	logMessage("Connect " + );
 		}
+		/*
 		logMessage("1");
 		if(this.index==2) {
 			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
 			logMessage("J'envoie le message " + m.getContent());
-			try {
-				this.transmitMessage(m);
-			}catch (Exception e) {
-				e.printStackTrace();
-			}
-			
+						this.transmitMessage(m);
 		}
+		*/
 		logMessage("Fin");
-		//super.registrationOutboundPort.unregister(super.addr);
 	}
 
 	@Override
