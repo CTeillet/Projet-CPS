@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
+import cps.tenios.reseauEphemere.NodeConnector;
+import cps.tenios.reseauEphemere.RoutingConnector;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
@@ -30,6 +32,7 @@ public class RoutingNode extends Node {
 	protected Chemin path2Network;
 	protected Map<NodeAddressI, Chemin> routingTable;
 	protected final String ROUTING_INBOUNDPORT_URI;
+	protected RoutingInboundPort routInbound;
 	/**
 	 * Constructeur preant URI du port sortant vers le gestionnaire r�seau
 	 * @param uri du port sortant vers le gestionnaire r�seau
@@ -40,6 +43,8 @@ public class RoutingNode extends Node {
 		routingTable = new HashMap<NodeAddressI, Chemin>();
 		path2Network = null;
 		ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
+		routInbound = new RoutingInboundPort(ROUTING_INBOUNDPORT_URI, this);
+		routInbound.publishPort();
 	}
 	
 	@Override
@@ -171,5 +176,24 @@ public class RoutingNode extends Node {
 	@Override
 	public String toString() {
 		return "RoutingNode ["+ super.toString() +"]";
+	}
+	
+	@Override
+	protected NodeOutboundPort connectionRouting(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+		logMessage("connectionRouting " + addr);
+		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
+		nodeOutbound.publishPort();
+		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
+		logMessage("LAAAAAAAAA");
+		//Connexion au RoutingNodeOutboundPort
+		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
+		routOutbound.publishPort();
+		try {
+			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		routingNodes.add(new Triplet<>(addr, nodeOutbound, routOutbound));
+		return nodeOutbound;
 	}
 }

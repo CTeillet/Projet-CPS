@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
+import cps.tenios.reseauEphemere.NodeConnector;
+import cps.tenios.reseauEphemere.RoutingConnector;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
@@ -123,5 +125,23 @@ public class AccessPointNode extends Node {
 		return "AccessPointNode [" + super.toString() + "]";
 	}
 	
+	@Override
+	protected NodeOutboundPort connectionRouting(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+		logMessage("connectionRouting " + addr);
+		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
+		nodeOutbound.publishPort();
+		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
+		
+		//Connexion au RoutingNodeOutboundPort
+		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
+		routOutbound.publishPort();
+		try {
+			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		routingNodes.add(new Triplet<>(addr, nodeOutbound, routOutbound));
+		return nodeOutbound;
+	}
 
 }

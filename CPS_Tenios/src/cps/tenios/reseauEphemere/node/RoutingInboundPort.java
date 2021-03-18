@@ -22,8 +22,9 @@ public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI
 	}
 	
 	public RoutingInboundPort(String uri, ComponentI owner)  throws Exception{
-		super(uri, RegistrationCI.class, owner);
-		assert owner instanceof RoutingCI;
+		super(uri, RoutingCI.class, owner);
+		//assert (owner instanceof RoutingNode) || (owner instanceof AccessPointNode);
+		assert owner instanceof Node;
 	}
 
 	@Override

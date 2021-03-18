@@ -17,7 +17,6 @@ public class RoutingConnector extends AbstractConnector implements RoutingCI {
 
 	@Override
 	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
-		// TODO Auto-generated method stub
 		((RoutingCI)this.offering).updateAccessPoint(neighbour, numberOfHops);
 	}
 

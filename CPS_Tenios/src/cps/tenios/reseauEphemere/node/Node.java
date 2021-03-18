@@ -178,7 +178,7 @@ public abstract class  Node extends AbstractComponent{
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, null));
 		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
 		
-		connectionRouting(address, communicationInboundPortURI, routingInboundPortURI);
+		this.connectionRouting(address, communicationInboundPortURI, routingInboundPortURI);
 	}
 	
 	/**
@@ -203,19 +203,31 @@ public abstract class  Node extends AbstractComponent{
 		return nodeOutbound;
 	}
 	
-	//TODO java doc
+	//TODO Resoudre probleme
+	/**
+	 * Method used to connect a Node to another that can rout message
+	 * @param addr Address of the node we want to connect
+	 * @param nodeInboundPortURI port of communication
+	 * @param routingInboundPortURI routing port
+	 * @return the newly created CommunicationouTboundPort
+	 * @throws Exception If there is a problem
+	 */
 	protected NodeOutboundPort connectionRouting(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("connectionRouting " + addr);
 		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
 		
-		
-		//Connexion au RoutingNodeOutboundPort
-		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
-		routOutbound.publishPort();
-		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
-		routingNodes.add(new Triplet<>(addr, nodeOutbound, routOutbound));
+//		//Connexion au RoutingNodeOutboundPort
+//		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
+//		routOutbound.publishPort();
+//		try {
+//			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		logMessage("ICIC");
+		routingNodes.add(new Triplet<>(addr, nodeOutbound, null));
 		return nodeOutbound;
 	}
 
