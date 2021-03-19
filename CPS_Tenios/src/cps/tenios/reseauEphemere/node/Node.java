@@ -254,16 +254,32 @@ public abstract class  Node extends AbstractComponent{
 		}
 		m.decrementsGops();
 		
-		//inondation 
+		int rout = -1, tmp; 
+		NodeOutboundPort next = null;
 		for (Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> n : routingNodes) {
-			logMessage("Je transfere � " + n.getLabel());
-			n.getNode().transmitMessage(m);
+			tmp = n.getNode().hasRouteFor(m.getAddress());
+			if (rout == -1 || (tmp < rout && tmp != -1)) {
+				rout = tmp;
+				next = n.getNode();
+			}
 		}
 		
-		// TODO verfier faire pareil avec noeud Terminal 
-		for (Pair<NodeAddressI, NodeOutboundPort> n : terminalNodes) {
-			logMessage("Je transfere � " + n.getLabel());
-			n.getNode().transmitMessage(m);
+		if(rout > -1) {
+			next.transmitMessage(m);
+			return;
+			
+		} else {
+			//inondation 
+			for (Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> n : routingNodes) {
+				logMessage("Je transfere � " + n.getLabel());
+				n.getNode().transmitMessage(m);
+			}
+			
+			// TODO verfier faire pareil avec noeud Terminal 
+			for (Pair<NodeAddressI, NodeOutboundPort> n : terminalNodes) {
+				logMessage("Je transfere � " + n.getLabel());
+				n.getNode().transmitMessage(m);
+			}
 		}
 		
 	}
