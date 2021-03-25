@@ -1,6 +1,7 @@
 package cps.tenios.reseauEphemere.node;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -88,9 +89,9 @@ public abstract class  Node extends AbstractComponent{
 		
 		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
-		
-		terminalNodes = new ArrayList<Pair<NodeAddressI,NodeOutboundPort>>();
-		routingNodes = new ArrayList<Triplet<NodeAddressI,NodeOutboundPort,RoutingOutboundPort>>();
+		// TODO a verifier
+		terminalNodes =  Collections.synchronizedList(new ArrayList<Pair<NodeAddressI,NodeOutboundPort>>());
+		routingNodes =  Collections.synchronizedList(new ArrayList<Triplet<NodeAddressI,NodeOutboundPort,RoutingOutboundPort>>());
 		
 		this.toggleLogging();
 		this.toggleTracing();

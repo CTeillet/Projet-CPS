@@ -58,13 +58,10 @@ public class RoutingNode extends Node {
 		for(ConnectionInfo c : voisin) {
 			NodeOutboundPort out;
 			
-			// TODO faire ajout dans connection & connectionRouting 
-			
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
 				out = this.connectionRouting(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
 				
-				// TODO updateRouting + update AcessPoint
 			} else {
 				// ajout d'un voisin terminal
 				out = this.connection(c.getAddress(), c.getCommunicationInboundURI());
@@ -87,9 +84,12 @@ public class RoutingNode extends Node {
 				return path2Network.getNumberOfHops();
 			}
 		} else {
-			Chemin chemin = routingTable.get(address);
-			if(chemin != null) {
-				return chemin.getNumberOfHops();
+			// TODO a verifier
+			synchronized (this) {
+				Chemin chemin = routingTable.get(address);
+				if(chemin != null) {
+					return chemin.getNumberOfHops();
+				}
 			}
 		}
 		return -1;
@@ -123,12 +123,14 @@ public class RoutingNode extends Node {
 			return ;
 		}
 		// Cherche l'adresse dans la table 
-		Chemin path = routingTable.get(m.getAddress());
-		if(path != null) {
-			logMessage("Gagner");
-			m.decrementsGops();
-			path.getNext().transmitMessage(m);
-			return ;
+		synchronized (this) {
+			Chemin path = routingTable.get(m.getAddress());
+			if(path != null) {
+				logMessage("Gagner");
+				m.decrementsGops();
+				path.getNext().transmitMessage(m);
+				return ;
+			}
 		}
 
 		//aucune route => inondation
@@ -138,18 +140,21 @@ public class RoutingNode extends Node {
 	
 	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 		boolean hasChanged = false;
-		for(RouteInfoI ri : routes) {
-			if (ri.getDestination().isNodeAddress()) {
-				Chemin tmp = routingTable.get(ri.getDestination());
-				//Si pas de route vers address => creation d'un nouveau chemin
-				if(tmp == null) {
-					hasChanged = true;
-					routingTable.put( (NodeAddressI)ri.getDestination(), new Chemin(this.getNodeOutboundPort(neighbour), ri.getNumberOfHops()));
-				// Si meilleur route => Maj
-				} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
-					hasChanged = true;
-					tmp.setNext(this.getNodeOutboundPort(neighbour));
-					tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
+		// TODO verif si ok ou mieux
+		synchronized (this) {
+			for(RouteInfoI ri : routes) {
+				if (ri.getDestination().isNodeAddress()) {
+					Chemin tmp = routingTable.get(ri.getDestination());
+					//Si pas de route vers address => creation d'un nouveau chemin
+					if(tmp == null) {
+						hasChanged = true;
+						routingTable.put( (NodeAddressI)ri.getDestination(), new Chemin(this.getNodeOutboundPort(neighbour), ri.getNumberOfHops()));
+					// Si meilleur route => Maj
+					} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
+						hasChanged = true;
+						tmp.setNext(this.getNodeOutboundPort(neighbour));
+						tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
+					}
 				}
 			}
 		}
@@ -172,9 +177,10 @@ public class RoutingNode extends Node {
 	}
 
 	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
+		// TODO a protéger plus finement
 		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
-			path2Network = new Chemin(this.getNodeOutboundPort(neighbour), numberOfHops + 1);
-			// TODO propagation
+				path2Network = new Chemin(this.getNodeOutboundPort(neighbour), numberOfHops + 1);
+				// TODO propagation
 		} 
 	}
 	
@@ -186,6 +192,7 @@ public class RoutingNode extends Node {
 	@Override
 	protected NodeOutboundPort connectionRouting(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("connectionRouting " + addr);
+		// Conection port CommunicationCI
 		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
@@ -193,12 +200,8 @@ public class RoutingNode extends Node {
 		//Connexion au RoutingNodeOutboundPort
 		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
 		routOutbound.publishPort();
-		try {
-			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
+		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+		
 		routingNodes.add(new Triplet<>(addr, nodeOutbound, routOutbound));
 		return nodeOutbound;
 	}
