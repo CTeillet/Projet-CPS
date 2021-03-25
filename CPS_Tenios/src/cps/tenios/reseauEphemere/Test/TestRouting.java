@@ -15,7 +15,7 @@ public class TestRouting extends AbstractCVM {
 	public static void main(String[] args) {
 		try {
 			TestRouting c = new TestRouting();
-			c.startStandardLifeCycle(60000L);
+			c.startStandardLifeCycle(6000L);
 			System.exit(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -38,6 +38,7 @@ public class TestRouting extends AbstractCVM {
 			this.doPortConnection(routingURI1, uriRouting1,  GestionnaireReseau.INBOUNDPORT_URI, RegistrationConnector.class.getCanonicalName());
 			this.doPortConnection(routingURI2, uriRouting2,  GestionnaireReseau.INBOUNDPORT_URI, RegistrationConnector.class.getCanonicalName());
 	
+			super.deploy();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

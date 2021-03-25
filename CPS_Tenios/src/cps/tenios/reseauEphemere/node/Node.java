@@ -116,15 +116,20 @@ public abstract class  Node extends AbstractComponent{
 			this.doPortDisconnection(node.getNode().getClientPortURI());
 		}
 		for(Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> node : routingNodes) {
+			logMessage("routing disconnect");
 			this.doPortDisconnection(node.getNode().getClientPortURI());
+			logMessage("disconnect nodePort");
 			this.doPortDisconnection(node.getRout().getClientPortURI());
+			logMessage("disconnect routPort");
 		}
+		logMessage("fin disconnect");
 		
 		super.finalise();
 	}
 
 	@Override
 	public synchronized void shutdown() throws ComponentShutdownException {
+		logMessage("shutdown");
 		try {
 			//Depublication des ports
 			this.nodeInboundPort.unpublishPort();
@@ -134,9 +139,13 @@ public abstract class  Node extends AbstractComponent{
 				node.getNode().unpublishPort();
 			}
 			for(Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> node : routingNodes) {
+				logMessage("routing unpublished");
 				node.getNode().unpublishPort();
+				logMessage("node");
 				node.getRout().unpublishPort();
+				logMessage("routing");
 			}
+			logMessage("fin for");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -221,12 +230,9 @@ public abstract class  Node extends AbstractComponent{
 //		//Connexion au RoutingNodeOutboundPort
 //		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
 //		routOutbound.publishPort();
-//		try {
-//			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
-//		}catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		logMessage("ICIC");
+//		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+//		
+//		logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
 		routingNodes.add(new Triplet<>(addr, nodeOutbound, null));
 		return nodeOutbound;
 	}

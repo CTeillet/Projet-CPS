@@ -79,7 +79,6 @@ public class GestionnaireReseau extends AbstractComponent {
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
 		tableNoeudTerminal.add(c);
-		logMessage("Register taille ensemble " + size());
 		return res;	
 	}
 	

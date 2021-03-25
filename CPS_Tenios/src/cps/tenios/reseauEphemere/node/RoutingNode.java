@@ -19,6 +19,7 @@ import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
+import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
 /**
  * Classe repr�sentant un noeud de routage
@@ -83,11 +84,15 @@ public class RoutingNode extends Node {
 	public int hasRouteFor(AddressI address) throws Exception {
 		if(address.isNetworkAddress()) {
 			if (path2Network != null) {
-				return -1;
+				return path2Network.getNumberOfHops();
 			}
-			return path2Network.getNumberOfHops();
+		} else {
+			Chemin chemin = routingTable.get(address);
+			if(chemin != null) {
+				return chemin.getNumberOfHops();
+			}
 		}
-		return routingTable.get(address).getNumberOfHops();
+		return -1;
 	}
 	
 	@Override
@@ -184,7 +189,7 @@ public class RoutingNode extends Node {
 		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
-		logMessage("LAAAAAAAAA");
+
 		//Connexion au RoutingNodeOutboundPort
 		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
 		routOutbound.publishPort();
@@ -193,7 +198,29 @@ public class RoutingNode extends Node {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+		logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
 		routingNodes.add(new Triplet<>(addr, nodeOutbound, routOutbound));
 		return nodeOutbound;
 	}
+	
+	private Set<RouteInfoI> getInfoVoisin() {
+		Set<RouteInfoI> voisins = new HashSet<>();
+		for(Entry<NodeAddressI, Chemin> v : routingTable.entrySet()) {
+			voisins.add(new RouteInfo(v.getKey(), v.getValue().getNumberOfHops()));
+		}
+		return voisins;
+	}
+
+	@Override
+	public synchronized void shutdown() throws ComponentShutdownException {
+		try {
+			this.routInbound.unpublishPort();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ComponentShutdownException(e);
+		}
+		super.shutdown();
+	}
+	
+	
 }
