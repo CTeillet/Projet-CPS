@@ -79,7 +79,7 @@ public abstract class  Node extends AbstractComponent{
 	 * @throws Exception s'il y a un probleme
 	 */
 	protected Node(String uri, int i, int j, double r) throws Exception {
-		super(100, 200);
+		super(4, 8);
 		REGISTRATION_URI = uri;
 		COMM_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		

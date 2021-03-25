@@ -29,15 +29,25 @@ public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI
 
 	@Override
 	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
-		this.getOwner().handleRequest( r-> { ((RoutingCI)r).updateRouting(neighbour, routes); return null;});
-		
+//		this.getOwner().handleRequest( r-> { ((RoutingCI)r).updateRouting(neighbour, routes); return null;});
+		this.getOwner().runTask( r ->{
+				try {
+					((RoutingCI) r).updateRouting(neighbour, routes);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+		});
 	}
 
 	@Override
 	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
-		
-		this.getOwner().handleRequest( r-> {((RoutingCI)r).updateAccessPoint(neighbour, numberOfHops); return null;});
-		
+		this.getOwner().runTask( r ->{
+			try {
+				((RoutingCI) r).updateAccessPoint(neighbour, numberOfHops);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+	});		
 	}
 
 }

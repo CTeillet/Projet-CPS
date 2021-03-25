@@ -37,6 +37,4 @@ public interface CommunicationCI extends OfferedCI, RequiredCI {
 	 * Permet de v�rifier si un noeud voisin est toujours vivant
 	 */
 	void ping() throws Exception;
-	
-	AddressI getAddress() throws Exception;
 }

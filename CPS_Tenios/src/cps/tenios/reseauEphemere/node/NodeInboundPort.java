@@ -21,7 +21,7 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 	 */
 	public NodeInboundPort(ComponentI owner) throws Exception {
 		super(CommunicationCI.class, owner);
-		assert owner instanceof Node;
+		assert owner.isOfferedInterface(CommunicationCI.class);
 	}
 	
 	/**
@@ -32,18 +32,18 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 	 */
 	public NodeInboundPort(String uri, ComponentI owner) throws Exception {
 		super(uri, CommunicationCI.class, owner);
-		assert owner instanceof Node;
+		assert owner.isOfferedInterface(CommunicationCI.class);
 	}
 
 	@Override
 	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
-		this.getOwner().handleRequest( c -> {((Node)c).connect(address, communicationInboundPortURI); return null;} );
+		this.getOwner().handleRequest( c -> {((CommunicationCI)c).connect(address, communicationInboundPortURI); return null;} );
 
 	}
 
 	@Override
 	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception {
-		this.getOwner().handleRequest( c -> {((Node)c).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);return null;});
+		this.getOwner().handleRequest( c -> {((CommunicationCI)c).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);return null;});
 
 
 	}
@@ -53,9 +53,8 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 		//this.getOwner().handleRequest( c -> {((Node)c).transmitMessage(m); return null;} );
 		this.getOwner().runTask(c->{
 			try {
-				((Node)c).transmitMessage(m);
+				((CommunicationCI)c).transmitMessage(m);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});
@@ -63,19 +62,12 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 
 	@Override
 	public int hasRouteFor(AddressI address)  throws Exception{
-		return this.getOwner().handleRequest( c -> ((Node)c).hasRouteFor(address));
+		return this.getOwner().handleRequest( c -> ((CommunicationCI)c).hasRouteFor(address));
 	}
 
 	@Override
 	public void ping()  throws Exception{
-		this.getOwner().handleRequest( c -> {((Node)c).ping(); return null;} );
+		this.getOwner().handleRequest( c -> {((CommunicationCI)c).ping(); return null;} );
 
 	}
-
-	@Override
-	public AddressI getAddress() throws Exception {
-		return this.getOwner().handleRequest( c -> ((Node)c).getAddr() );
-
-	}
-
 }
