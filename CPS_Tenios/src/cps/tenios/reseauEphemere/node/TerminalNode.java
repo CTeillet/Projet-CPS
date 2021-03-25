@@ -40,14 +40,17 @@ public class TerminalNode extends Node {
 			logMessage("voisin : " + c.getAddress());
 			NodeOutboundPort out;
 			if(c.isRouting()) {
+				logMessage("avant connection");
 				out = this.connectionRouting(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI()); // Probleme
 			}else {
 				out = this.connection(c.getAddress(),c.getCommunicationInboundURI());
 			}
+			logMessage("avant connect");
 			out.connect(this.addr, this.COMM_INBOUNDPORT_URI);
+			logMessage("apres connect");
 		}
 		
-		logMessage("1");
+		logMessage("2");
 		if(this.index==2) {
 			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
 			logMessage("J'envoie le message " + m.getContent());

@@ -80,7 +80,7 @@ public abstract class  Node extends AbstractComponent{
 	 * @throws Exception s'il y a un probleme
 	 */
 	protected Node(String uri, int i, int j, double r) throws Exception {
-		super(4, 8);
+		super(10, 15);
 		REGISTRATION_URI = uri;
 		COMM_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		
@@ -90,8 +90,8 @@ public abstract class  Node extends AbstractComponent{
 		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
 		// TODO a verifier
-		terminalNodes =  Collections.synchronizedList(new ArrayList<Pair<NodeAddressI,NodeOutboundPort>>());
-		routingNodes =  Collections.synchronizedList(new ArrayList<Triplet<NodeAddressI,NodeOutboundPort,RoutingOutboundPort>>());
+		terminalNodes = new ArrayList<Pair<NodeAddressI,NodeOutboundPort>>();
+		routingNodes = new ArrayList<Triplet<NodeAddressI,NodeOutboundPort,RoutingOutboundPort>>();
 		
 		this.toggleLogging();
 		this.toggleTracing();
@@ -168,6 +168,7 @@ public abstract class  Node extends AbstractComponent{
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, false, "", null));
 		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
 		this.connection(address, communicationInboundPortURI);
+		logMessage("fin connect");
 		
 	}
 	
@@ -198,18 +199,15 @@ public abstract class  Node extends AbstractComponent{
 	 * @throws Exception s'il y a un probleme
 	 */
 	protected NodeOutboundPort connection(NodeAddressI address, String communicationInboundPortURI) throws Exception {
-		logMessage("connect " + addr);
+		logMessage("connection " + addr);
 		assert this.addr != address;
 		//Connexion a l'uriInbound
 		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
 		nodeOutbound.publishPort();
-
-		try {
-			doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
+		doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
+		logMessage("avant add");
 		terminalNodes.add(new Pair<>(address, nodeOutbound));
+		logMessage("apres add");
 		return nodeOutbound;
 	}
 	
