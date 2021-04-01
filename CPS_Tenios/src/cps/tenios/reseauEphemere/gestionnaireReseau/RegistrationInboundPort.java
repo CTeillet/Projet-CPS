@@ -71,10 +71,13 @@ implements RegistrationCI {
 
 	@Override
 	public void unregister(NodeAddressI address) throws Exception {
-		this.getOwner().handleRequest( register -> 
-						{((GestionnaireReseau)register).unregister(address);
-						  return null;
-		});
+		this.getOwner().runTask( register -> {
+					try {
+						((GestionnaireReseau)register).unregister(address);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
 	}
 
 }

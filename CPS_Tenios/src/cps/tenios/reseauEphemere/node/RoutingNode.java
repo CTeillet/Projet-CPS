@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
+import cps.tenios.reseauEphemere.NetworkAddress;
 import cps.tenios.reseauEphemere.NodeConnector;
 import cps.tenios.reseauEphemere.RoutingConnector;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
@@ -176,6 +177,12 @@ public class RoutingNode extends Node {
 			path2Network = new Chemin(this.getNodeOutboundPort(neighbour), numberOfHops + 1);
 			// TODO propagation
 		} 
+	}
+	
+	private void propageUpdateAP() throws Exception {
+		for(Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> v : routingNodes) {
+			v.getRout().updateAccessPoint(this.getAddr(), path2Network.getNumberOfHops());
+		}
 	}
 	
 	@Override

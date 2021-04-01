@@ -44,10 +44,4 @@ public class Message implements MessageI {
 	public Serializable getContent() {
 		return content;
 	}
-	
-	public int aSupprimer() {
-		return gops;
-	}
-	
-
 }

@@ -8,7 +8,7 @@ import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
  * @author Tenios
  *
  */
-public class NodeAddress implements NodeAddressI {
+public class NodeAddress implements AddressI {
 	/**
 	 * Addresse
 	 */
