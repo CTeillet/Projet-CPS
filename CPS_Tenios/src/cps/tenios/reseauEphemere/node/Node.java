@@ -52,7 +52,7 @@ public abstract class  Node extends AbstractComponent{
 	/**
 	 * Adresse du noeud
 	 */
-	protected NodeAddressI addr;
+	protected AddressI addr;
 	
 	/**
 	 * Position du Noeud
@@ -348,7 +348,4 @@ public abstract class  Node extends AbstractComponent{
 		}
 		return null;
 	}
-	
-	
-	
 }
