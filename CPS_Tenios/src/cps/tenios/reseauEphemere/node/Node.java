@@ -317,7 +317,7 @@ public abstract class  Node extends AbstractComponent{
 	 * Permet d'avoir l'addresse d'un noeud
 	 * @return l'adresse d'un noeud
 	 */
-	public NodeAddressI getAddr() {
+	public AddressI getAddr() {
 		return addr;
 	}
 
