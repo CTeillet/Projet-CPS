@@ -58,7 +58,7 @@ public class AccessPointNode extends Node {
 			} else {
 				// ajout d'un voisin terminal
 				out = this.connection(c.getAddress(), c.getCommunicationInboundURI());
-				this.terminalNodes.add(new Pair<NodeAddressI, NodeOutboundPort>(c.getAddress(), out));
+				this.terminalNodes.add(new InfoTerminalN(c.getAddress(), out));
 			}
 			routingTable.put(c.getAddress(), new Chemin(out, 1));
 			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
@@ -140,7 +140,7 @@ public class AccessPointNode extends Node {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		routingNodes.add(new Triplet<>(addr, nodeOutbound, routOutbound));
+		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
 		return nodeOutbound;
 	}
 

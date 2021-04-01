@@ -67,8 +67,8 @@ public abstract class  Node extends AbstractComponent{
 	protected double range;
 	
 	// TODO : refair jav doc et voir si util
-	protected List<Pair<NodeAddressI, NodeOutboundPort>> terminalNodes;
-	protected List<Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort>> routingNodes;
+	protected List<InfoTerminalN> terminalNodes;
+	protected List<InfoRoutNode> routingNodes;
 	//protected Set<ConnectionInfo> voisin;
 	/**
 	 * Index du noeud
@@ -90,8 +90,8 @@ public abstract class  Node extends AbstractComponent{
 		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
 		// TODO a verifier
-		terminalNodes = new ArrayList<Pair<NodeAddressI,NodeOutboundPort>>();
-		routingNodes = new ArrayList<Triplet<NodeAddressI,NodeOutboundPort,RoutingOutboundPort>>();
+		terminalNodes = new ArrayList<InfoTerminalN>();
+		routingNodes = new ArrayList<InfoRoutNode>();
 		
 		this.toggleLogging();
 		this.toggleTracing();
@@ -113,10 +113,10 @@ public abstract class  Node extends AbstractComponent{
 		//Deconnexion des ports
 		this.doPortDisconnection(REGISTRATION_URI);
 
-		for(Pair<NodeAddressI, NodeOutboundPort> node : terminalNodes) {
+		for(InfoTerminalN node : terminalNodes) {
 			this.doPortDisconnection(node.getNode().getClientPortURI());
 		}
-		for(Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> node : routingNodes) {
+		for(InfoRoutNode node : routingNodes) {
 			logMessage("routing disconnect");
 			this.doPortDisconnection(node.getNode().getClientPortURI());
 			logMessage("disconnect nodePort");
@@ -136,10 +136,10 @@ public abstract class  Node extends AbstractComponent{
 			this.nodeInboundPort.unpublishPort();
 			//ports sortant
 			this.registrationOutboundPort.unpublishPort();
-			for(Pair<NodeAddressI, NodeOutboundPort> node : terminalNodes) {
+			for(InfoTerminalN node : terminalNodes) {
 				node.getNode().unpublishPort();
 			}
-			for(Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> node : routingNodes) {
+			for(InfoRoutNode node : routingNodes) {
 				logMessage("routing unpublished");
 				node.getNode().unpublishPort();
 				logMessage("node");
@@ -206,7 +206,7 @@ public abstract class  Node extends AbstractComponent{
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
 		logMessage("avant add");
-		terminalNodes.add(new Pair<>(address, nodeOutbound));
+		terminalNodes.add(new InfoTerminalN(address, nodeOutbound));
 		logMessage("apres add");
 		return nodeOutbound;
 	}
@@ -232,7 +232,7 @@ public abstract class  Node extends AbstractComponent{
 //		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
 //		
 //		logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
-		routingNodes.add(new Triplet<>(addr, nodeOutbound, null));
+		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, null));
 		return nodeOutbound;
 	}
 
@@ -261,7 +261,7 @@ public abstract class  Node extends AbstractComponent{
 		
 		int rout = -1, tmp; 
 		NodeOutboundPort next = null;
-		for (Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> n : routingNodes) {
+		for (InfoRoutNode n : routingNodes) {
 			tmp = n.getNode().hasRouteFor(m.getAddress());
 			if (rout == -1 || (tmp < rout && tmp != -1)) {
 				rout = tmp;
@@ -275,14 +275,14 @@ public abstract class  Node extends AbstractComponent{
 			
 		} else {
 			//inondation 
-			for (Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> n : routingNodes) {
-				logMessage("Je transfere � " + n.getLabel());
+			for (InfoRoutNode n : routingNodes) {
+				logMessage("Je transfere � " + n.getAdress());
 				n.getNode().transmitMessage(m);
 			}
 			
 			// TODO verfier faire pareil avec noeud Terminal 
-			for (Pair<NodeAddressI, NodeOutboundPort> n : terminalNodes) {
-				logMessage("Je transfere � " + n.getLabel());
+			for (InfoTerminalN n : terminalNodes) {
+				logMessage("Je transfere � " + n.getAddress());
 				n.getNode().transmitMessage(m);
 			}
 		}
@@ -327,13 +327,13 @@ public abstract class  Node extends AbstractComponent{
 	}
 	
 	protected NodeOutboundPort getNodeOutboundPort(NodeAddressI adrr) {
-		for(Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> node : routingNodes) {
-			if(node.getLabel().equals(adrr)) {
+		for(InfoRoutNode node : routingNodes) {
+			if(node.getAdress().equals(adrr)) {
 				return node.getNode();
 			}
 		}
-		for(Pair<NodeAddressI, NodeOutboundPort> node : terminalNodes) {
-			if(node.getLabel().equals(adrr)) {
+		for(InfoTerminalN node : terminalNodes) {
+			if(node.getAddress().equals(adrr)) {
 				return node.getNode();
 			}
 		}
@@ -341,8 +341,8 @@ public abstract class  Node extends AbstractComponent{
 	}
 	
 	protected RoutingOutboundPort getRoutingOutboundPort(NodeAddressI adrr) {
-		for(Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> node : routingNodes) {
-			if(node.getLabel().equals(adrr)) {
+		for(InfoRoutNode node : routingNodes) {
+			if(node.getAdress().equals(adrr)) {
 				return node.getRout();
 			}
 		}

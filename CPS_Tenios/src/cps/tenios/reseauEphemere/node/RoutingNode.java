@@ -165,8 +165,8 @@ public class RoutingNode extends Node {
 		for(Entry<NodeAddressI, Chemin>  t :routingTable.entrySet()) {
 			r.add(new RouteInfo(t.getKey(), t.getValue().getNumberOfHops()));
 		}
-		for(Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort>  rn : routingNodes) {
-			if(!rn.getLabel().equals(neighbour)) {
+		for(InfoRoutNode rn : routingNodes) {
+			if(!rn.getAdress().equals(neighbour)) {
 				rn.getRout().updateRouting(this.getAddr(), r);
 			}
 		}
@@ -180,7 +180,7 @@ public class RoutingNode extends Node {
 	}
 	
 	private void propageUpdateAP() throws Exception {
-		for(Triplet<NodeAddressI, NodeOutboundPort, RoutingOutboundPort> v : routingNodes) {
+		for(InfoRoutNode v : routingNodes) {
 			v.getRout().updateAccessPoint(this.getAddr(), path2Network.getNumberOfHops());
 		}
 	}
@@ -206,7 +206,7 @@ public class RoutingNode extends Node {
 			e.printStackTrace();
 		}
 		logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
-		routingNodes.add(new Triplet<>(addr, nodeOutbound, routOutbound));
+		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
 		return nodeOutbound;
 	}
 	
