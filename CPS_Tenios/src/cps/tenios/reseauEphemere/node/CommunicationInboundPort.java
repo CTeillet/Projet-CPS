@@ -7,7 +7,7 @@ import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
-public class NodeInboundPort extends AbstractInboundPort implements CommunicationCI {
+public class CommunicationInboundPort extends AbstractInboundPort implements CommunicationCI {
 	
 	/**
 	 *  Verison de s�rie de la classe
@@ -19,7 +19,7 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 	 * @param owner propri�taire du noeud
 	 * @throws Exception s'il y a un probleme
 	 */
-	public NodeInboundPort(ComponentI owner) throws Exception {
+	public CommunicationInboundPort(ComponentI owner) throws Exception {
 		super(CommunicationCI.class, owner);
 		assert owner.isOfferedInterface(CommunicationCI.class);
 	}
@@ -30,7 +30,7 @@ public class NodeInboundPort extends AbstractInboundPort implements Communicatio
 	 * @param owner propri�taire de classe
 	 * @throws Exception s'il y a un probleme
 	 */
-	public NodeInboundPort(String uri, ComponentI owner) throws Exception {
+	public CommunicationInboundPort(String uri, ComponentI owner) throws Exception {
 		super(uri, CommunicationCI.class, owner);
 		assert owner.isOfferedInterface(CommunicationCI.class);
 	}

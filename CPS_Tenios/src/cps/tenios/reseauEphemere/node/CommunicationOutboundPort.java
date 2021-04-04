@@ -7,7 +7,7 @@ import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
-public class NodeOutboundPort extends AbstractOutboundPort implements CommunicationCI {
+public class CommunicationOutboundPort extends AbstractOutboundPort implements CommunicationCI {
 	
 	/**
 	 * Verison de s�rie de la classe
@@ -19,7 +19,7 @@ public class NodeOutboundPort extends AbstractOutboundPort implements Communicat
 	 * @param owner propri�taire du port
 	 * @throws Exception s'il y a un probl�me
 	 */
-	public NodeOutboundPort(ComponentI owner) throws Exception {
+	public CommunicationOutboundPort(ComponentI owner) throws Exception {
 		super(CommunicationCI.class, owner);
 	}
 	
@@ -29,7 +29,7 @@ public class NodeOutboundPort extends AbstractOutboundPort implements Communicat
 	 * @param owner propri�taire du port 
 	 * @throws Exception s'il y a un probleme
 	 */
-	public NodeOutboundPort(String uri,ComponentI owner)
+	public CommunicationOutboundPort(String uri,ComponentI owner)
 			throws Exception {
 		super(uri, CommunicationCI.class, owner);
 		// TODO Auto-generated constructor stub

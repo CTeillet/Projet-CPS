@@ -14,7 +14,7 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
  * @author Tenios
  *
  */
-public class NodeRegistrationOutboundPort extends AbstractOutboundPort implements RegistrationCI {
+public class RegistrationOutboundPort extends AbstractOutboundPort implements RegistrationCI {
 
 	/**
 	 * Verison de s�rie de la classe
@@ -26,7 +26,7 @@ public class NodeRegistrationOutboundPort extends AbstractOutboundPort implement
 	 * @param owner propri�taire du port
 	 * @throws Exception s'il y a un  probleme
 	 */
-	public NodeRegistrationOutboundPort(ComponentI owner)
+	public RegistrationOutboundPort(ComponentI owner)
 			throws Exception {
 		super(RegistrationCI.class, owner);
 	}
@@ -37,7 +37,7 @@ public class NodeRegistrationOutboundPort extends AbstractOutboundPort implement
 	 * @param owner propri�taire du port
 	 * @throws Exception s'il y a un probleme
 	 */
-	public NodeRegistrationOutboundPort(String uri, ComponentI owner)
+	public RegistrationOutboundPort(String uri, ComponentI owner)
 			throws Exception {
 		super(uri, RegistrationCI.class, owner);
 		// TODO Auto-generated constructor stub

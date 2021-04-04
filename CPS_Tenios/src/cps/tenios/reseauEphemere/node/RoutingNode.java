@@ -57,18 +57,18 @@ public class RoutingNode extends Node {
 		
 		logMessage("Taille voisin " + voisin.size());
 		for(ConnectionInfo c : voisin) {
-			NodeOutboundPort out;
+			CommunicationOutboundPort out;
 			
 			// TODO faire ajout dans connection & connectionRouting 
 			
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
-				out = this.connectionRouting(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
+				out = this.addRoutingNeighbor(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
 				
 				// TODO updateRouting + update AcessPoint
 			} else {
 				// ajout d'un voisin terminal
-				out = this.connection(c.getAddress(), c.getCommunicationInboundURI());
+				out = this.addTerminalNeighbor(c.getAddress(), c.getCommunicationInboundURI());
 			}
 			routingTable.put(c.getAddress(), new Chemin(out, 1));
 			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, this.ROUTING_INBOUNDPORT_URI);
@@ -191,9 +191,9 @@ public class RoutingNode extends Node {
 	}
 	
 	@Override
-	protected NodeOutboundPort connectionRouting(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addRoutingNeighbor(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("connectionRouting " + addr);
-		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
+		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
 
@@ -229,5 +229,27 @@ public class RoutingNode extends Node {
 		super.shutdown();
 	}
 	
+
+	protected CommunicationOutboundPort getNodeOutboundPort(NodeAddressI adrr) {
+		for(InfoRoutNode node : routingNodes) {
+			if(node.getAdress().equals(adrr)) {
+				return node.getNode();
+			}
+		}
+		for(InfoTerminalN node : terminalNodes) {
+			if(node.getAddress().equals(adrr)) {
+				return node.getNode();
+			}
+		}
+		return null;
+	}
 	
+	protected RoutingOutboundPort getRoutingOutboundPort(NodeAddressI adrr) {
+		for(InfoRoutNode node : routingNodes) {
+			if(node.getAdress().equals(adrr)) {
+				return node.getRout();
+			}
+		}
+		return null;
+	}
 }

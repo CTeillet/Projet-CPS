@@ -5,10 +5,10 @@ import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 public class InfoRoutNode {
 
 	private NodeAddressI label;
-	private NodeOutboundPort node;
+	private CommunicationOutboundPort node;
 	private RoutingOutboundPort rout;
 
-	public InfoRoutNode(NodeAddressI label, NodeOutboundPort node, RoutingOutboundPort rout) {
+	public InfoRoutNode(NodeAddressI label, CommunicationOutboundPort node, RoutingOutboundPort rout) {
 		super();
 		this.label = label;
 		this.node = node;
@@ -19,7 +19,7 @@ public class InfoRoutNode {
 		return label;
 	}
 	
-	public NodeOutboundPort getNode() {
+	public CommunicationOutboundPort getNode() {
 		return node;
 	}
 	
@@ -27,7 +27,7 @@ public class InfoRoutNode {
 		this.label = label;
 	}
 	
-	public void setNode(NodeOutboundPort node) {
+	public void setNode(CommunicationOutboundPort node) {
 		this.node = node;
 	}
 

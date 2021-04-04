@@ -3,19 +3,19 @@ package cps.tenios.reseauEphemere.node;
 public class Chemin {
 
 	
-	private NodeOutboundPort next;
+	private CommunicationOutboundPort next;
 	private int numberOfHops;
 	
-	public Chemin(NodeOutboundPort next, int numberOfHops) {
+	public Chemin(CommunicationOutboundPort next, int numberOfHops) {
 		this.next = next;
 		this.numberOfHops = numberOfHops;
 	}
 
-	public NodeOutboundPort getNext() {
+	public CommunicationOutboundPort getNext() {
 		return next;
 	}
 
-	public void setNext(NodeOutboundPort next) {
+	public void setNext(CommunicationOutboundPort next) {
 		this.next = next;
 	}
 

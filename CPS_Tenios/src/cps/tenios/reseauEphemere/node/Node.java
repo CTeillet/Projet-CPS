@@ -44,7 +44,7 @@ public abstract class  Node extends AbstractComponent{
 	/**
 	 * Port entrants pour les communication avec les Noeuds
 	 */
-	protected NodeInboundPort nodeInboundPort;
+	protected CommunicationInboundPort nodeInboundPort;
 	/**
 	 * Listes des ports sortants vers les autres Noeuds
 	 */
@@ -62,7 +62,7 @@ public abstract class  Node extends AbstractComponent{
 	/**
 	 * Port sortant pour communiquer avec le gestionnaire Reseau
 	 */
-	protected NodeRegistrationOutboundPort registrationOutboundPort;
+	protected RegistrationOutboundPort registrationOutboundPort;
 	
 	protected double range;
 	
@@ -84,10 +84,10 @@ public abstract class  Node extends AbstractComponent{
 		REGISTRATION_URI = uri;
 		COMM_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		
-		nodeInboundPort = new NodeInboundPort(COMM_INBOUNDPORT_URI,this);
+		nodeInboundPort = new CommunicationInboundPort(COMM_INBOUNDPORT_URI,this);
 		nodeInboundPort.publishPort();
 		
-		registrationOutboundPort = new NodeRegistrationOutboundPort(REGISTRATION_URI, this);
+		registrationOutboundPort = new RegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
 		// TODO a verifier
 		terminalNodes = new ArrayList<InfoTerminalN>();
@@ -97,7 +97,7 @@ public abstract class  Node extends AbstractComponent{
 		this.toggleTracing();
 		
 		this.range=r;
-		addr = new NodeAddress(cmp++);
+		addr = (AddressI) new NodeAddress(cmp++);
 		pos = new Position(i, j);
 	}
 	
@@ -167,7 +167,7 @@ public abstract class  Node extends AbstractComponent{
 		
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, false, "", null));
 		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
-		this.connection(address, communicationInboundPortURI);
+		this.addTerminalNeighbor(address, communicationInboundPortURI);
 		logMessage("fin connect");
 		
 	}
@@ -189,7 +189,7 @@ public abstract class  Node extends AbstractComponent{
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, null));
 		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
 		
-		this.connectionRouting(address, communicationInboundPortURI, routingInboundPortURI);
+		this.addRoutingNeighbor(address, communicationInboundPortURI, routingInboundPortURI);
 	}
 	
 	/**
@@ -198,11 +198,11 @@ public abstract class  Node extends AbstractComponent{
 	 * @return le port de sortie du composant
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected NodeOutboundPort connection(NodeAddressI address, String communicationInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addTerminalNeighbor(NodeAddressI address, String communicationInboundPortURI) throws Exception {
 		logMessage("connection " + addr);
 		assert this.addr != address;
 		//Connexion a l'uriInbound
-		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
+		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
 		logMessage("avant add");
@@ -220,9 +220,9 @@ public abstract class  Node extends AbstractComponent{
 	 * @return the newly created CommunicationouTboundPort
 	 * @throws Exception If there is a problem
 	 */
-	protected NodeOutboundPort connectionRouting(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addRoutingNeighbor(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("connectionRouting " + addr);
-		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
+		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
 		
@@ -260,7 +260,7 @@ public abstract class  Node extends AbstractComponent{
 		m.decrementsGops();
 		
 		int rout = -1, tmp; 
-		NodeOutboundPort next = null;
+		CommunicationOutboundPort next = null;
 		for (InfoRoutNode n : routingNodes) {
 			tmp = n.getNode().hasRouteFor(m.getAddress());
 			if (rout == -1 || (tmp < rout && tmp != -1)) {
@@ -274,20 +274,18 @@ public abstract class  Node extends AbstractComponent{
 			return;
 			
 		} else {
-			//inondation 
-			for (InfoRoutNode n : routingNodes) {
-				logMessage("Je transfere � " + n.getAdress());
-				n.getNode().transmitMessage(m);
-			}
-			
-			// TODO verfier faire pareil avec noeud Terminal 
-			for (InfoTerminalN n : terminalNodes) {
-				logMessage("Je transfere � " + n.getAddress());
-				n.getNode().transmitMessage(m);
-			}
+			inondation(m);
 		}
-		
 	}
+
+	protected void inondation(MessageI m) throws Exception {
+		//inondation 
+		for (InfoRoutNode n : routingNodes) {
+			logMessage("Je transfere � " + n.getAdress());
+			n.getNode().transmitMessage(m);
+		}
+	}
+	
 	
 	/**
 	 * Verifie qu'il existe un chemin entre nous et l'adresse
@@ -296,6 +294,9 @@ public abstract class  Node extends AbstractComponent{
 	 * @throws Exception s'il y a un probleme
 	 */
 	public int hasRouteFor(AddressI address) throws Exception{
+		if(address.equals(this.addr)) {
+			return 0;
+		}
 		return -1;
 	}
 	
@@ -324,28 +325,5 @@ public abstract class  Node extends AbstractComponent{
 	@Override
 	public String toString() {
 		return "Node [index=" + index + "]";
-	}
-	
-	protected NodeOutboundPort getNodeOutboundPort(NodeAddressI adrr) {
-		for(InfoRoutNode node : routingNodes) {
-			if(node.getAdress().equals(adrr)) {
-				return node.getNode();
-			}
-		}
-		for(InfoTerminalN node : terminalNodes) {
-			if(node.getAddress().equals(adrr)) {
-				return node.getNode();
-			}
-		}
-		return null;
-	}
-	
-	protected RoutingOutboundPort getRoutingOutboundPort(NodeAddressI adrr) {
-		for(InfoRoutNode node : routingNodes) {
-			if(node.getAdress().equals(adrr)) {
-				return node.getRout();
-			}
-		}
-		return null;
 	}
 }

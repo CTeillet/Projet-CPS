@@ -38,12 +38,12 @@ public class TerminalNode extends Node {
 		//Connexion a ses voisins
 		for(ConnectionInfo c : voisin) {
 			logMessage("voisin : " + c.getAddress());
-			NodeOutboundPort out;
+			CommunicationOutboundPort out;
 			if(c.isRouting()) {
 				logMessage("avant connection");
-				out = this.connectionRouting(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI()); // Probleme
+				out = this.addRoutingNeighbor(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI()); // Probleme
 			}else {
-				out = this.connection(c.getAddress(),c.getCommunicationInboundURI());
+				out = this.addTerminalNeighbor(c.getAddress(),c.getCommunicationInboundURI());
 			}
 			logMessage("avant connect");
 			out.connect(this.addr, this.COMM_INBOUNDPORT_URI);

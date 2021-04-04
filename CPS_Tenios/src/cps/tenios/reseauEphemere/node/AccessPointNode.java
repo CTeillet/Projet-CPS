@@ -47,17 +47,17 @@ public class AccessPointNode extends Node {
 		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, 100.0, "");
 		
 		for(ConnectionInfo c : voisin) {
-			NodeOutboundPort out;
+			CommunicationOutboundPort out;
 			
 			// TODO faire ajout dans connection & connectionRouting 
 			
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
-				out = this.connectionRouting(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
+				out = this.addRoutingNeighbor(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
 				// TODO updateRouting + update AcessPoint
 			} else {
 				// ajout d'un voisin terminal
-				out = this.connection(c.getAddress(), c.getCommunicationInboundURI());
+				out = this.addTerminalNeighbor(c.getAddress(), c.getCommunicationInboundURI());
 				this.terminalNodes.add(new InfoTerminalN(c.getAddress(), out));
 			}
 			routingTable.put(c.getAddress(), new Chemin(out, 1));
@@ -126,9 +126,9 @@ public class AccessPointNode extends Node {
 	}
 	
 	@Override
-	protected NodeOutboundPort connectionRouting(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addRoutingNeighbor(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("connectionRouting " + addr);
-		NodeOutboundPort nodeOutbound = new NodeOutboundPort(this);
+		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
 		
