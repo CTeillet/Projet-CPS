@@ -19,6 +19,7 @@ public interface RegistrationCI extends RequiredCI, OfferedCI {
 	 * @param initialPosition la position initial du noeud
 	 * @param initialRange la port�e du noeud
 	 * @return l'ensemble de noeud �tant voisin du noeud ayant appel�
+	 * @throws Exception en cas de probleme
 	 */
 	Set<ConnectionInfo> registerTerminalNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception;
@@ -31,6 +32,7 @@ public interface RegistrationCI extends RequiredCI, OfferedCI {
 	 * @param initialRange la port�e du noeud
 	 * @param routingInboundPortURI le port de routage du noeud
 	 * @return l'ensemble de noeud �tant voisin du noeud ayant appel�
+	 * @throws Exception en cas de probleme
 	 */
 	Set<ConnectionInfo> registerAccessPoint(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception;
@@ -43,6 +45,7 @@ public interface RegistrationCI extends RequiredCI, OfferedCI {
 	 * @param initialRange la port�e du noeud
 	 * @param routingInboundPortURI le port de routage du noeud
 	 * @return l'ensemble de noeud �tant voisin du noeud ayant appel�
+	 * @throws Exception en cas de probleme
 	 */
 	Set<ConnectionInfo> registerRoutingNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception;
@@ -50,6 +53,7 @@ public interface RegistrationCI extends RequiredCI, OfferedCI {
 	/**
 	 * Permet de se d�senregistrer du r�seau
 	 * @param address
+	 * @throws Exception en cas de probleme
 	 */
 	void unregister (AddressI address) throws Exception;
 

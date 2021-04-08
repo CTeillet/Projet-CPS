@@ -28,7 +28,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 public class AccessPointNode extends Node {
 	
 	/**
-	 * Table de routage contenant les différents destinataires
+	 * Table de routage contenant les diffï¿½rents destinataires
 	 */
 	protected HashMap<AddressI, Chemin> routingTable;
 	/**
@@ -169,9 +169,9 @@ public class AccessPointNode extends Node {
 	}
 	
 	/**
-	 * Permet d'obtenir un outboundPort qui correspond à l'addresse donnée 
-	 * @param adrr adresse donnée ou l'on cherche le port
-	 * @return le poert correspondant à l'adresse donnée
+	 * Permet d'obtenir un outboundPort qui correspond ï¿½ l'addresse donnï¿½e 
+	 * @param adrr adresse donnï¿½e ou l'on cherche le port
+	 * @return le poert correspondant ï¿½ l'adresse donnï¿½e
 	 */
 	protected CommunicationOutboundPort getNodeOutboundPort(AddressI adrr) {
 		for(InfoRoutNode node : routingNodes) {
@@ -191,6 +191,7 @@ public class AccessPointNode extends Node {
 	 * Permet de mettre a jour la route la plus optimale vers la destination et met a jour les noeuds voisins en cas de changement
 	 * @param neighbour voisin ayant envoyÃ© les information de stable de routage
 	 * @param routes routes vers les adresses
+	 * @throws Exception en cas de probleme
 	 */
 	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 		boolean hasChanged = false;
@@ -215,15 +216,15 @@ public class AccessPointNode extends Node {
 	}
 	
 	/**
-	 * Permet de mettre à jour l'accès au réseau exterieur
-	 * @param neighbour Adresse du voisin connecté au reseau exterieur
+	 * Permet de mettre ï¿½ jour l'accï¿½s au rï¿½seau exterieur
+	 * @param neighbour Adresse du voisin connectï¿½ au reseau exterieur
 	 * @param numberOfHops nombre de saut pour y acceder
 	 * @throws Exception s'il y a un probleme
 	 */
 	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {}
 	
 	/**
-	 * Permet de propager la mise à jour des tables de routages
+	 * Permet de propager la mise ï¿½ jour des tables de routages
 	 * @param neighbour le voisin vers lequel propager
 	 * @throws Exception s'il y a un probleme
 	 */

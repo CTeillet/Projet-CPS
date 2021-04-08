@@ -21,7 +21,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
 /**
- * Classe repr�sentant un noeud de routage
+ * Classe representant un noeud de routage
  * @author Tenios
  *
  */
@@ -29,9 +29,21 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class, RoutingCI.class})
 public class RoutingNode extends Node {
 
+	/**
+	 * Chemin vers le reseau classique
+	 */
 	protected Chemin path2Network;
+	/**
+	 * Table de routage
+	 */
 	protected Map<AddressI, Chemin> routingTable;
+	/**
+	 * URI du port de Routage entrant
+	 */
 	protected final String ROUTING_INBOUNDPORT_URI;
+	/**
+	 * Port de routage entrants
+	 */
 	protected RoutingInboundPort routInbound;
 	
 	/**
@@ -138,6 +150,7 @@ public class RoutingNode extends Node {
 	 * Permet de mettre a jour la route la plus optimale vers la destination et met a jour les noeuds voisins en cas de changement
 	 * @param neighbour voisin ayant envoyé les information de stable de routage
 	 * @param routes routes vers les adresses
+	 * @throws Exception en cas de probleme
 	 */
 	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 		boolean hasChanged = false; // un changement a eu lieu
@@ -185,6 +198,7 @@ public class RoutingNode extends Node {
 	 * Permet de mettre a jour la route la plus courte vers un point d'acces
 	 * @param neighbour voisins ayant envoyer les information vers le point d'acces
 	 * @param numberOfHops nombre de saut requis pour y arriver
+	 * @throws Exception en cas de probleme
 	 */
 	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
 		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {

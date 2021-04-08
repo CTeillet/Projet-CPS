@@ -11,7 +11,7 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 
 /**
- * Classe repr�sentant un noeud terminal
+ * Classe representant un noeud terminal
  * @author Tenios
  *
  */

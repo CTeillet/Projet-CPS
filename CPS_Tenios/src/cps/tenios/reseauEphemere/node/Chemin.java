@@ -51,8 +51,8 @@ public class Chemin {
 	}
 
 	/**
-	 * Permet de cahnger le nombre de saut
-	 * @param numberOfHops
+	 * Permet de changer le nombre de saut
+	 * @param numberOfHops Nouveau nommbre de saut
 	 */
 	public void setNumberOfHops(int numberOfHops) {
 		this.numberOfHops = numberOfHops;

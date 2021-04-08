@@ -63,10 +63,16 @@ public abstract class  Node extends AbstractComponent{
 	
 	protected double range;
 	
-	// TODO : refair jav doc et voir si util
+	// TODO :  voir si necessaire
+	/**
+	 * List des noeud terminaux
+	 */
 	protected List<InfoTerminalN> terminalNodes;
+	/**
+	 * List des noeud pouvant router des messages
+	 */
 	protected List<InfoRoutNode> routingNodes;
-	//protected Set<ConnectionInfo> voisin;
+	
 	/**
 	 * Index du noeud
 	 */
@@ -97,7 +103,11 @@ public abstract class  Node extends AbstractComponent{
 		addr = (AddressI) new NodeAddress(cmp++);
 		pos = new Position(i, j);
 	}
-	
+	/**
+	 * Constructeur de node qui lui attribue des coordonnee et et un rayon de facon aleatoire
+	 * @param uri
+	 * @throws Exception
+	 */
 	protected Node(String uri) throws Exception {
 		this(uri, (new Random()).nextInt(20), (new Random()).nextInt(20), (new Random()).nextDouble());
 	}
@@ -168,8 +178,6 @@ public abstract class  Node extends AbstractComponent{
 		logMessage("fin connect");
 		
 	}
-	
-	
 
 	/**
 	 * Permet de connecter un noeud de routage
@@ -240,7 +248,7 @@ public abstract class  Node extends AbstractComponent{
 	/**
 	 * Permet de recevoir un message. S'il nous est attribu� ou qu'il n'a plus de saut, alors on arrete de le transmettre
 	 * sinon on le transmet � nos voisins
-	 * @param m le message que l'on veut transmettre
+	 * @param msg le message que l'on veut transmettre
 	 * @throws Exception s'il y a un probleme
 	 */
 	public void transmitMessage(MessageI msg) throws Exception{

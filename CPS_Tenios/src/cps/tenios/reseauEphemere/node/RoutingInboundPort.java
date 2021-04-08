@@ -9,6 +9,11 @@ import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
+/**
+ * 
+ * @author Tenios
+ *
+ */
 public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI {
 
 	/**
