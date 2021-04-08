@@ -31,7 +31,6 @@ public class CommunicationOutboundPort extends AbstractOutboundPort implements C
 	public CommunicationOutboundPort(String uri,ComponentI owner)
 			throws Exception {
 		super(uri, CommunicationCI.class, owner);
-		// TODO Auto-generated constructor stub
 	}
 	
 	

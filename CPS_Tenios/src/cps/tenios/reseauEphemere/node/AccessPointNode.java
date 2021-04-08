@@ -27,8 +27,13 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class, RoutingCI.class})
 public class AccessPointNode extends Node {
 	
-	// TODO java doc
+	/**
+	 * Table de routage contenant les différents destinataires
+	 */
 	protected HashMap<AddressI, Chemin> routingTable;
+	/**
+	 * URI du routing inbound port
+	 */
 	protected final String ROUTING_INBOUNDPORT_URI;
 	
 	
@@ -151,6 +156,10 @@ public class AccessPointNode extends Node {
 		return nodeOutbound;
 	}
 	
+	/**
+	 * Permet d'obtenir la liste des voisins
+	 * @return la liste des voisins
+	 */
 	private Set<RouteInfoI> getInfoVoisin() {
 		Set<RouteInfoI> voisins = new HashSet<>();
 		for(Entry<AddressI, Chemin> v : routingTable.entrySet()) {
@@ -159,6 +168,11 @@ public class AccessPointNode extends Node {
 		return voisins;
 	}
 	
+	/**
+	 * Permet d'obtenir un outboundPort qui correspond à l'addresse donnée 
+	 * @param adrr adresse donnée ou l'on cherche le port
+	 * @return le poert correspondant à l'adresse donnée
+	 */
 	protected CommunicationOutboundPort getNodeOutboundPort(AddressI adrr) {
 		for(InfoRoutNode node : routingNodes) {
 			if(node.getAdress().equals(adrr)) {
@@ -200,9 +214,19 @@ public class AccessPointNode extends Node {
 		}
 	}
 	
-	// TODO
+	/**
+	 * Permet de mettre à jour l'accès au réseau exterieur
+	 * @param neighbour Adresse du voisin connecté au reseau exterieur
+	 * @param numberOfHops nombre de saut pour y acceder
+	 * @throws Exception s'il y a un probleme
+	 */
 	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {}
 	
+	/**
+	 * Permet de propager la mise à jour des tables de routages
+	 * @param neighbour le voisin vers lequel propager
+	 * @throws Exception s'il y a un probleme
+	 */
 	private void propageUpdate(AddressI neighbour) throws Exception{
 		Set<RouteInfoI> r = new HashSet<RouteInfoI>();
 		
