@@ -3,7 +3,6 @@ package cps.tenios.reseauEphemere.node;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
@@ -38,13 +37,13 @@ public class CommunicationOutboundPort extends AbstractOutboundPort implements C
 	
 
 	@Override
-	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
+	public void connect(AddressI address, String communicationInboundPortURI) throws Exception {
 		((CommunicationCI)this.getConnector()).connect(address, communicationInboundPortURI);
 
 	}
 
 	@Override
-	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception  {
+	public void connectRouting(AddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception  {
 		((CommunicationCI)this.getConnector()).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);
 	}
 

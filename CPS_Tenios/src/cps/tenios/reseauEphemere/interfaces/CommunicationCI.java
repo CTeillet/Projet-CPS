@@ -14,14 +14,14 @@ public interface CommunicationCI extends OfferedCI, RequiredCI {
 	 * @param address adresse du noeud avec lequelle se connecter
 	 * @param communicationInboundPortURI port par lequelle la communication passe
 	 */
-	void connect (NodeAddressI address, String communicationInboundPortURI) throws Exception;
+	void connect (AddressI address, String communicationInboundPortURI) throws Exception;
 	/**
 	 * Permet de connecter un noeud de routage avec nous
 	 * @param address adresse du noeud avec lequelle se connecter
 	 * @param communicationInboundPortURI port par lequelle la communication passe
 	 * @param routingInboundPortURI port de routage du noeud
 	 */
-	void connectRouting (NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception;
+	void connectRouting (AddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception;
 	/**
 	 * Permet de transmettre un message vers son destinataire
 	 * @param m le message � transmettre

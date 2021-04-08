@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.PositionI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.AbstractComponent;
@@ -65,7 +65,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	 * @param initialRange Porte de communication du noeud
 	 * @return ensemble des voisins accessibles
 	 */
-	public synchronized Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
+	public synchronized Set<ConnectionInfo> registerTerminalNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange){
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, false, "", initialPosition);
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
@@ -91,7 +91,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	 * @param routingInboundPortURI URI du port entrant de routage
 	 * @return ensemble des voisins accessible
 	 */
-	public synchronized Set<ConnectionInfo> registerAccessPoint(NodeAddressI address, String communicationInboundPortURI,
+	public synchronized Set<ConnectionInfo> registerAccessPoint(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI){
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, initialPosition);
@@ -115,7 +115,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	 * @param routingInboundPortURI URI du port entrant de routage
 	 * @return ensemble des voisins accessible
 	 */
-	public synchronized Set<ConnectionInfo> registerRoutingNode(NodeAddressI address, String communicationInboundPortURI,
+	public synchronized Set<ConnectionInfo> registerRoutingNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI){
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, initialPosition);
@@ -138,7 +138,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	 * @param address Adresse du noeud a retiré
 	 * @throws Exception si une exception est throw
 	 */
-	public synchronized void unregister (NodeAddressI address) throws Exception{
+	public synchronized void unregister (AddressI address) throws Exception{
 		tableNoeudAccess.removeIf(c-> c.getAddress()==address);
 		tableNoeudRouting.removeIf(c-> c.getAddress()==address);
 		tableNoeudTerminal.removeIf(c-> c.getAddress()==address);

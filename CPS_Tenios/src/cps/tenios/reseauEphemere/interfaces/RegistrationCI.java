@@ -6,52 +6,52 @@ import cps.tenios.reseauEphemere.ConnectionInfo;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 /**
- * Permet de représenter un gestionnaire de réseau
+ * Permet de reprï¿½senter un gestionnaire de rï¿½seau
  * @author Tenios
  *
  */
 public interface RegistrationCI extends RequiredCI, OfferedCI {
 
 	/**
-	 * Permet d'enregistrer un noeud terminal dans le réseau
+	 * Permet d'enregistrer un noeud terminal dans le rï¿½seau
 	 * @param address l'adresse du noeud
 	 * @param communicationInboundPortURI le port de communication du noeud
 	 * @param initialPosition la position initial du noeud
-	 * @param initialRange la portée du noeud
-	 * @return l'ensemble de noeud étant voisin du noeud ayant appelé
+	 * @param initialRange la portï¿½e du noeud
+	 * @return l'ensemble de noeud ï¿½tant voisin du noeud ayant appelï¿½
 	 */
-	Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
+	Set<ConnectionInfo> registerTerminalNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception;
 	
 	/**
-	 * Permet d'enregistrer un noeud point d'accès dans le réseau
+	 * Permet d'enregistrer un noeud point d'accï¿½s dans le rï¿½seau
 	 * @param address l'adresse du noeud
 	 * @param communicationInboundPortURI le port de communication du noeud
 	 * @param initialPosition la position initial du noeud
-	 * @param initialRange la portée du noeud
+	 * @param initialRange la portï¿½e du noeud
 	 * @param routingInboundPortURI le port de routage du noeud
-	 * @return l'ensemble de noeud étant voisin du noeud ayant appelé
+	 * @return l'ensemble de noeud ï¿½tant voisin du noeud ayant appelï¿½
 	 */
-	Set<ConnectionInfo> registerAccessPoint(NodeAddressI address, String communicationInboundPortURI,
+	Set<ConnectionInfo> registerAccessPoint(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception;
 	
 	/**
-	 * Permet d'enregistrer un noeud de routage dans le réseau
+	 * Permet d'enregistrer un noeud de routage dans le rï¿½seau
 	 * @param address l'adresse du noeud
 	 * @param communicationInboundPortURI le port de communication du noeud
 	 * @param initialPosition la position initial du noeud
-	 * @param initialRange la portée du noeud
+	 * @param initialRange la portï¿½e du noeud
 	 * @param routingInboundPortURI le port de routage du noeud
-	 * @return l'ensemble de noeud étant voisin du noeud ayant appelé
+	 * @return l'ensemble de noeud ï¿½tant voisin du noeud ayant appelï¿½
 	 */
-	Set<ConnectionInfo> registerRoutingNode(NodeAddressI address, String communicationInboundPortURI,
+	Set<ConnectionInfo> registerRoutingNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception;
 	
 	/**
-	 * Permet de se désenregistrer du réseau
+	 * Permet de se dï¿½senregistrer du rï¿½seau
 	 * @param address
 	 */
-	void unregister (NodeAddressI address) throws Exception;
+	void unregister (AddressI address) throws Exception;
 
 	
 }

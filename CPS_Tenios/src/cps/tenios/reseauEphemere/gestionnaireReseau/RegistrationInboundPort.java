@@ -3,7 +3,7 @@ package cps.tenios.reseauEphemere.gestionnaireReseau;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.PositionI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.ComponentI;
@@ -48,7 +48,7 @@ implements RegistrationCI {
 	}
 	
 	@Override
-	public Set<ConnectionInfo> registerTerminalNode(NodeAddressI address, String communicationInboundPortURI,
+	public Set<ConnectionInfo> registerTerminalNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception {
 		return this.getOwner().handleRequest(
 				register -> ((GestionnaireReseau)register).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange));
@@ -56,21 +56,21 @@ implements RegistrationCI {
 	}
 
 	@Override
-	public Set<ConnectionInfo> registerAccessPoint(NodeAddressI address, String communicationInboundPortURI,
+	public Set<ConnectionInfo> registerAccessPoint(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
 		return this.getOwner().handleRequest(
 				register -> ((GestionnaireReseau)register).registerAccessPoint(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
 	}
 
 	@Override
-	public Set<ConnectionInfo> registerRoutingNode(NodeAddressI address, String communicationInboundPortURI,
+	public Set<ConnectionInfo> registerRoutingNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
 		return this.getOwner().handleRequest(
 				register -> ((GestionnaireReseau)register).registerRoutingNode(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
 	}
 
 	@Override
-	public void unregister(NodeAddressI address) throws Exception {
+	public void unregister(AddressI address) throws Exception {
 		this.getOwner().runTask( register -> {
 					try {
 						((GestionnaireReseau)register).unregister(address);

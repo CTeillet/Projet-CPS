@@ -13,7 +13,7 @@ import cps.tenios.reseauEphemere.RoutingConnector;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
@@ -32,7 +32,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 public class RoutingNode extends Node {
 
 	protected Chemin path2Network;
-	protected Map<NodeAddressI, Chemin> routingTable;
+	protected Map<AddressI, Chemin> routingTable;
 	protected final String ROUTING_INBOUNDPORT_URI;
 	protected RoutingInboundPort routInbound;
 	/**
@@ -42,7 +42,7 @@ public class RoutingNode extends Node {
 	 */
 	protected RoutingNode(String uri, int i, int j, double r) throws Exception {
 		super(uri, i, j, r);
-		routingTable = new HashMap<NodeAddressI, Chemin>();
+		routingTable = new HashMap<AddressI, Chemin>();
 		path2Network = null;
 		ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		routInbound = new RoutingInboundPort(ROUTING_INBOUNDPORT_URI, this);
@@ -137,7 +137,7 @@ public class RoutingNode extends Node {
 	}
 	
 	
-	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
+	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 		boolean hasChanged = false;
 		for(RouteInfoI ri : routes) {
 			if (ri.getDestination().isNodeAddress()) {
@@ -145,7 +145,7 @@ public class RoutingNode extends Node {
 				//Si pas de route vers address => creation d'un nouveau chemin
 				if(tmp == null) {
 					hasChanged = true;
-					routingTable.put( (NodeAddressI)ri.getDestination(), new Chemin(this.getNodeOutboundPort(neighbour), ri.getNumberOfHops()));
+					routingTable.put( (AddressI)ri.getDestination(), new Chemin(this.getNodeOutboundPort(neighbour), ri.getNumberOfHops()));
 				// Si meilleur route => Maj
 				} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
 					hasChanged = true;
@@ -159,10 +159,10 @@ public class RoutingNode extends Node {
 		}
 	}
 	
-	private void propageUpdate(NodeAddressI neighbour) throws Exception{
+	private void propageUpdate(AddressI neighbour) throws Exception{
 		Set<RouteInfoI> r = new HashSet<RouteInfoI>();
 		
-		for(Entry<NodeAddressI, Chemin>  t :routingTable.entrySet()) {
+		for(Entry<AddressI, Chemin>  t :routingTable.entrySet()) {
 			r.add(new RouteInfo(t.getKey(), t.getValue().getNumberOfHops()));
 		}
 		for(InfoRoutNode rn : routingNodes) {
@@ -172,7 +172,7 @@ public class RoutingNode extends Node {
 		}
 	}
 
-	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
+	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
 		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
 			path2Network = new Chemin(this.getNodeOutboundPort(neighbour), numberOfHops + 1);
 			// TODO propagation
@@ -191,7 +191,7 @@ public class RoutingNode extends Node {
 	}
 	
 	@Override
-	protected CommunicationOutboundPort addRoutingNeighbor(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addRoutingNeighbor(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("connectionRouting " + addr);
 		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
@@ -212,7 +212,7 @@ public class RoutingNode extends Node {
 	
 	private Set<RouteInfoI> getInfoVoisin() {
 		Set<RouteInfoI> voisins = new HashSet<>();
-		for(Entry<NodeAddressI, Chemin> v : routingTable.entrySet()) {
+		for(Entry<AddressI, Chemin> v : routingTable.entrySet()) {
 			voisins.add(new RouteInfo(v.getKey(), v.getValue().getNumberOfHops()));
 		}
 		return voisins;
@@ -230,7 +230,7 @@ public class RoutingNode extends Node {
 	}
 	
 
-	protected CommunicationOutboundPort getNodeOutboundPort(NodeAddressI adrr) {
+	protected CommunicationOutboundPort getNodeOutboundPort(AddressI adrr) {
 		for(InfoRoutNode node : routingNodes) {
 			if(node.getAdress().equals(adrr)) {
 				return node.getNode();
@@ -244,7 +244,7 @@ public class RoutingNode extends Node {
 		return null;
 	}
 	
-	protected RoutingOutboundPort getRoutingOutboundPort(NodeAddressI adrr) {
+	protected RoutingOutboundPort getRoutingOutboundPort(AddressI adrr) {
 		for(InfoRoutNode node : routingNodes) {
 			if(node.getAdress().equals(adrr)) {
 				return node.getRout();

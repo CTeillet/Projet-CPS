@@ -2,7 +2,7 @@ package cps.tenios.reseauEphemere.node;
 
 import java.util.Set;
 
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
@@ -28,7 +28,7 @@ public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI
 	}
 
 	@Override
-	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
+	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 //		this.getOwner().handleRequest( r-> { ((RoutingCI)r).updateRouting(neighbour, routes); return null;});
 		this.getOwner().runTask( r ->{
 				try {
@@ -40,7 +40,7 @@ public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI
 	}
 
 	@Override
-	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
+	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
 		this.getOwner().runTask( r ->{
 			try {
 				((RoutingCI) r).updateAccessPoint(neighbour, numberOfHops);

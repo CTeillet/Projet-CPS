@@ -12,16 +12,16 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  */
 public interface RoutingCI extends OfferedCI, RequiredCI{
 	/**
-	 * Permet de mettre à jour la route la plus optimale vers le 
+	 * Permet de mettre ï¿½ jour la route la plus optimale vers le 
 	 * @param neighbour voisin du noeud courant
 	 * @param routes routes vers les adresses
 	 */
-	void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception;
+	void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception;
 	/**
-	 * Permet de mettre à jour la route la plus courte vers un point d'accès
+	 * Permet de mettre ï¿½ jour la route la plus courte vers un point d'accï¿½s
 	 * @param neighbour voisins du noeuds courant
 	 * @param numberOfHops nombre de saut requis pour y arriver
 	 */
-	void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception;
+	void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception;
 	
 }

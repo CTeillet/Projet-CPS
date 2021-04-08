@@ -1,6 +1,6 @@
 package cps.tenios.reseauEphemere;
 
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.PositionI;
 
 /**
@@ -12,7 +12,7 @@ public class ConnectionInfo {
 	/**
 	 * Adresse du noeud
 	 */
-	private NodeAddressI address;
+	private AddressI address;
 	/**
 	 * URI du port entrant de communication
 	 */
@@ -39,7 +39,7 @@ public class ConnectionInfo {
 	 * @param routingInboundPortURI URI du port entrant du routeur
 	 * @param pos Position du noeud
 	 */
-	public ConnectionInfo(NodeAddressI address, String communicationInboundURI, boolean routing,
+	public ConnectionInfo(AddressI address, String communicationInboundURI, boolean routing,
 			String routingInboundPortURI, PositionI pos) {
 		this.address = address;
 		this.communicationInboundURI = communicationInboundURI;
@@ -51,7 +51,7 @@ public class ConnectionInfo {
 	 * Retourne l'adress du noeud
 	 * @return l'adress du noeud
 	 */
-	public NodeAddressI getAddress() {
+	public AddressI getAddress() {
 		return address;
 	}
 	/**

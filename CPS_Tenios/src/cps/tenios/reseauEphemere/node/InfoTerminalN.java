@@ -1,19 +1,19 @@
 package cps.tenios.reseauEphemere.node;
 
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
 
 public class InfoTerminalN {
 
-	private NodeAddressI addr;
+	private AddressI addr;
 	private CommunicationOutboundPort node;
 	
-	public InfoTerminalN(NodeAddressI addr, CommunicationOutboundPort node) {
+	public InfoTerminalN(AddressI addr, CommunicationOutboundPort node) {
 		this.addr = addr;
 		this.node = node;
 	}
 
 
-	public NodeAddressI getAddress() {
+	public AddressI getAddress() {
 		return addr;
 	}
 	
@@ -21,7 +21,7 @@ public class InfoTerminalN {
 		return node;
 	}
 	
-	public void setAddress(NodeAddressI addr) {
+	public void setAddress(AddressI addr) {
 		this.addr = addr;
 	}
 	

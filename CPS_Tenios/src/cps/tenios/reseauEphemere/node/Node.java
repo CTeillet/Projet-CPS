@@ -12,7 +12,7 @@ import cps.tenios.reseauEphemere.RoutingConnector;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.PositionI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.AbstractComponent;
@@ -161,7 +161,7 @@ public abstract class  Node extends AbstractComponent{
 	 * @param communicationInboundPortURI l'uri du port avec lequel on veut se connecter
 	 * @throws Exception s'il y a un probleme
 	 */
-	public void connect(NodeAddressI address, String communicationInboundPortURI) throws Exception {
+	public void connect(AddressI address, String communicationInboundPortURI) throws Exception {
 		
 		logMessage("Dans connect " + this.addr + ", " + address);
 		
@@ -181,7 +181,7 @@ public abstract class  Node extends AbstractComponent{
 	 * @param routingInboundPortURI l'adresse de routage de l'autre noeud
 	 * @throws Exception s'il y a un probleme
 	 */
-	public void connectRouting(NodeAddressI address, String communicationInboundPortURI, String routingInboundPortURI)
+	public void connectRouting(AddressI address, String communicationInboundPortURI, String routingInboundPortURI)
 			throws Exception {
 		logMessage("connectR " + addr);
 		assert this.addr != address;
@@ -198,7 +198,7 @@ public abstract class  Node extends AbstractComponent{
 	 * @return le port de sortie du composant
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected CommunicationOutboundPort addTerminalNeighbor(NodeAddressI address, String communicationInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addTerminalNeighbor(AddressI address, String communicationInboundPortURI) throws Exception {
 		logMessage("connection " + addr);
 		assert this.addr != address;
 		//Connexion a l'uriInbound
@@ -220,7 +220,7 @@ public abstract class  Node extends AbstractComponent{
 	 * @return the newly created CommunicationouTboundPort
 	 * @throws Exception If there is a problem
 	 */
-	protected CommunicationOutboundPort addRoutingNeighbor(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addRoutingNeighbor(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("connectionRouting " + addr);
 		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();

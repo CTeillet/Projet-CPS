@@ -10,7 +10,6 @@ import cps.tenios.reseauEphemere.RoutingConnector;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.AbstractPort;
@@ -26,7 +25,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 public class AccessPointNode extends Node {
 	
 	// TODO java doc
-	protected HashMap<NodeAddressI, Chemin> routingTable;
+	protected HashMap<AddressI, Chemin> routingTable;
 	protected final String ROUTING_INBOUNDPORT_URI;
 	
 	
@@ -38,7 +37,7 @@ public class AccessPointNode extends Node {
 	protected AccessPointNode(String uri, int i, int j, double r) throws Exception {
 		super(uri, i, j, r);
 		this.ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
-		routingTable = new HashMap<NodeAddressI, Chemin>();
+		routingTable = new HashMap<AddressI, Chemin>();
 	}
 
 	@Override
@@ -126,7 +125,7 @@ public class AccessPointNode extends Node {
 	}
 	
 	@Override
-	protected CommunicationOutboundPort addRoutingNeighbor(NodeAddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addRoutingNeighbor(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("connectionRouting " + addr);
 		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();

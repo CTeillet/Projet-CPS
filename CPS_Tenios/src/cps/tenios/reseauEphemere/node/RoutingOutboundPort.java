@@ -2,7 +2,7 @@ package cps.tenios.reseauEphemere.node;
 
 import java.util.Set;
 
-import cps.tenios.reseauEphemere.interfaces.NodeAddressI;
+import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.ComponentI;
@@ -25,12 +25,12 @@ public class RoutingOutboundPort extends AbstractOutboundPort implements Routing
 	}
 
 	@Override
-	public void updateRouting(NodeAddressI neighbour, Set<RouteInfoI> routes) throws Exception {
+	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 		((RoutingCI)this.getConnector()).updateRouting(neighbour, routes);
 	}
 
 	@Override
-	public void updateAccessPoint(NodeAddressI neighbour, int numberOfHops) throws Exception {
+	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
 		((RoutingCI)this.getConnector()).updateAccessPoint(neighbour, numberOfHops);
 	}
 
