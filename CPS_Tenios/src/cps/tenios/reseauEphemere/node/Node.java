@@ -1,18 +1,15 @@
 package cps.tenios.reseauEphemere.node;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.NodeConnector;
 import cps.tenios.reseauEphemere.Position;
-import cps.tenios.reseauEphemere.RoutingConnector;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
-import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.PositionI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import fr.sorbonne_u.components.AbstractComponent;
@@ -167,7 +164,7 @@ public abstract class  Node extends AbstractComponent{
 		
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, false, "", null));
 		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
-		this.addTerminalNeighbor(address, communicationInboundPortURI);
+		this.addTerminalNeighbour(address, communicationInboundPortURI);
 		logMessage("fin connect");
 		
 	}
@@ -189,7 +186,7 @@ public abstract class  Node extends AbstractComponent{
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, null));
 		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
 		
-		this.addRoutingNeighbor(address, communicationInboundPortURI, routingInboundPortURI);
+		this.addRoutingNeighbour(address, communicationInboundPortURI, routingInboundPortURI);
 	}
 	
 	/**
@@ -198,20 +195,20 @@ public abstract class  Node extends AbstractComponent{
 	 * @return le port de sortie du composant
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected CommunicationOutboundPort addTerminalNeighbor(AddressI address, String communicationInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addTerminalNeighbour(AddressI address, String communicationInboundPortURI) throws Exception {
 		logMessage("connection " + addr);
 		assert this.addr != address;
 		//Connexion a l'uriInbound
 		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
-		logMessage("avant add");
-		terminalNodes.add(new InfoTerminalN(address, nodeOutbound));
-		logMessage("apres add");
+		synchronized(this) {
+			terminalNodes.add(new InfoTerminalN(address, nodeOutbound));
+		}
+		
 		return nodeOutbound;
 	}
 	
-	//TODO Resoudre probleme
 	/**
 	 * Method used to connect a Node to another that can rout message
 	 * @param addr Address of the node we want to connect
@@ -220,7 +217,7 @@ public abstract class  Node extends AbstractComponent{
 	 * @return the newly created CommunicationouTboundPort
 	 * @throws Exception If there is a problem
 	 */
-	protected CommunicationOutboundPort addRoutingNeighbor(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addRoutingNeighbour(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("connectionRouting " + addr);
 		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
@@ -232,7 +229,10 @@ public abstract class  Node extends AbstractComponent{
 //		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
 //		
 //		logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
-		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, null));
+		synchronized (this) {
+			routingNodes.add(new InfoRoutNode(addr, nodeOutbound, null));
+		}
+		
 		return nodeOutbound;
 	}
 
@@ -257,8 +257,11 @@ public abstract class  Node extends AbstractComponent{
 			logMessage("Mort du Message");
 			return;
 		}
+		
+		//Retransmission
 		m.decrementsGops();
 		
+		// cherche une route pamie ses voisins
 		int rout = -1, tmp; 
 		CommunicationOutboundPort next = null;
 		for (InfoRoutNode n : routingNodes) {
@@ -268,20 +271,26 @@ public abstract class  Node extends AbstractComponent{
 				next = n.getNode();
 			}
 		}
-		
+		// si une route existe
 		if(rout > -1) {
 			next.transmitMessage(m);
 			return;
-			
+		// sinon
 		} else {
+			
 			inondation(m);
 		}
 	}
 
-	protected void inondation(MessageI m) throws Exception {
-		//inondation 
+	/**
+	 * Transmet par Inondation le message a tous ses voisins
+	 * @param m Message a retransmettre
+	 * @throws Exception
+	 */
+	protected synchronized void inondation(MessageI m) throws Exception {
+		//retransmet le message a tous ses voisins routeurs
 		for (InfoRoutNode n : routingNodes) {
-			logMessage("Je transfere � " + n.getAdress());
+			logMessage("Je transfere a " + n.getAdress());
 			n.getNode().transmitMessage(m);
 		}
 	}
@@ -289,8 +298,8 @@ public abstract class  Node extends AbstractComponent{
 	
 	/**
 	 * Verifie qu'il existe un chemin entre nous et l'adresse
-	 * @param address l'address de destination
-	 * @return si une jonction existe
+	 * @param address l'addresse de destination
+	 * @return le nombre de saut ou -1 si aucun résultat
 	 * @throws Exception s'il y a un probleme
 	 */
 	public int hasRouteFor(AddressI address) throws Exception{

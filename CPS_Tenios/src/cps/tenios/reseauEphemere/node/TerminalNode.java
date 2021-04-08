@@ -33,31 +33,29 @@ public class TerminalNode extends Node {
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute TerminalNode "+ index);
+		// enrigistrement au près du gestionnaire
 		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerTerminalNode(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, this.range);
-		logMessage("1");
-		//Connexion a ses voisins
+		//Connexion aux voisins
 		for(ConnectionInfo c : voisin) {
 			logMessage("voisin : " + c.getAddress());
 			CommunicationOutboundPort out;
 			if(c.isRouting()) {
-				logMessage("avant connection");
-				out = this.addRoutingNeighbor(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI()); // Probleme
-			}else {
-				out = this.addTerminalNeighbor(c.getAddress(),c.getCommunicationInboundURI());
+				// ajout dans nouveau voisin 
+				out = this.addRoutingNeighbour(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI()); // Probleme
+				// connexion au voisin pour qu'il ajoute le noeud courant
+				out.connect(this.addr, this.COMM_INBOUNDPORT_URI);
+			} else {
+				logMessage("Ne doit pas arriver : 2 terN connected");
 			}
-			logMessage("avant connect");
-			out.connect(this.addr, this.COMM_INBOUNDPORT_URI);
-			logMessage("apres connect");
 		}
 		
-		logMessage("2");
-		if(this.index==2) {
-			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
-			logMessage("J'envoie le message " + m.getContent());
-						this.transmitMessage(m);
-		}
+//		if(this.index==2) {
+//			MessageI m = new Message(new NodeAddress(1), "Bonjour", 8);
+//			logMessage("J'envoie le message " + m.getContent());
+//						this.transmitMessage(m);
+//		}
 		
-		logMessage("Fin");
+		logMessage("Fin execute");
 	}
 
 	@Override

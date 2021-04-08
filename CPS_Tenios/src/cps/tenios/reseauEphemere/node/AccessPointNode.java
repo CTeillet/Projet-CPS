@@ -2,7 +2,9 @@ package cps.tenios.reseauEphemere.node;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.NodeConnector;
@@ -11,6 +13,7 @@ import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
+import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
@@ -52,11 +55,11 @@ public class AccessPointNode extends Node {
 			
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
-				out = this.addRoutingNeighbor(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
+				out = this.addRoutingNeighbour(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
 				// TODO updateRouting + update AcessPoint
 			} else {
 				// ajout d'un voisin terminal
-				out = this.addTerminalNeighbor(c.getAddress(), c.getCommunicationInboundURI());
+				out = this.addTerminalNeighbour(c.getAddress(), c.getCommunicationInboundURI());
 				this.terminalNodes.add(new InfoTerminalN(c.getAddress(), out));
 			}
 			routingTable.put(c.getAddress(), new Chemin(out, 1));
@@ -89,16 +92,16 @@ public class AccessPointNode extends Node {
 			logMessage("Mort du Message");
 			return;
 		}
+		m.decrementsGops();
 		// Cherche l'adresse dans la table 
 		Chemin path = routingTable.get(m.getAddress());
 		if(path != null) {
-			m.decrementsGops();
+			logMessage("Gagner");
 			path.getNext().transmitMessage(m);
-			return;
+			return ;
 		}
-
-		//aucune route => inondation
-		super.transmitMessage(msg);
+		//innondation du reseau
+		this.inondation(m);
 	}
 
 	@Override
@@ -125,22 +128,91 @@ public class AccessPointNode extends Node {
 	}
 	
 	@Override
-	protected CommunicationOutboundPort addRoutingNeighbor(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
+	protected CommunicationOutboundPort addRoutingNeighbour(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("connectionRouting " + addr);
+		// Connexion au node par un port de Communication
 		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
-		
+
 		//Connexion au RoutingNodeOutboundPort
 		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
 		routOutbound.publishPort();
-		try {
-			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
+		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+		//logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
+		
+		// ajout du noeud dans list des voisins
 		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
+		// mis a jour du nouvau voisins
+		routingTable.put(addr, new Chemin(nodeOutbound, 1));
+		routOutbound.updateRouting(this.addr, this.getInfoVoisin());
+		routOutbound.updateAccessPoint(this.addr, 0);
+		
 		return nodeOutbound;
 	}
-
+	
+	private Set<RouteInfoI> getInfoVoisin() {
+		Set<RouteInfoI> voisins = new HashSet<>();
+		for(Entry<AddressI, Chemin> v : routingTable.entrySet()) {
+			voisins.add(new RouteInfo(v.getKey(), v.getValue().getNumberOfHops()));
+		}
+		return voisins;
+	}
+	
+	protected CommunicationOutboundPort getNodeOutboundPort(AddressI adrr) {
+		for(InfoRoutNode node : routingNodes) {
+			if(node.getAdress().equals(adrr)) {
+				return node.getNode();
+			}
+		}
+		for(InfoTerminalN node : terminalNodes) {
+			if(node.getAddress().equals(adrr)) {
+				return node.getNode();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Permet de mettre a jour la route la plus optimale vers la destination et met a jour les noeuds voisins en cas de changement
+	 * @param neighbour voisin ayant envoyé les information de stable de routage
+	 * @param routes routes vers les adresses
+	 */
+	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
+		boolean hasChanged = false;
+		for(RouteInfoI ri : routes) {
+			if (ri.getDestination().isNodeAddress()) {
+				Chemin tmp = routingTable.get(ri.getDestination());
+				//Si pas de route vers address => creation d'un nouveau chemin
+				if(tmp == null) {
+					hasChanged = true;
+					routingTable.put( (AddressI)ri.getDestination(), new Chemin(this.getNodeOutboundPort(neighbour), ri.getNumberOfHops()));
+				// Si meilleur route => Maj
+				} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
+					hasChanged = true;
+					tmp.setNext(this.getNodeOutboundPort(neighbour));
+					tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
+				}
+			}
+		}
+		if(hasChanged) {
+			propageUpdate(neighbour);
+		}
+	}
+	
+	// TODO
+	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {}
+	
+	private void propageUpdate(AddressI neighbour) throws Exception{
+		Set<RouteInfoI> r = new HashSet<RouteInfoI>();
+		
+		for(Entry<AddressI, Chemin>  t :routingTable.entrySet()) {
+			r.add(new RouteInfo(t.getKey(), t.getValue().getNumberOfHops()));
+		}
+		for(InfoRoutNode rn : routingNodes) {
+			if(!rn.getAdress().equals(neighbour)) {
+				rn.getRout().updateRouting(this.getAddr(), r);
+			}
+		}
+	}
 }
