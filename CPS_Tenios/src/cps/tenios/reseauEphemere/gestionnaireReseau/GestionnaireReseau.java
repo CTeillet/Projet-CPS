@@ -74,7 +74,7 @@ public class GestionnaireReseau extends AbstractComponent {
 		tableNoeudRouting.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
-		tableNoeudTerminal.stream()
+		tableNoeudAccess.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
 		// Ajout du noeud a la table

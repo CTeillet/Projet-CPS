@@ -20,7 +20,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
  */
 @OfferedInterfaces(offered = {CommunicationCI.class, RoutingCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class, RoutingCI.class})
-public class RoutingNode extends Router {
+public class RoutingNode extends Router2Test {
 
 	/**
 	 * Chemin vers le reseau classique

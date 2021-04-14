@@ -15,7 +15,7 @@ public class TestAccessPoint extends AbstractCVM {
 	public static void main(String[] args) {
 		try {
 			TestAccessPoint c = new TestAccessPoint();
-			c.startStandardLifeCycle(10000L);
+			c.startStandardLifeCycle(100L);
 			System.exit(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -40,7 +40,7 @@ public class TestAccessPoint extends AbstractCVM {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		super.deploy();
 	}
 
 }
