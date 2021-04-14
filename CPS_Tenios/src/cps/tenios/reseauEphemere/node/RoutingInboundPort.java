@@ -37,7 +37,7 @@ public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI
 //		this.getOwner().handleRequest( r-> { ((RoutingCI)r).updateRouting(neighbour, routes); return null;});
 		this.getOwner().runTask( r ->{
 				try {
-					((RoutingCI) r).updateRouting(neighbour, routes);
+					((Router) r).updateRouting(neighbour, routes);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -48,7 +48,7 @@ public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI
 	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
 		this.getOwner().runTask( r ->{
 			try {
-				((RoutingCI) r).updateAccessPoint(neighbour, numberOfHops);
+				((Router) r).updateAccessPoint(neighbour, numberOfHops);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
