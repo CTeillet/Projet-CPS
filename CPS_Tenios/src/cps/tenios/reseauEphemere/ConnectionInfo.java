@@ -83,7 +83,4 @@ public class ConnectionInfo {
 	public PositionI getPosition() {
 		return pos;
 	}
-	
-	
-
 }

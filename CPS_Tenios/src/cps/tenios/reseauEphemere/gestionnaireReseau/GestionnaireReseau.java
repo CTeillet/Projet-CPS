@@ -68,17 +68,19 @@ public class GestionnaireReseau extends AbstractComponent {
 	public synchronized Set<ConnectionInfo> registerTerminalNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange){
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, false, "", initialPosition);
-		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
-//		tableNoeudAccess.stream()
-//		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
-//		.forEach(x-> res.add(x));
+		
+		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();  // Ensemble des noeuds accessibles
+		// Ajout des noeud capable de router a sa porté
 		tableNoeudRouting.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
 		tableNoeudTerminal.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
+		// Ajout du noeud a la table
 		tableNoeudTerminal.add(c);
+		
+		logMessage("TerminalNode:" + address + "\ntaille=" + size());
 		return res;	
 	}
 	
@@ -93,16 +95,24 @@ public class GestionnaireReseau extends AbstractComponent {
 	 */
 	public synchronized Set<ConnectionInfo> registerAccessPoint(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI){
-		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
+		
+		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>(); // Ensemble des noeuds accessibles
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, initialPosition);
+		
+		// ajout de tous les AccessPointNode
 		res.addAll(tableNoeudAccess);
+		// Ajout des RoutingNode a sa porté
 		tableNoeudRouting.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
+		// Ajout des TerminalNode a sa porté
 		tableNoeudTerminal.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
+		// Ajout du noeud a la table
 		tableNoeudAccess.add(c);
+		
+		logMessage("AccessPoint: " + address + "\ntaille=" + size());
 		return res;
 	}
 	
@@ -117,8 +127,11 @@ public class GestionnaireReseau extends AbstractComponent {
 	 */
 	public synchronized Set<ConnectionInfo> registerRoutingNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI){
-		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();
+		
+		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();  // Ensemble des noeuds accessibles
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, initialPosition);
+		
+		// Ajout de tous les noeuds a sa porté
 		tableNoeudAccess.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
@@ -129,7 +142,10 @@ public class GestionnaireReseau extends AbstractComponent {
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
 		
+		// Ajout du noeud a la table
 		tableNoeudRouting.add(c);
+		
+		logMessage("RoutingNode:" + address + "\ntaille=" + size());
 		return res;
 	}
 	
@@ -159,7 +175,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	
 	@Override
 	public synchronized void finalise() throws Exception {
-		//this.doPortDisconnection(INBOUNDPORT_URI);
+		System.out.println(this.toString());
 		super.finalise();
 	}
 	
@@ -168,10 +184,30 @@ public class GestionnaireReseau extends AbstractComponent {
 	 * @return le nombre d'elements des tables
 	 */
 	private int size() {
-		Set<ConnectionInfo> temp = new HashSet<ConnectionInfo>();
-		temp.addAll(tableNoeudAccess);
-		temp.addAll(tableNoeudRouting);
-		temp.addAll(tableNoeudTerminal);
-		return temp.size();
+		return tableNoeudAccess.size() + tableNoeudRouting.size() + tableNoeudTerminal.size();
 	}
+
+	@Override
+	public String toString() {
+		String str = "GestionnaireReseau :\ntableNoeudTerminal=";
+		for (ConnectionInfo ci : tableNoeudTerminal) {
+			str += "\n\t" + ci.getAddress();
+			
+		}
+		
+		str += "\ntableNoeudRouting=";
+		for (ConnectionInfo ci : tableNoeudRouting) {
+			str += "\n\t" + ci.getAddress();
+			
+		}
+		
+		str += "\ntableNoeudAccess=";
+		for (ConnectionInfo ci : tableNoeudAccess) {
+			str += "\n\t" + ci.getAddress();
+			
+		}
+		return str;
+	}
+	
+	
 }
