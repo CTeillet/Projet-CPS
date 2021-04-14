@@ -51,8 +51,8 @@ public interface RegistrationCI extends RequiredCI, OfferedCI {
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception;
 	
 	/**
-	 * Permet de se d�senregistrer du r�seau
-	 * @param address
+	 * Permet de se desenregistrer du r�seau
+	 * @param address adresse a retirer des tables
 	 * @throws Exception en cas de probleme
 	 */
 	void unregister (AddressI address) throws Exception;
