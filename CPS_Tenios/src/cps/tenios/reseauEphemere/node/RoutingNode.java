@@ -1,7 +1,5 @@
 package cps.tenios.reseauEphemere.node;
 
-import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
@@ -11,7 +9,6 @@ import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
-import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;

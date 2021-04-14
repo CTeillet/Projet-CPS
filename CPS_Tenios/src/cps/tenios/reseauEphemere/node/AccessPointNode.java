@@ -198,7 +198,7 @@ public class AccessPointNode extends Router {
 	}
 	
 	/**
-	 * Permet de mettre � jour l'acc�s au r�seau exterieur
+	 * Permet de mettre � jour l'acc�s au r�seau exterieur (ne fait rien puisqu'il est le point d'acces)
 	 * @param neighbour Adresse du voisin connect� au reseau exterieur
 	 * @param numberOfHops nombre de saut pour y acceder
 	 * @throws Exception s'il y a un probleme
