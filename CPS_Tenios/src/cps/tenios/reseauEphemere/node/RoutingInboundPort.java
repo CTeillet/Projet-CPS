@@ -10,7 +10,7 @@ import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 /**
- * 
+ * Port d'entee pour les noeud de routage 
  * @author Tenios
  *
  */
