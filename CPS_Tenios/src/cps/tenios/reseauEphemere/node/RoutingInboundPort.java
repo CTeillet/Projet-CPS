@@ -3,7 +3,6 @@ package cps.tenios.reseauEphemere.node;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.interfaces.AddressI;
-import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.ComponentI;
