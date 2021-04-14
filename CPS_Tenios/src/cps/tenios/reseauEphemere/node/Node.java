@@ -61,6 +61,9 @@ public abstract class  Node extends AbstractComponent{
 	 */
 	protected RegistrationOutboundPort registrationOutboundPort;
 	
+	/**
+	 * Porter du signal du noeud
+	 */
 	protected double range;
 	
 	// TODO :  voir si necessaire

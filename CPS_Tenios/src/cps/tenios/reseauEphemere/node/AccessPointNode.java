@@ -1,7 +1,6 @@
 package cps.tenios.reseauEphemere.node;
 
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -15,7 +14,6 @@ import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
-import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 /**
@@ -25,17 +23,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
  */
 @OfferedInterfaces(offered = {CommunicationCI.class, RoutingCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class, RoutingCI.class})
-public class AccessPointNode extends Node {
-	
-	/**
-	 * Table de routage contenant les diff�rents destinataires
-	 */
-	protected HashMap<AddressI, Chemin> routingTable;
-	/**
-	 * URI du routing inbound port
-	 */
-	protected final String ROUTING_INBOUNDPORT_URI;
-	
+public class AccessPointNode extends Router {
 	
 	/**
 	 * Permet de creer un composant point d'acc�s en sp�cifiant l'URI du port de registration sortant
@@ -44,8 +32,6 @@ public class AccessPointNode extends Node {
 	 */
 	protected AccessPointNode(String uri, int i, int j, double r) throws Exception {
 		super(uri, i, j, r);
-		this.ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
-		routingTable = new HashMap<AddressI, Chemin>();
 	}
 
 	@Override
@@ -169,9 +155,9 @@ public class AccessPointNode extends Node {
 	}
 	
 	/**
-	 * Permet d'obtenir un outboundPort qui correspond � l'addresse donn�e 
-	 * @param adrr adresse donn�e ou l'on cherche le port
-	 * @return le poert correspondant � l'adresse donn�e
+	 * Permet d'obtenir un outboundPort qui correspond a l'addresse donnee 
+	 * @param adrr adresse donnee ou l'on cherche le port
+	 * @return le port correspondant a l'adresse donn�e
 	 */
 	protected CommunicationOutboundPort getNodeOutboundPort(AddressI adrr) {
 		for(InfoRoutNode node : routingNodes) {

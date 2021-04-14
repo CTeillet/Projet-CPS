@@ -1,8 +1,6 @@
 package cps.tenios.reseauEphemere.node;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -15,7 +13,6 @@ import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
-import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
@@ -27,24 +24,13 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
  */
 @OfferedInterfaces(offered = {CommunicationCI.class, RoutingCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class, RoutingCI.class})
-public class RoutingNode extends Node {
+public class RoutingNode extends Router {
 
 	/**
 	 * Chemin vers le reseau classique
 	 */
 	protected Chemin path2Network;
-	/**
-	 * Table de routage
-	 */
-	protected Map<AddressI, Chemin> routingTable;
-	/**
-	 * URI du port de Routage entrant
-	 */
-	protected final String ROUTING_INBOUNDPORT_URI;
-	/**
-	 * Port de routage entrants
-	 */
-	protected RoutingInboundPort routInbound;
+	
 	
 	/**
 	 * Constructeur preant URI du port sortant vers le gestionnaire r�seau
@@ -53,11 +39,7 @@ public class RoutingNode extends Node {
 	 */
 	protected RoutingNode(String uri, int i, int j, double r) throws Exception {
 		super(uri, i, j, r);
-		routingTable = new HashMap<AddressI, Chemin>();
 		path2Network = null;
-		ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
-		routInbound = new RoutingInboundPort(ROUTING_INBOUNDPORT_URI, this);
-		routInbound.publishPort();
 	}
 	
 	@Override
