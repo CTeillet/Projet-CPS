@@ -93,88 +93,32 @@ public class RoutingNode extends Router {
 	public void transmitMessage(MessageI msg) throws Exception {
 		//Copie du message 
 		MessageI m = new Message((Message) msg);;
-		//arriver a destination
-		logMessage("Dans transmit");
-		if(m.getAddress().equals(addr)) {
-			logMessage("Message recue : " + m.getContent());
-			return;
-		}
-		//Destruction 
-		if(!m.stillAlive()) {
-			logMessage("Mort du Message");
-			return;
-		}
-		// Retransmission
-		m.decrementsGops();
-		// message a destion du reseau
-		if (m.getAddress().isNetworkAddress()) {
-			//si chemin connue
-			if(path2Network != null) {
-				this.path2Network.getNext().transmitMessage(m);
-				return;
-			}
-			// sinon inondation
-			this.inondation(m);
-			return ;
-		}
-		// Cherche l'adresse dans la table 
-		Chemin path = routingTable.get(m.getAddress());
-		if(path != null) {
-			logMessage("Gagner");
-			path.getNext().transmitMessage(m);
-			return ;
-		}
-		// par defaut innondation du reseau
-		this.inondation(m);
-	}
-	
-	/**
-	 * Permet de mettre a jour la route la plus optimale vers la destination et met a jour les noeuds voisins en cas de changement
-	 * @param neighbour voisin ayant envoyé les information de stable de routage
-	 * @param routes routes vers les adresses
-	 * @throws Exception en cas de probleme
-	 */
-	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
-		boolean hasChanged = false; // un changement a eu lieu
 		
-		for(RouteInfoI ri : routes) {
-			
-			if (ri.getDestination().isNodeAddress()) {
-				Chemin tmp = routingTable.get(ri.getDestination());
-				//Si pas de route vers address => creation d'un nouveau chemin
-				if(tmp == null) {
-					hasChanged = true;
-					routingTable.put( (AddressI)ri.getDestination(), new Chemin(this.findNodeOutboundPort(neighbour), ri.getNumberOfHops()));
+		// verifie si le message est arrivé a destination, mort ou a retransmettre
+		if (this.checkMessage(m)) {
+
+			// message a destion du reseau
+			if (m.getAddress().isNetworkAddress()) {
+				//si chemin connue
+				if(path2Network != null) {
+					this.path2Network.getNext().transmitMessage(m);
+					return;
+				}
 				
-				// Si meilleur route => Maj
-				} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
-					hasChanged = true;
-					// TODO remplacer par une list et ajouter
-					tmp.setNext(this.findNodeOutboundPort(neighbour));
-					tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
+			} else {
+				// Cherche l'adresse dans la table 
+				Chemin path = routingTable.get(m.getAddress());
+				if(path != null) {
+					logMessage("Gagner");
+					path.getNext().transmitMessage(m);
+					return ;
 				}
 			}
-		}
-		if(hasChanged) {
-			propageUpdate(neighbour);
+			this.seekNtransmit(m);
 		}
 	}
 	
-	/**
-	 * Propage la mis a jour des tables 
-	 * @param neighbour adresse du voisins ayant propager sa mis a jour
-	 * @throws Exception
-	 */
-	private void propageUpdate(AddressI neighbour) throws Exception{
-		
-		Set<RouteInfoI> r = this.getInfoTableRout();
-
-		for(InfoRoutNode rn : routingNodes) {
-			if(!rn.getAdress().equals(neighbour)) {
-				rn.getRout().updateRouting(this.getAddr(), r);
-			}
-		}
-	}
+	
 
 	/**
 	 * Permet de mettre a jour la route la plus courte vers un point d'acces
@@ -225,17 +169,7 @@ public class RoutingNode extends Router {
 		return nodeOutbound;
 	}
 	
-	/**
-	 * retourne les informations de la table de routage
-	 * @return les informations de la table de routage
-	 */
-	private Set<RouteInfoI> getInfoTableRout() {
-		Set<RouteInfoI> voisins = new HashSet<>();
-		for(Entry<AddressI, Chemin> v : routingTable.entrySet()) {
-			voisins.add(new RouteInfo(v.getKey(), v.getValue().getNumberOfHops()));
-		}
-		return voisins;
-	}
+	
 
 	@Override
 	public synchronized void shutdown() throws ComponentShutdownException {
@@ -249,36 +183,4 @@ public class RoutingNode extends Router {
 	}
 	
 
-	/**
-	 * Trouve depuis une adresse le port de Communication sortant correspondant
-	 * @param adrr addresse du noeud recherche
-	 * @return port de Communication sortant
-	 */
-	protected CommunicationOutboundPort findNodeOutboundPort(AddressI adrr) {
-		for(InfoRoutNode node : routingNodes) {
-			if(node.getAdress().equals(adrr)) {
-				return node.getNode();
-			}
-		}
-		for(InfoTerminalN node : terminalNodes) {
-			if(node.getAddress().equals(adrr)) {
-				return node.getNode();
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Trouve depuis une adresse le port de Routage sortant correspondant
-	 * @param adrr addresse du noeud recherche
-	 * @return port de Routage sortant
-	 */
-	protected RoutingOutboundPort findRoutingOutboundPort(AddressI adrr) {
-		for(InfoRoutNode node : routingNodes) {
-			if(node.getAdress().equals(adrr)) {
-				return node.getRout();
-			}
-		}
-		return null;
-	}
 }

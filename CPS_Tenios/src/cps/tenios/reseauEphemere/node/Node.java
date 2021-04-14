@@ -24,7 +24,8 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
  */
 @OfferedInterfaces(offered = {CommunicationCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
-public abstract class  Node extends AbstractComponent{
+public abstract class  Node extends AbstractComponent {
+	
 	/**
 	 * Compteur du nombre de noeud, utilis� pour les adresses
 	 */
@@ -34,18 +35,17 @@ public abstract class  Node extends AbstractComponent{
 	 * URI du port entrants de communication
 	 */
 	protected final String COMM_INBOUNDPORT_URI;
+	
 	/**
 	 * URI de port sortants vers le gestionnaire r�seau
 	 */
 	private final String REGISTRATION_URI;
+	
 	/**
 	 * Port entrants pour les communication avec les Noeuds
 	 */
 	protected CommunicationInboundPort nodeInboundPort;
-	/**
-	 * Listes des ports sortants vers les autres Noeuds
-	 */
-	//protected List<NodeOutboundPort> nodesOutboundPort;
+	
 	/**
 	 * Adresse du noeud
 	 */
@@ -254,44 +254,7 @@ public abstract class  Node extends AbstractComponent{
 	 * @param msg le message que l'on veut transmettre
 	 * @throws Exception s'il y a un probleme
 	 */
-	public void transmitMessage(MessageI msg) throws Exception{
-		//Copie du message 
-		MessageI m = new Message((Message) msg);;
-		//arriver a destination
-		logMessage("Dans transmit");
-		if(m.getAddress().equals(addr)) {
-			logMessage("Message recue : " + m.getContent());
-			return;
-		}
-		//Destruction 
-		if(!m.stillAlive()) {
-			logMessage("Mort du Message");
-			return;
-		}
-		
-		//Retransmission
-		m.decrementsGops();
-		
-		// cherche une route pamie ses voisins
-		int rout = -1, tmp; 
-		CommunicationOutboundPort next = null;
-		for (InfoRoutNode n : routingNodes) {
-			tmp = n.getNode().hasRouteFor(m.getAddress());
-			if (rout == -1 || (tmp < rout && tmp != -1)) {
-				rout = tmp;
-				next = n.getNode();
-			}
-		}
-		// si une route existe
-		if(rout > -1) {
-			next.transmitMessage(m);
-			return;
-		// sinon
-		} else {
-			
-			inondation(m);
-		}
-	}
+	public abstract void transmitMessage(MessageI msg) throws Exception;
 
 	/**
 	 * Transmet par Inondation le message a tous ses voisins
@@ -304,6 +267,61 @@ public abstract class  Node extends AbstractComponent{
 			logMessage("Je transfere a " + n.getAdress());
 			n.getNode().transmitMessage(m);
 		}
+	}
+	
+	/**
+	 * Cherche une route possible pour transfer un message.
+	 * Si parmi les voisins une route existe, on lui transmet le message.
+	 * Sinon, on transmet par inondation 
+	 * @param m Message a transmettre
+	 * @throws Exception
+	 */
+	protected void seekNtransmit(MessageI m) throws Exception {
+		// cherche une route parmie ses voisins
+		int rout = -1, tmp; 
+		CommunicationOutboundPort next = null;
+		for (InfoRoutNode n : routingNodes) {
+			tmp = n.getNode().hasRouteFor(m.getAddress());
+			// selsction de la route la plus courte
+			if (-1 < tmp && tmp < rout) {
+				rout = tmp;
+				next = n.getNode();
+			}
+		}
+		// transmet au voisin suivant si une route existe ou a tous sinon
+		if(rout > -1) {
+			next.transmitMessage(m);
+			return;
+
+		} else {
+			inondation(m);
+		}
+
+	}
+	
+	/**
+	 * Verifie si un message doit être retransmis.
+	 * On decremente son nombre de saut possible si c'est le cas.
+	 * @param m Message a traiter
+	 * @return false si mort ou a destination true sinon
+	 */
+	protected boolean checkMessage(MessageI m) {
+		//arriver a destination
+		if(m.getAddress().equals(addr)) {
+			logMessage("Message recue : " + m.getContent());
+			return false;
+		}
+
+		//Destruction 
+		if(!m.stillAlive()) {
+			logMessage("Mort du Message");
+			return false;
+		}
+
+		// decrementation pour retransmission
+		logMessage("Retransmission du Message");
+		m.decrementsGops();
+		return true;
 	}
 	
 	
@@ -321,7 +339,7 @@ public abstract class  Node extends AbstractComponent{
 	}
 	
 	/**
-	 * Permet de v�rifier que les voisins sont 
+	 * Permet de v�rifier que les voisins sont toujours actif
 	 * @throws Exception s'il y a un probleme
 	 */
 	public abstract void ping() throws Exception;

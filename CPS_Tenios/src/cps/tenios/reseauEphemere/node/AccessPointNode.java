@@ -66,33 +66,29 @@ public class AccessPointNode extends Router {
 	@Override
 	public void transmitMessage(MessageI msg) throws Exception {
 		//Copie du message 
-		logMessage("Dans transmit");
 		MessageI m = new Message((Message) msg);;
-		//arriver a destination
-		if(m.getAddress().equals(addr)) {
-			logMessage("Message recue : " + m.getContent());
-			return;
+
+		// verifie si le message est arrivé a destination, a destination du reseau, mort ou a retransmettre
+		if (this.checkMessage(m)) {
+			// Cherche l'adresse dans la table 
+			Chemin path = routingTable.get(m.getAddress());
+			if(path != null) {
+				logMessage("Gagner");
+				path.getNext().transmitMessage(m);
+				return ;
+			}
+			seekNtransmit(m);
 		}
+	}
+
+	@Override
+	protected boolean checkMessage(MessageI m) {
 		// Message pour le reseau
 		if(m.getAddress().isNetworkAddress()) {
 			logMessage("Le message a atteint le reseau :" + m.getContent());
-			return ;
+			return false;
 		}
-		//Destruction 
-		if(!m.stillAlive()) {
-			logMessage("Mort du Message");
-			return;
-		}
-		m.decrementsGops();
-		// Cherche l'adresse dans la table 
-		Chemin path = routingTable.get(m.getAddress());
-		if(path != null) {
-			logMessage("Gagner");
-			path.getNext().transmitMessage(m);
-			return ;
-		}
-		//innondation du reseau
-		this.inondation(m);
+		return super.checkMessage(m);
 	}
 
 	@Override
@@ -209,21 +205,4 @@ public class AccessPointNode extends Router {
 	 */
 	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {}
 	
-	/**
-	 * Permet de propager la mise � jour des tables de routages
-	 * @param neighbour le voisin vers lequel propager
-	 * @throws Exception s'il y a un probleme
-	 */
-	private void propageUpdate(AddressI neighbour) throws Exception{
-		Set<RouteInfoI> r = new HashSet<RouteInfoI>();
-		
-		for(Entry<AddressI, Chemin>  t :routingTable.entrySet()) {
-			r.add(new RouteInfo(t.getKey(), t.getValue().getNumberOfHops()));
-		}
-		for(InfoRoutNode rn : routingNodes) {
-			if(!rn.getAdress().equals(neighbour)) {
-				rn.getRout().updateRouting(this.getAddr(), r);
-			}
-		}
-	}
 }

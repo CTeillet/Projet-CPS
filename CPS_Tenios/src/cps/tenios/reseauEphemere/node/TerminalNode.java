@@ -3,7 +3,6 @@ package cps.tenios.reseauEphemere.node;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
-import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
@@ -69,6 +68,15 @@ public class TerminalNode extends Node {
 		return "TerminalNode ["+super.toString()+"t]";
 	}
 
-	
+	@Override
+	public void transmitMessage(MessageI msg) throws Exception {
+		//Copie du message 
+		MessageI m = new Message((Message) msg);;
+
+		// verifie si le message est arrivé a destination, mort ou a retransmettre
+		if (this.checkMessage(m)) {
+			this.seekNtransmit(m);
+		}
+	}
 
 }
