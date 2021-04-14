@@ -26,9 +26,12 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 public class AccessPointNode extends Router {
 	
 	/**
-	 * Permet de creer un composant point d'acc�s en sp�cifiant l'URI du port de registration sortant
-	 * @param uri du port de registration sortant
-	 * @throws Exception s'il y a un probleme
+	 * Constructeur de AccessPointNode
+	 * @param uri Uri du port sortant vers le gestionnaire reseau
+	 * @param i Abscisse de la coordonee du AccessPointNode
+	 * @param j Ordonnee de la coordonee du AccessPointNode
+	 * @param r Portee du signal 
+	 * @throws Exception En case de probleme
 	 */
 	protected AccessPointNode(String uri, int i, int j, double r) throws Exception {
 		super(uri, i, j, r);
@@ -42,7 +45,6 @@ public class AccessPointNode extends Router {
 		for(ConnectionInfo c : voisin) {
 			CommunicationOutboundPort out;
 			
-			// TODO faire ajout dans connection & connectionRouting 
 			
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
@@ -77,7 +79,7 @@ public class AccessPointNode extends Router {
 				path.getNext().transmitMessage(m);
 				return ;
 			}
-			seekNtransmit(m);
+			this.seekNtransmit(m);
 		}
 	}
 
@@ -169,12 +171,7 @@ public class AccessPointNode extends Router {
 		return null;
 	}
 	
-	/**
-	 * Permet de mettre a jour la route la plus optimale vers la destination et met a jour les noeuds voisins en cas de changement
-	 * @param neighbour voisin ayant envoyé les information de stable de routage
-	 * @param routes routes vers les adresses
-	 * @throws Exception en cas de probleme
-	 */
+	@Override
 	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 		boolean hasChanged = false;
 		for(RouteInfoI ri : routes) {
@@ -197,12 +194,7 @@ public class AccessPointNode extends Router {
 		}
 	}
 	
-	/**
-	 * Permet de mettre � jour l'acc�s au r�seau exterieur (ne fait rien puisqu'il est le point d'acces)
-	 * @param neighbour Adresse du voisin connect� au reseau exterieur
-	 * @param numberOfHops nombre de saut pour y acceder
-	 * @throws Exception s'il y a un probleme
-	 */
+	@Override
 	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {}
 	
 }

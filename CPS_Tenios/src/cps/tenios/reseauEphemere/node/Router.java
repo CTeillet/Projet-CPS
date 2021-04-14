@@ -15,6 +15,7 @@ import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
+import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
 @OfferedInterfaces(offered = {CommunicationCI.class, RoutingCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class, RoutingCI.class})
@@ -24,6 +25,7 @@ public abstract class Router extends Node {
 	 * Table de routage
 	 */
 	protected Map<AddressI, Chemin> routingTable;
+	
 	/**
 	 * URI du port de Routage entrant
 	 */
@@ -33,7 +35,14 @@ public abstract class Router extends Node {
 	 */
 	protected RoutingInboundPort routInbound;
 	
-
+	/**
+	 * Constructeur de d'un noeud capable de router
+	 * @param uri Uri du port sortant vers le gestionnaire reseau
+	 * @param i Abscisse de la coordonee du noeud
+	 * @param j Ordonnee de la coordonee du noeud
+	 * @param r Portee du signal 
+	 * @throws Exception En case de probleme
+	 */
 	public Router(String uri, int i, int j, double r) throws Exception {
 		super(uri, i, j, r);
 		routingTable = new HashMap<AddressI, Chemin>();
@@ -42,13 +51,6 @@ public abstract class Router extends Node {
 		routInbound.publishPort();
 	}
 
-	public Router(String uri) throws Exception {
-		super(uri);
-		routingTable = new HashMap<AddressI, Chemin>();
-		ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
-		routInbound = new RoutingInboundPort(ROUTING_INBOUNDPORT_URI, this);
-		routInbound.publishPort();
-	}
 	
 	@Override
 	public void ping() throws Exception {
@@ -151,11 +153,29 @@ public abstract class Router extends Node {
 		}
 		return null;
 	}
+	
+	/**
+	 * Permet de mettre a jour la route la plus courte vers un point d'acces
+	 * @param neighbour voisins ayant envoyer les information vers le point d'acces
+	 * @param numberOfHops nombre de saut requis pour y arriver
+	 * @throws Exception en cas de probleme
+	 */
+	public abstract void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception;
 
 	@Override
 	public abstract void execute() throws Exception;
+	
 	@Override
 	public abstract void transmitMessage(MessageI msg) throws Exception;
 
-	public abstract void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception;
+	@Override
+	public synchronized void shutdown() throws ComponentShutdownException {
+		try {
+			this.routInbound.unpublishPort();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ComponentShutdownException(e);
+		}
+		super.shutdown();
+	}
 }

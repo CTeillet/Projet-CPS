@@ -12,7 +12,6 @@ import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
-import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
 /**
  * Classe representant un noeud de routage
@@ -30,9 +29,12 @@ public class RoutingNode extends Router {
 	
 	
 	/**
-	 * Constructeur preant URI du port sortant vers le gestionnaire r�seau
-	 * @param uri du port sortant vers le gestionnaire r�seau
-	 * @throws Exception s'il y a un probleme
+	 * Constructeur de RoutingNode
+	 * @param uri Uri du port sortant vers le gestionnaire reseau
+	 * @param i Abscisse de la coordonee du RoutingNode
+	 * @param j Ordonnee de la coordonee du RoutingNode
+	 * @param r Portee du signal 
+	 * @throws Exception En case de probleme
 	 */
 	protected RoutingNode(String uri, int i, int j, double r) throws Exception {
 		super(uri, i, j, r);
@@ -117,12 +119,7 @@ public class RoutingNode extends Router {
 	
 	
 
-	/**
-	 * Permet de mettre a jour la route la plus courte vers un point d'acces
-	 * @param neighbour voisins ayant envoyer les information vers le point d'acces
-	 * @param numberOfHops nombre de saut requis pour y arriver
-	 * @throws Exception en cas de probleme
-	 */
+	@Override
 	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
 		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
 			path2Network = new Chemin(this.findNodeOutboundPort(neighbour), numberOfHops + 1);
@@ -141,7 +138,8 @@ public class RoutingNode extends Router {
 	
 	@Override
 	protected CommunicationOutboundPort addRoutingNeighbour(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
-		logMessage("connectionRouting " + addr);
+		logMessage("addRoutingNeighbour " + addr);
+		
 		// Connexion au node par un port de Communication
 		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
@@ -162,22 +160,6 @@ public class RoutingNode extends Router {
 			routOutbound.updateAccessPoint(this.addr, path2Network.getNumberOfHops());
 		}
 		
-		
 		return nodeOutbound;
 	}
-	
-	
-
-	@Override
-	public synchronized void shutdown() throws ComponentShutdownException {
-		try {
-			this.routInbound.unpublishPort();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ComponentShutdownException(e);
-		}
-		super.shutdown();
-	}
-	
-
 }
