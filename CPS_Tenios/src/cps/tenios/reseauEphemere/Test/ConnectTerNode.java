@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import cps.tenios.reseauEphemere.RegistrationConnector;
 import cps.tenios.reseauEphemere.gestionnaireReseau.GestionnaireReseau;
-import cps.tenios.reseauEphemere.node.AccessPointNode;
-import cps.tenios.reseauEphemere.node.RoutingNode;
 import cps.tenios.reseauEphemere.node.TerminalNode;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPort;
