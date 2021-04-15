@@ -158,22 +158,20 @@ public abstract class Router2Test extends AbstractComponent {
 	public synchronized void shutdown() throws ComponentShutdownException {
 		logMessage("shutdown");
 		try {
-			//Depublication des ports
+			//Depublication des ports entrants
 			this.nodeInboundPort.unpublishPort();
 			this.routInbound.unpublishPort();
+			
 			//ports sortant
 			this.registrationOutboundPort.unpublishPort();
+			
 			for(InfoTerminalN node : terminalNodes) {
 				node.getNode().unpublishPort();
 			}
 			for(InfoRoutNode node : routingNodes) {
-				logMessage("routing unpublished");
 				node.getNode().unpublishPort();
-				logMessage("node");
 				node.getRout().unpublishPort();
-				logMessage("routing");
 			}
-			logMessage("fin for");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
