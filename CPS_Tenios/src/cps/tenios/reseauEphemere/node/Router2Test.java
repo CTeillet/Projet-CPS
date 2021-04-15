@@ -102,8 +102,14 @@ public abstract class Router2Test extends AbstractComponent {
 	 */
 	protected RoutingInboundPort routInbound;
 	
+	protected int indexTransmit;
+	protected int indexUpdate;
+	
+	
+	
+	
 	protected Router2Test(String uri, int i, int j, double r) throws Exception {
-		super(10, 15);
+		super(10, 0);
 		REGISTRATION_URI = uri;
 		COMM_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		
@@ -127,6 +133,10 @@ public abstract class Router2Test extends AbstractComponent {
 		ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		routInbound = new RoutingInboundPort(ROUTING_INBOUNDPORT_URI, this);
 		routInbound.publishPort();
+		
+		
+		indexTransmit = createNewExecutorService(AbstractPort.generatePortURI(), 7, false);
+		indexUpdate = createNewExecutorService(AbstractPort.generatePortURI(), 3, false);
 	}
 	
 	
