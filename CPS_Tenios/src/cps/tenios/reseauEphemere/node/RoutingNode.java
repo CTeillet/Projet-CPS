@@ -120,7 +120,7 @@ public class RoutingNode extends Router2Test {
 	
 
 	@Override
-	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
+	public synchronized void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
 		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
 			path2Network = new Chemin(this.findNodeOutboundPort(neighbour), numberOfHops + 1);
 			// propagation de l'update
@@ -151,14 +151,20 @@ public class RoutingNode extends Router2Test {
 		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
 		//logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
 		
-		// ajout du noeud dans list des voisins
-		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
-		// mis a jour du nouvau voisins
-		routingTable.put(addr, new Chemin(nodeOutbound, 1));
-		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
-		if (path2Network != null) {
-			routOutbound.updateAccessPoint(this.addr, path2Network.getNumberOfHops());
+		int hops = -1;
+		synchronized (routOutbound) {
+			// ajout du noeud dans list des voisins
+			routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
+			// mis a jour du nouvau voisins
+			routingTable.put(addr, new Chemin(nodeOutbound, 1));
+			if (path2Network != null) {
+				hops = path2Network.getNumberOfHops();
+			}
 		}
+		if (hops > -1) {
+			routOutbound.updateAccessPoint(this.addr, hops);
+		}
+		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
 		
 		return nodeOutbound;
 	}

@@ -245,10 +245,7 @@ public abstract class Router2Test extends AbstractComponent {
 	 * @return the newly created CommunicationouTboundPort
 	 * @throws Exception If there is a problem
 	 */
-	protected CommunicationOutboundPort addRoutingNeighbour(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
-		logMessage("connectionRouting  error !!!");
-		return null;
-	}
+	protected abstract CommunicationOutboundPort addRoutingNeighbour(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception;
 
 	
 	/**
@@ -283,14 +280,18 @@ public abstract class Router2Test extends AbstractComponent {
 		// cherche une route parmie ses voisins
 		int rout = -1, tmp; 
 		CommunicationOutboundPort next = null;
-		for (InfoRoutNode n : routingNodes) {
-			tmp = n.getNode().hasRouteFor(m.getAddress());
-			// selsction de la route la plus courte
-			if (-1 < tmp && tmp < rout) {
-				rout = tmp;
-				next = n.getNode();
+		
+		synchronized (this) {
+			for (InfoRoutNode n : routingNodes) {
+				tmp = n.getNode().hasRouteFor(m.getAddress());
+				// selsction de la route la plus courte
+				if (-1 < tmp && tmp < rout) {
+					rout = tmp;
+					next = n.getNode();
+				}
 			}
 		}
+		
 		// transmet au voisin suivant si une route existe ou a tous sinon
 		if(rout > -1) {
 			next.transmitMessage(m);
@@ -381,19 +382,23 @@ public abstract class Router2Test extends AbstractComponent {
 		for(RouteInfoI ri : routes) {
 			
 			if (ri.getDestination().isNodeAddress()) {
-				Chemin tmp = routingTable.get(ri.getDestination());
-				//Si pas de route vers address => creation d'un nouveau chemin
-				if(tmp == null) {
-					hasChanged = true;
-					routingTable.put( (AddressI)ri.getDestination(), new Chemin(this.findNodeOutboundPort(neighbour), ri.getNumberOfHops()));
 				
-				// Si meilleur route => Maj
-				} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
-					hasChanged = true;
-					// TODO remplacer par une list et ajouter
-					tmp.setNext(this.findNodeOutboundPort(neighbour));
-					tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
+				synchronized (this) {
+					Chemin tmp = routingTable.get(ri.getDestination());
+					//Si pas de route vers address => creation d'un nouveau chemin
+					if(tmp == null) {
+						hasChanged = true;
+						routingTable.put( (AddressI)ri.getDestination(), new Chemin(this.findNodeOutboundPort(neighbour), ri.getNumberOfHops()));
+					
+					// Si meilleur route => Maj
+					} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
+						hasChanged = true;
+						// TODO remplacer par une list et ajouter
+						tmp.setNext(this.findNodeOutboundPort(neighbour));
+						tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
+					}
 				}
+				
 			}
 		}
 		//propage l'update en cas de changement
@@ -407,7 +412,7 @@ public abstract class Router2Test extends AbstractComponent {
 	 * @param neighbour adresse du voisins ayant propager sa mis a jour
 	 * @throws Exception
 	 */
-	protected void propageUpdate(AddressI neighbour) throws Exception{
+	protected synchronized void propageUpdate(AddressI neighbour) throws Exception{
 		
 		Set<RouteInfoI> r = this.getInfoTableRout();
 
@@ -424,8 +429,10 @@ public abstract class Router2Test extends AbstractComponent {
 	 */
 	protected Set<RouteInfoI> getInfoTableRout() {
 		Set<RouteInfoI> voisins = new HashSet<>();
-		for(Entry<AddressI, Chemin> v : routingTable.entrySet()) {
-			voisins.add(new RouteInfo(v.getKey(), v.getValue().getNumberOfHops()));
+		synchronized (this) {
+			for(Entry<AddressI, Chemin> v : routingTable.entrySet()) {
+				voisins.add(new RouteInfo(v.getKey(), v.getValue().getNumberOfHops()));
+			}
 		}
 		return voisins;
 	}
@@ -462,6 +469,18 @@ public abstract class Router2Test extends AbstractComponent {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Permet d'obtenir la liste des voisins
+	 * @return la liste des voisins
+	 */
+	protected synchronized Set<RouteInfoI> getInfoVoisin() {
+		Set<RouteInfoI> voisins = new HashSet<>();
+		for(Entry<AddressI, Chemin> v : routingTable.entrySet()) {
+			voisins.add(new RouteInfo(v.getKey(), v.getValue().getNumberOfHops()));
+		}
+		return voisins;
 	}
 	
 	/**

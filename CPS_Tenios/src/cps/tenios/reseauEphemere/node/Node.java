@@ -213,6 +213,7 @@ public abstract class  Node extends AbstractComponent {
 		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
+		
 		synchronized(this) {
 			terminalNodes.add(new InfoTerminalN(address, nodeOutbound));
 		}
@@ -233,13 +234,7 @@ public abstract class  Node extends AbstractComponent {
 		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
-		
-//		//Connexion au RoutingNodeOutboundPort
-//		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
-//		routOutbound.publishPort();
-//		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
-//		
-//		logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
+
 		synchronized (this) {
 			routingNodes.add(new InfoRoutNode(addr, nodeOutbound, null));
 		}
@@ -280,12 +275,15 @@ public abstract class  Node extends AbstractComponent {
 		// cherche une route parmie ses voisins
 		int rout = -1, tmp; 
 		CommunicationOutboundPort next = null;
-		for (InfoRoutNode n : routingNodes) {
-			tmp = n.getNode().hasRouteFor(m.getAddress());
-			// selsction de la route la plus courte
-			if (-1 < tmp && tmp < rout) {
-				rout = tmp;
-				next = n.getNode();
+		
+		synchronized (this) {
+			for (InfoRoutNode n : routingNodes) {
+				tmp = n.getNode().hasRouteFor(m.getAddress());
+				// selsction de la route la plus courte
+				if (-1 < tmp && tmp < rout) {
+					rout = tmp;
+					next = n.getNode();
+				}
 			}
 		}
 		// transmet au voisin suivant si une route existe ou a tous sinon
