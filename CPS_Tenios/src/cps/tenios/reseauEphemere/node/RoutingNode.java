@@ -10,6 +10,7 @@ import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
+import cps.tenios.reseauEphemere.node.request.TransmitRequest;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 
@@ -93,31 +94,7 @@ public class RoutingNode extends Router2Test {
 
 	@Override
 	public void transmitMessage(MessageI msg) throws Exception {
-		//Copie du message 
-		MessageI m = new Message((Message) msg);;
-
-		// verifie si le message est arrivé a destination, mort ou a retransmettre
-		if (this.checkMessage(m)) {
-
-			// message a destion du reseau
-			if (m.getAddress().isNetworkAddress()) {
-				//si chemin connue
-				if(path2Network != null) {
-					this.path2Network.getNext().transmitMessage(m);
-					return;
-				}
-
-			} else {
-				// Cherche l'adresse dans la table 
-				Chemin path = routingTable.get(m.getAddress());
-				if(path != null) {
-					logMessage("Gagner");
-					path.getNext().transmitMessage(m);
-					return ;
-				}
-			}
-			this.seekNtransmit(m);
-		}
+		handleRequest(super.indexTransmit,new TransmitRequest(this,msg, path2Network, routingTable, routingNodes, addr));
 	}
 
 

@@ -308,7 +308,6 @@ public abstract class Router2Test extends AbstractComponent {
 		} else {
 			inondation(m);
 		}
-
 	}
 	
 	/**
