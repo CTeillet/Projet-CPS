@@ -26,8 +26,8 @@ public class RoutingNode extends Router2Test {
 	 * Chemin vers le reseau classique
 	 */
 	protected Chemin path2Network;
-	
-	
+
+
 	/**
 	 * Constructeur de RoutingNode
 	 * @param uri Uri du port sortant vers le gestionnaire reseau
@@ -40,7 +40,7 @@ public class RoutingNode extends Router2Test {
 		super(uri, i, j, r);
 		path2Network = null;
 	}
-	
+
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute RoutingNode " + this.index);
@@ -50,16 +50,19 @@ public class RoutingNode extends Router2Test {
 		//Connexion aux voisins
 		for(ConnectionInfo c : voisin) {
 			CommunicationOutboundPort out; // port de communication sortant 
-			
+
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
 				out = this.addRoutingNeighbour(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
+				logMessage("add ok");
 			} else {
 				// ajout d'un voisin terminal
 				out = this.addTerminalNeighbour(c.getAddress(), c.getCommunicationInboundURI());
 			}
+			logMessage("avant connect");
 			// connexion au voisin pour qu'il ajoute le noeud courant
 			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, this.ROUTING_INBOUNDPORT_URI);
+			logMessage("apres connect");
 			// ajout du noeud a la table de routage
 			routingTable.put(c.getAddress(), new Chemin(out, 1));
 		}
@@ -73,7 +76,7 @@ public class RoutingNode extends Router2Test {
 
 	@Override
 	public int hasRouteFor(AddressI address) throws Exception {
-		
+
 		if(address.isNetworkAddress()) {
 			if (path2Network != null) {
 				return path2Network.getNumberOfHops();
@@ -84,15 +87,15 @@ public class RoutingNode extends Router2Test {
 				return chemin.getNumberOfHops();
 			}
 		}
-		
+
 		return -1;
 	}
-	
+
 	@Override
 	public void transmitMessage(MessageI msg) throws Exception {
 		//Copie du message 
 		MessageI m = new Message((Message) msg);;
-		
+
 		// verifie si le message est arrivé a destination, mort ou a retransmettre
 		if (this.checkMessage(m)) {
 
@@ -103,7 +106,7 @@ public class RoutingNode extends Router2Test {
 					this.path2Network.getNext().transmitMessage(m);
 					return;
 				}
-				
+
 			} else {
 				// Cherche l'adresse dans la table 
 				Chemin path = routingTable.get(m.getAddress());
@@ -116,8 +119,8 @@ public class RoutingNode extends Router2Test {
 			this.seekNtransmit(m);
 		}
 	}
-	
-	
+
+
 
 	@Override
 	public synchronized void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
@@ -126,46 +129,52 @@ public class RoutingNode extends Router2Test {
 			// propagation de l'update
 			for(InfoRoutNode v : routingNodes) {
 				if (!neighbour.equals(v.getAdress()))
-				v.getRout().updateAccessPoint(this.getAddr(), path2Network.getNumberOfHops());
+					v.getRout().updateAccessPoint(this.getAddr(), path2Network.getNumberOfHops());
 			}
 		} 
 	}
-	
+
 	@Override
 	public String toString() {
 		return "RoutingNode ["+ super.toString() +"]";
 	}
-	
+
 	@Override
 	protected CommunicationOutboundPort addRoutingNeighbour(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("addRoutingNeighbour " + addr);
-		
-		// Connexion au node par un port de Communication
-		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
-		nodeOutbound.publishPort();
-		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
+		try {
+			// Connexion au node par un port de Communication
+			CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
+			nodeOutbound.publishPort();
+			doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
+			
+			//Connexion au RoutingNodeOutboundPort
+			RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
+			routOutbound.publishPort();
+			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+			//logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
 
-		//Connexion au RoutingNodeOutboundPort
-		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
-		routOutbound.publishPort();
-		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
-		//logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
-		
-		int hops = -1;
-		synchronized (routOutbound) {
-			// ajout du noeud dans list des voisins
-			routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
-			// mis a jour du nouvau voisins
-			routingTable.put(addr, new Chemin(nodeOutbound, 1));
-			if (path2Network != null) {
-				hops = path2Network.getNumberOfHops();
+			logMessage("avant synchro");
+			int hops = -1;
+			synchronized (routOutbound) {
+				// ajout du noeud dans list des voisins
+				routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
+				// mis a jour du nouvau voisins
+				routingTable.put(addr, new Chemin(nodeOutbound, 1));
+				if (path2Network != null) {
+					hops = path2Network.getNumberOfHops();
+				}
 			}
+			//		if (hops > -1) {
+			//			routOutbound.updateAccessPoint(this.addr, hops);
+			//		}
+			//		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
+			logMessage("fin add");
+			return nodeOutbound;
+
+		} catch (Exception e) {
+			e.printStackTrace();// TODO: handle exception
+			throw e;
 		}
-		if (hops > -1) {
-			routOutbound.updateAccessPoint(this.addr, hops);
-		}
-		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
-		
-		return nodeOutbound;
 	}
 }

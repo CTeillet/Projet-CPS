@@ -22,7 +22,7 @@ public class RoutingOutboundPort extends AbstractOutboundPort implements Routing
 
 	public RoutingOutboundPort(ComponentI owner) throws Exception {
 		super(RoutingCI.class, owner);
-		assert owner instanceof Node;
+		//assert owner instanceof Node;
 	}
 	
 	public RoutingOutboundPort(String uri, ComponentI owner) throws Exception {
