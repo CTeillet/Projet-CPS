@@ -11,6 +11,7 @@ import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import cps.tenios.reseauEphemere.node.request.TransmitRequest;
+import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 
@@ -94,7 +95,53 @@ public class RoutingNode extends Router2Test {
 
 	@Override
 	public void transmitMessage(MessageI msg) throws Exception {
-		handleRequest(super.indexTransmit,new TransmitRequest(this,msg, path2Network, routingTable, routingNodes, addr));
+		MessageI m = new Message((Message) msg);
+		
+		//handleRequest(super.indexTransmit,new TransmitRequest(this, m, path2Network, routingTable, routingNodes, addr));
+		
+		// TODO voir aussi ComponentTask 
+		runTask(super.indexTransmit, new FComponentTask() {
+			
+			@Override
+			public void run(ComponentI owner) {
+				// verifie si le message est arrivé a destination, mort ou a retransmettre
+				if (checkMessage(m)) {
+					// message a destion du reseau
+					if (m.getAddress().isNetworkAddress()) {
+						//si chemin connue
+						if(path2Network != null) {
+							try {
+								path2Network.getNext().transmitMessage(m);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							return;
+						}
+
+					} else {
+						// Cherche l'adresse dans la table 
+						Chemin path = routingTable.get(m.getAddress());
+						if(path != null) {
+							//logMessage("Gagner");
+							try {
+								path.getNext().transmitMessage(m);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							return;
+						}
+					}
+					try {
+						seekNtransmit(m);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}				
+			}
+		});
 	}
 
 
