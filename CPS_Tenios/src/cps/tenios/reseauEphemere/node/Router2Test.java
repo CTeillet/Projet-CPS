@@ -20,6 +20,7 @@ import cps.tenios.reseauEphemere.interfaces.RouteInfoI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPort;
+import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
@@ -383,35 +384,46 @@ public abstract class Router2Test extends AbstractComponent {
 	 * @throws Exception en cas de probleme
 	 */
 	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
-		
-		boolean hasChanged = false;
-		
-		for(RouteInfoI ri : routes) {
+		runTask(this.indexUpdate, new FComponentTask() {
 			
-			if (ri.getDestination().isNodeAddress()) {
-				
-				synchronized (this) {
-					Chemin tmp = routingTable.get(ri.getDestination());
-					//Si pas de route vers address => creation d'un nouveau chemin
-					if(tmp == null) {
-						hasChanged = true;
-						routingTable.put( (AddressI)ri.getDestination(), new Chemin(this.findNodeOutboundPort(neighbour), ri.getNumberOfHops()));
-					
-					// Si meilleur route => Maj
-					} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
-						hasChanged = true;
-						// TODO remplacer par une list et ajouter
-						tmp.setNext(this.findNodeOutboundPort(neighbour));
-						tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
+			@Override
+			public void run(ComponentI owner) {
+				boolean hasChanged = false;
+
+				for(RouteInfoI ri : routes) {
+
+					if (ri.getDestination().isNodeAddress()) {
+
+						synchronized (this) {
+							Chemin tmp = routingTable.get(ri.getDestination());
+							//Si pas de route vers address => creation d'un nouveau chemin
+							if(tmp == null) {
+								hasChanged = true;
+								routingTable.put( (AddressI)ri.getDestination(), new Chemin(findNodeOutboundPort(neighbour), ri.getNumberOfHops()));
+
+							// Si meilleur route => Maj
+							} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
+								hasChanged = true;
+								// TODO remplacer par une list et ajouter
+								tmp.setNext(findNodeOutboundPort(neighbour));
+								tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
+							}
+						}
+
 					}
 				}
-				
+				//propage l'update en cas de changement
+				if(hasChanged) {
+					try {
+						propageUpdate(neighbour);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}				
 			}
-		}
-		//propage l'update en cas de changement
-		if(hasChanged) {
-			propageUpdate(neighbour);
-		}
+		});
+		
 	}
 	
 	/**

@@ -101,7 +101,6 @@ public class RoutingNode extends Router2Test {
 		
 		// TODO voir aussi ComponentTask 
 		runTask(super.indexTransmit, new FComponentTask() {
-			
 			@Override
 			public void run(ComponentI owner) {
 				// verifie si le message est arrivé a destination, mort ou a retransmettre
@@ -148,14 +147,25 @@ public class RoutingNode extends Router2Test {
 
 	@Override
 	public synchronized void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
-		if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
-			path2Network = new Chemin(this.findNodeOutboundPort(neighbour), numberOfHops + 1);
-			// propagation de l'update
-			for(InfoRoutNode v : routingNodes) {
-				if (!neighbour.equals(v.getAdress()))
-					v.getRout().updateAccessPoint(this.getAddr(), path2Network.getNumberOfHops());
+		runTask(this.indexUpdate, new FComponentTask() {
+			
+			@Override
+			public void run(ComponentI owner) {
+				if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
+					path2Network = new Chemin(findNodeOutboundPort(neighbour), numberOfHops + 1);
+					// propagation de l'update
+					for(InfoRoutNode v : routingNodes) {
+						if (!neighbour.equals(v.getAdress()))
+							try {
+								v.getRout().updateAccessPoint(getAddr(), path2Network.getNumberOfHops());
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+					}
+				} 				
 			}
-		} 
+		});
 	}
 
 	@Override
