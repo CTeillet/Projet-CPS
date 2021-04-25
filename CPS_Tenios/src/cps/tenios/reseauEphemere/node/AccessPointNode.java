@@ -94,6 +94,11 @@ public class AccessPointNode extends Router2Test {
 
 	@Override
 	public int hasRouteFor(AddressI address) throws Exception {
+		
+		if(address.equals(this.addr)) {
+			return 0;
+		}
+		
 		if(address.isNetworkAddress()) {
 			return 0;
 		}
