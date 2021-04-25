@@ -56,7 +56,7 @@ public class RoutingNode extends Router2Test {
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
 				out = this.addRoutingNeighbour(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
-				logMessage("add ok");
+				logMessage("add ok routeur : " + (out!= null));
 			} else {
 				// ajout d'un voisin terminal
 				out = this.addTerminalNeighbour(c.getAddress(), c.getCommunicationInboundURI());
@@ -204,10 +204,10 @@ public class RoutingNode extends Router2Test {
 					hops = path2Network.getNumberOfHops();
 				}
 			//fin
-					if (hops > -1) {
-						routOutbound.updateAccessPoint(this.addr, hops);
-					}
-					routOutbound.updateRouting(this.addr, this.getInfoTableRout());
+//					if (hops > -1) {
+//						routOutbound.updateAccessPoint(this.addr, hops);
+//					}
+//					routOutbound.updateRouting(this.addr, this.getInfoTableRout());
 			logMessage("fin add");
 			return nodeOutbound;
 

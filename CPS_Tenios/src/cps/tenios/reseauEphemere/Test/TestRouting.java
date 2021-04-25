@@ -15,7 +15,7 @@ public class TestRouting extends AbstractCVM {
 	public static void main(String[] args) {
 		try {
 			TestRouting c = new TestRouting();
-			c.startStandardLifeCycle(6000L);
+			c.startStandardLifeCycle(60000L);
 			System.exit(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

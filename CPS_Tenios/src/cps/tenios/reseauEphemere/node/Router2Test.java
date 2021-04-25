@@ -106,9 +106,6 @@ public abstract class Router2Test extends AbstractComponent {
 	protected int indexTransmit;
 	protected int indexUpdate;
 	
-	
-	
-	
 	protected Router2Test(String uri, int i, int j, double r) throws Exception {
 		super(10, 0);
 		REGISTRATION_URI = uri;

@@ -43,7 +43,9 @@ public class CommunicationOutboundPort extends AbstractOutboundPort implements C
 
 	@Override
 	public void connectRouting(AddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception  {
+		System.out.println("Outbound connectRouting");
 		((CommunicationCI)this.getConnector()).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);
+		System.out.println("Outbound connectRouting fin");
 	}
 
 	@Override

@@ -36,15 +36,26 @@ public class CommunicationInboundPort extends AbstractInboundPort implements Com
 
 	@Override
 	public void connect(AddressI address, String communicationInboundPortURI) throws Exception {
-		this.getOwner().handleRequest( c -> {((Node)c).connect(address, communicationInboundPortURI); return null;} );
+		this.getOwner().handleRequest( c -> {
+			if (c instanceof Node) {((Node)c).connect(address, communicationInboundPortURI);}
+			else {((Router2Test)c).connect(address, communicationInboundPortURI);}
+			return null;
+		});
 
 	}
 
 	@Override
 	public void connectRouting(AddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception {
-		this.getOwner().handleRequest( c -> {((Node)c).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);return null;});
-
-
+		System.out.println("Inbound connectRouting");
+		this.getOwner().runTask( c -> {
+			try {
+				if (c instanceof Node) {((Node)c).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);}
+				else {((Router2Test)c).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		System.out.println("Inbound connectRouting fin");
 	}
 
 	@Override
@@ -52,7 +63,8 @@ public class CommunicationInboundPort extends AbstractInboundPort implements Com
 		//this.getOwner().handleRequest( c -> {((Node)c).transmitMessage(m); return null;} );
 		this.getOwner().runTask(c->{
 			try {
-				((Node)c).transmitMessage(m);
+				if(c instanceof Node) {((Node)c).transmitMessage(m);}
+				else {((Router2Test)c).transmitMessage(m);}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -61,12 +73,20 @@ public class CommunicationInboundPort extends AbstractInboundPort implements Com
 
 	@Override
 	public int hasRouteFor(AddressI address)  throws Exception{
-		return this.getOwner().handleRequest( c -> ((Node)c).hasRouteFor(address));
+		return this.getOwner().handleRequest( c -> {
+			
+			if (c instanceof Node) return ((Node)c).hasRouteFor(address);
+			else return ((Router2Test)c).hasRouteFor(address);
+		});
 	}
 
 	@Override
 	public void ping()  throws Exception{
-		this.getOwner().handleRequest( c -> {((Node)c).ping(); return null;} );
+		this.getOwner().handleRequest( c -> {
+			if (c instanceof Node) {((Node)c).ping();}
+			else {((Node)c).ping();}
+			return null;
+		} );
 
 	}
 }
