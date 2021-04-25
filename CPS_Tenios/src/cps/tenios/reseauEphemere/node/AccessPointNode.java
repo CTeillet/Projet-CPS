@@ -50,9 +50,9 @@ public class AccessPointNode extends Router2Test {
 			} else {
 				// ajout d'un voisin terminal
 				out = this.addTerminalNeighbour(c.getAddress(), c.getCommunicationInboundURI());
-				synchronized (this) {
+				//section critique
 					routingTable.put(c.getAddress(), new Chemin(out, 1));
-				}
+				//fin
 			}
 			
 			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
@@ -133,12 +133,12 @@ public class AccessPointNode extends Router2Test {
 		routOutbound.publishPort();
 		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
 		
-		synchronized (routOutbound) {
+		//section critique
 			// ajout du noeud dans list des voisins
 			routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
 			// mis a jour du nouvau voisins
 			routingTable.put(addr, new Chemin(nodeOutbound, 1));
-		}
+		// fin
 		
 		routOutbound.updateRouting(this.addr, this.getInfoVoisin());
 		routOutbound.updateAccessPoint(this.addr, 0);

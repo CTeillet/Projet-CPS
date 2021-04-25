@@ -150,7 +150,8 @@ public class RoutingNode extends Router2Test {
 
 
 	@Override
-	public synchronized void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
+	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {
+		//section critique
 		runTask(this.indexUpdate, new FComponentTask() {
 			
 			@Override
@@ -194,7 +195,7 @@ public class RoutingNode extends Router2Test {
 
 			logMessage("avant synchro");
 			int hops = -1;
-			synchronized (routOutbound) {
+			//section critique
 				// ajout du noeud dans list des voisins
 				routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
 				// mis a jour du nouvau voisins
@@ -202,11 +203,11 @@ public class RoutingNode extends Router2Test {
 				if (path2Network != null) {
 					hops = path2Network.getNumberOfHops();
 				}
-			}
-			//		if (hops > -1) {
-			//			routOutbound.updateAccessPoint(this.addr, hops);
-			//		}
-			//		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
+			//fin
+					if (hops > -1) {
+						routOutbound.updateAccessPoint(this.addr, hops);
+					}
+					routOutbound.updateRouting(this.addr, this.getInfoTableRout());
 			logMessage("fin add");
 			return nodeOutbound;
 
