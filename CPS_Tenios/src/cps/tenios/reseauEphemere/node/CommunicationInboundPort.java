@@ -46,7 +46,6 @@ public class CommunicationInboundPort extends AbstractInboundPort implements Com
 
 	@Override
 	public void connectRouting(AddressI address, String communicationInboundPortURI, String routingInboundPortURI) throws Exception {
-		System.out.println("Inbound connectRouting");
 		this.getOwner().runTask( c -> {
 			try {
 				if (c instanceof Node) {((Node)c).connectRouting(address, communicationInboundPortURI, routingInboundPortURI);}
@@ -55,7 +54,6 @@ public class CommunicationInboundPort extends AbstractInboundPort implements Com
 				e.printStackTrace();
 			}
 		});
-		System.out.println("Inbound connectRouting fin");
 	}
 
 	@Override
