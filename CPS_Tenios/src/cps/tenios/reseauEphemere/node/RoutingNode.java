@@ -1,6 +1,8 @@
 package cps.tenios.reseauEphemere.node;
 
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.NodeConnector;
@@ -28,7 +30,10 @@ public class RoutingNode extends Router2Test {
 	 * Chemin vers le reseau classique
 	 */
 	protected Chemin path2Network;
-
+	/**
+	 * Verrou qui protege les acces concurrent au path2Network
+	 */
+	protected Lock lockP2N = new ReentrantLock();
 
 	/**
 	 * Constructeur de RoutingNode
@@ -114,16 +119,20 @@ public class RoutingNode extends Router2Test {
 					// message a destion du reseau
 					if (m.getAddress().isNetworkAddress()) {
 						//si chemin connue
+						lockP2N.lock();
 						if(path2Network != null) {
 							try {
-								path2Network.getNext().transmitMessage(m);
+								CommunicationOutboundPort next = path2Network.getNext();
+								lockP2N.unlock();
+								next.transmitMessage(m);
 							} catch (Exception e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+							
 							return;
 						}
-
+						lockP2N.unlock();
+						
 					} else {
 						// Cherche l'adresse dans la table 
 						lockTable.lock();
@@ -160,8 +169,10 @@ public class RoutingNode extends Router2Test {
 
 			@Override
 			public void run(ComponentI owner) {
+				lockP2N.lock();
 				if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
 					path2Network = new Chemin(findNodeOutboundPort(neighbour), numberOfHops + 1);
+					lockP2N.unlock();
 					lockRoutNodes.lock();
 					// propagation de l'update
 					for(InfoRoutNode v : routingNodes) {
@@ -173,7 +184,9 @@ public class RoutingNode extends Router2Test {
 							}
 					}
 					lockRoutNodes.unlock();
-				}			
+				} else {
+					lockP2N.unlock();
+				}
 			}
 		});
 	}
@@ -209,14 +222,16 @@ public class RoutingNode extends Router2Test {
 		routingTable.put(addr, new Chemin(nodeOutbound, 1));
 		lockTable.unlock();
 
-//		int hops = -1;
-//		if (path2Network != null) {
-//			hops = path2Network.getNumberOfHops();
-//		}
-//
-//		if (hops > -1) {
-//			routOutbound.updateAccessPoint(this.addr, hops);
-//		}
+		int hops = -1;
+		lockP2N.lock();
+		if (path2Network != null) {
+			hops = path2Network.getNumberOfHops();
+		}
+		lockP2N.unlock();
+
+		if (hops > -1) {
+			routOutbound.updateAccessPoint(this.addr, hops);
+		}
 //		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
 
 		logMessage("fin add");
