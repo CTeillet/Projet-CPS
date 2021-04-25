@@ -65,20 +65,27 @@ public class GestionnaireReseau extends AbstractComponent {
 	 * @param initialRange Porte de communication du noeud
 	 * @return ensemble des voisins accessibles
 	 */
-	public synchronized Set<ConnectionInfo> registerTerminalNode(AddressI address, String communicationInboundPortURI,
+	public Set<ConnectionInfo> registerTerminalNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange){
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, false, "", initialPosition);
 		
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();  // Ensemble des noeuds accessibles
 		// Ajout des noeud capable de router a sa porté
-		tableNoeudRouting.stream()
-		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
-		.forEach(x-> res.add(x));
-		tableNoeudAccess.stream()
-		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
-		.forEach(x-> res.add(x));
+		synchronized (tableNoeudRouting) {
+			tableNoeudRouting.stream()
+			.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+			.forEach(x-> res.add(x));
+		}
+		synchronized (tableNoeudAccess) {
+			tableNoeudAccess.stream()
+			.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+			.forEach(x-> res.add(x));
+		}
+		
 		// Ajout du noeud a la table
-		tableNoeudTerminal.add(c);
+		synchronized (tableNoeudTerminal) {
+			tableNoeudTerminal.add(c);
+		}
 		
 		logMessage("TerminalNode:" + address + "\ntaille=" + size());
 		return res;	
@@ -93,24 +100,33 @@ public class GestionnaireReseau extends AbstractComponent {
 	 * @param routingInboundPortURI URI du port entrant de routage
 	 * @return ensemble des voisins accessible
 	 */
-	public synchronized Set<ConnectionInfo> registerAccessPoint(AddressI address, String communicationInboundPortURI,
+	public Set<ConnectionInfo> registerAccessPoint(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI){
 		
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>(); // Ensemble des noeuds accessibles
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, initialPosition);
 		
-		// ajout de tous les AccessPointNode
-		res.addAll(tableNoeudAccess);
+		
 		// Ajout des RoutingNode a sa porté
-		tableNoeudRouting.stream()
-		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
-		.forEach(x-> res.add(x));
+		synchronized (tableNoeudRouting) {
+			tableNoeudRouting.stream()
+			.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+			.forEach(x-> res.add(x));
+		}
 		// Ajout des TerminalNode a sa porté
-		tableNoeudTerminal.stream()
+		synchronized (tableNoeudTerminal) {
+			tableNoeudTerminal.stream()
 		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
 		.forEach(x-> res.add(x));
-		// Ajout du noeud a la table
-		tableNoeudAccess.add(c);
+		}
+		
+		synchronized (tableNoeudAccess) {
+			// ajout de tous les AccessPointNode
+			res.addAll(tableNoeudAccess);
+			
+			// Ajout du noeud a la table
+			tableNoeudAccess.add(c);
+		}
 		
 		logMessage("AccessPoint: " + address + "\ntaille=" + size());
 		return res;
@@ -125,25 +141,31 @@ public class GestionnaireReseau extends AbstractComponent {
 	 * @param routingInboundPortURI URI du port entrant de routage
 	 * @return ensemble des voisins accessible
 	 */
-	public synchronized Set<ConnectionInfo> registerRoutingNode(AddressI address, String communicationInboundPortURI,
+	public Set<ConnectionInfo> registerRoutingNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI){
 		
 		Set<ConnectionInfo> res = new HashSet<ConnectionInfo>();  // Ensemble des noeuds accessibles
 		ConnectionInfo c = new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, initialPosition);
 		
 		// Ajout de tous les noeuds a sa porté
-		tableNoeudAccess.stream()
-		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
-		.forEach(x-> res.add(x));
-		tableNoeudRouting.stream()
-		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
-		.forEach(x-> res.add(x));
-		tableNoeudTerminal.stream()
-		.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
-		.forEach(x-> res.add(x));
-		
-		// Ajout du noeud a la table
-		tableNoeudRouting.add(c);
+		synchronized(tableNoeudAccess) {
+			tableNoeudAccess.stream()
+			.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+			.forEach(x-> res.add(x));
+		}
+		synchronized (tableNoeudTerminal) {
+			tableNoeudTerminal.stream()
+			.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+			.forEach(x-> res.add(x));
+		}
+		synchronized (tableNoeudRouting) {
+			tableNoeudRouting.stream()
+			.filter( x -> x.getPosition().distance(initialPosition)<=initialRange)
+			.forEach(x-> res.add(x));
+
+			// Ajout du noeud a la table
+			tableNoeudRouting.add(c);
+		}
 		
 		logMessage("RoutingNode:" + address + "\ntaille=" + size());
 		return res;
@@ -154,7 +176,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	 * @param address Adresse du noeud a retiré
 	 * @throws Exception si une exception est throw
 	 */
-	public synchronized void unregister (AddressI address) throws Exception{
+	public void unregister (AddressI address) throws Exception{
 		tableNoeudAccess.removeIf(c-> c.getAddress()==address);
 		tableNoeudRouting.removeIf(c-> c.getAddress()==address);
 		tableNoeudTerminal.removeIf(c-> c.getAddress()==address);
@@ -162,7 +184,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	}
 	
 	@Override
-	public synchronized void shutdown() throws ComponentShutdownException {
+	public void shutdown() throws ComponentShutdownException {
 		try {
 			this.registrationInboundPort.unpublishPort();
 			super.shutdown();
@@ -174,7 +196,7 @@ public class GestionnaireReseau extends AbstractComponent {
 	}
 	
 	@Override
-	public synchronized void finalise() throws Exception {
+	public void finalise() throws Exception {
 		System.out.println(this.toString());
 		super.finalise();
 	}
@@ -208,6 +230,4 @@ public class GestionnaireReseau extends AbstractComponent {
 		}
 		return str;
 	}
-	
-	
 }
