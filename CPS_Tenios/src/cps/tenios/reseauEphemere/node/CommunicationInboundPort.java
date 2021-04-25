@@ -87,6 +87,5 @@ public class CommunicationInboundPort extends AbstractInboundPort implements Com
 			else {((Node)c).ping();}
 			return null;
 		} );
-
 	}
 }
