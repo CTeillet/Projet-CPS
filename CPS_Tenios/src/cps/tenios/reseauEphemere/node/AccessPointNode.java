@@ -58,10 +58,7 @@ public class AccessPointNode extends Router2Test {
 			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
 		}
 		
-		
-		
 		logMessage("Fin");
-		//this.registrationOutboundPort.unregister(this.addr);
 	}
 
 	@Override
@@ -102,7 +99,9 @@ public class AccessPointNode extends Router2Test {
 		if(address.isNetworkAddress()) {
 			return 0;
 		}
+		lockTable.lock();
 		Chemin path = routingTable.get(address);
+		lockTable.unlock();
 		if(path!=null) {
 			return path.getNumberOfHops();
 		}
@@ -132,15 +131,19 @@ public class AccessPointNode extends Router2Test {
 		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
 		routOutbound.publishPort();
 		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+
 		
-		//section critique
-			// ajout du noeud dans list des voisins
-			routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
-			// mis a jour du nouvau voisins
-			routingTable.put(addr, new Chemin(nodeOutbound, 1));
+		// ajout du noeud dans list des voisins
+		lockRoutNodes.lock();
+		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
+		lockRoutNodes.unlock();
+		// mis a jour du nouvau voisins
+		lockTable.lock();
+		routingTable.put(addr, new Chemin(nodeOutbound, 1));
+		lockTable.unlock();
 		// fin
 		
-		routOutbound.updateRouting(this.addr, this.getInfoVoisin());
+		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
 		routOutbound.updateAccessPoint(this.addr, 0);
 		
 		return nodeOutbound;

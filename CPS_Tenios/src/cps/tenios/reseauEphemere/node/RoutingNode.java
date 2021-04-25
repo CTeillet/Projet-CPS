@@ -88,9 +88,9 @@ public class RoutingNode extends Router2Test {
 				return path2Network.getNumberOfHops();
 			}
 		} else {
-			lockRoutNodes.lock();
+			lockTable.lock();
 			Chemin chemin = routingTable.get(address);
-			lockRoutNodes.unlock();
+			lockTable.unlock();
 			if(chemin != null) {
 				return chemin.getNumberOfHops();
 			}
@@ -126,7 +126,9 @@ public class RoutingNode extends Router2Test {
 
 					} else {
 						// Cherche l'adresse dans la table 
+						lockTable.lock();
 						Chemin path = routingTable.get(m.getAddress());
+						lockTable.unlock();
 						if(path != null) {
 							//logMessage("Gagner");
 							try {
