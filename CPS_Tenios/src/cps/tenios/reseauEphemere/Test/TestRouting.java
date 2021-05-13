@@ -17,7 +17,7 @@ public class TestRouting extends AbstractCVM {
 	public static void main(String[] args) {
 		try {
 			TestRouting c = new TestRouting();
-			c.startStandardLifeCycle(60000L);
+			c.startStandardLifeCycle(6000L);
 			System.exit(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -29,8 +29,8 @@ public class TestRouting extends AbstractCVM {
 	@Override
 	public void deploy() throws Exception {
 		try {
-			String [] uri = new String [2];
-			NodeAddress [] addr = new NodeAddress[2];
+			String [] uri = new String [5];
+			NodeAddress [] addr = new NodeAddress[5];
 			for (int i = 0; i < uri.length; i++) {	
 				uri[i] = AbstractPort.generatePortURI();
 				addr[i] = new NodeAddress(1, i);
@@ -41,7 +41,7 @@ public class TestRouting extends AbstractCVM {
 
 			String[] routingURI = new String [5];
 			for (int i = 0; i < uri.length; i++) {
-				routingURI[i] = AbstractComponent.createComponent(RoutingNode.class.getCanonicalName(), new Object[] {uri[i], addr[i], i*10, 10, 15.});
+				routingURI[i] = AbstractComponent.createComponent(RoutingNode.class.getCanonicalName(), new Object[] {uri[i], addr[i], i*5, 10, 15.});
 			}
 
 			for (int i = 0; i < uri.length; i++) {

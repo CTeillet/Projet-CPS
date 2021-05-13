@@ -228,16 +228,18 @@ public class RoutingNode extends Router2Test {
 		logMessage("addRoutingNeighbour " + addr);
 		CommunicationOutboundPort nodeOutbound = null;
 		RoutingOutboundPort routOutbound = null;
+		logMessage("avant tyr");
 		try {
 			// Connexion au node par un port de Communication
 			nodeOutbound = new CommunicationOutboundPort(this);
 			nodeOutbound.publishPort();
 			doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
-	
+			logMessage("Communication ");
 			//Connexion au RoutingNodeOutboundPort
 			routOutbound = new RoutingOutboundPort(this);
 			routOutbound.publishPort();
 			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+			logMessage("Rout");
 		} catch (Exception e ) {
 			e.printStackTrace();
 		}

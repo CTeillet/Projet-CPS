@@ -24,7 +24,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 @OfferedInterfaces(offered = {CommunicationCI.class, RoutingCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class, RoutingCI.class})
 public class AccessPointNode extends Router2Test {
-	
+
 	/**
 	 * Constructeur de AccessPointNode
 	 * @param uri Uri du port sortant vers le gestionnaire reseau
@@ -40,9 +40,10 @@ public class AccessPointNode extends Router2Test {
 	@Override
 	public void execute() throws Exception {
 		logMessage("Dans Access Point " + this.addr);
-		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, 100.0, "");
-		
+		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerAccessPoint(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, 100.0, this.ROUTING_INBOUNDPORT_URI);
+		logMessage("my"+this.ROUTING_INBOUNDPORT_URI);
 		for(ConnectionInfo c : voisin) {
+			logMessage("getRoutingInboundPortURI : "+c.getRoutingInboundPortURI());
 			ajoutVoisins(c);
 		}
 		logMessage("\n Fin !!!\n");
@@ -110,11 +111,11 @@ public class AccessPointNode extends Router2Test {
 
 	@Override
 	public int hasRouteFor(AddressI address) throws Exception {
-		
+
 		if(address.equals(this.addr)) {
 			return 0;
 		}
-		
+
 		if(address.isNetworkAddress()) {
 			return 0;
 		}
@@ -127,24 +128,43 @@ public class AccessPointNode extends Router2Test {
 		return -1;
 	}
 
-	
+
 	@Override
 	protected CommunicationOutboundPort addRoutingNeighbour(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("addRoutingNeighbour " + addr);
-		// Connexion au node par un port de Communication
-		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
-		nodeOutbound.publishPort();
-		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
-
-		//Connexion au RoutingNodeOutboundPort
-		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
-		routOutbound.publishPort();
-		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+		CommunicationOutboundPort nodeOutbound = null;
+		RoutingOutboundPort routOutbound = null;
+		logMessage("avant tyr");
+		try {
+			// Connexion au node par un port de Communication
+			nodeOutbound = new CommunicationOutboundPort(this);
+			nodeOutbound.publishPort();
+			doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
+			logMessage("Communication ");
+			//Connexion au RoutingNodeOutboundPort
+			routOutbound = new RoutingOutboundPort(this);
+			logMessage("1");
+			routOutbound.publishPort();
+			logMessage("2");
+			logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
+			logMessage("out : " + routOutbound.getPortURI() + ", in : " + routingInboundPortURI);
+			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+			logMessage("Rout");
+		} catch (Exception e ) {
+			e.printStackTrace();
+		}
+		logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
 
 		logMessage("avant synchro");
 		// ajout du noeud dans list des voisins
 		lockRoutNodes.lock();
-		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
+		logMessage("lockRout pris");
+		try {
+			routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logMessage("ajout ok");
 		lockRoutNodes.unlock();
 		//tableAndRoutes.notifyAll();
 		// mis a jour du nouvau voisins
@@ -158,15 +178,15 @@ public class AccessPointNode extends Router2Test {
 		logMessage("addRoutingNeighbour fin" + addr);
 		return nodeOutbound;
 	}
-	
-	
-	
+
+
+
 	@Override
 	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {}
-	
+
 	@Override
 	public String toString() {
 		return "AcessPoint"+super.toString();
 	};
-	
+
 }

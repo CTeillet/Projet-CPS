@@ -626,11 +626,8 @@ public abstract class Router2Test extends AbstractComponent {
 			this.doPortDisconnection(node.getNode().getClientPortURI());
 		}
 		for(InfoRoutNode node : routingNodes) {
-			logMessage("routing disconnect");
 			this.doPortDisconnection(node.getNode().getClientPortURI());
-			logMessage("disconnect nodePort");
 			this.doPortDisconnection(node.getRout().getClientPortURI());
-			logMessage("disconnect routPort");
 		}
 		logMessage("fin disconnect");
 
