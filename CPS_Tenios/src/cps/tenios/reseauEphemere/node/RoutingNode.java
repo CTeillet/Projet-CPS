@@ -200,7 +200,7 @@ public class RoutingNode extends Router2Test {
 						logMessage("lockRout pris");
 						// propagation de l'update
 						for(InfoRoutNode v : routingNodes) {
-							if (!neighbour.equals(v.getAdress()))
+							if (!neighbour.equals(v.getAddress()))
 								try {
 									v.getRout().updateAccessPoint(getAddr(), path2Network.getNumberOfHops());
 								} catch (Exception e) {
@@ -221,11 +221,6 @@ public class RoutingNode extends Router2Test {
 				logMessage("fin update");
 			}
 		});
-	}
-
-	@Override
-	public String toString() {
-		return "RoutingNode ["+ super.toString() +"]";
 	}
 
 	@Override
@@ -288,4 +283,9 @@ public class RoutingNode extends Router2Test {
 		logMessage("fin add" + addr);
 		return nodeOutbound;
 	}
+	
+	@Override
+	public String toString() {
+		return "Routing"+super.toString();
+	};
 }

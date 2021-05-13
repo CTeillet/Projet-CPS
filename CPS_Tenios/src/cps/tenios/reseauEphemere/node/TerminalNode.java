@@ -43,7 +43,7 @@ public class TerminalNode extends Node {
 	
 	@Override
 	public void execute() throws Exception {
-		logMessage("Debut Execute TerminalNode "+ index);
+		logMessage("Debut Execute TerminalNode "+ this.addr);
 		// enrigistrement au près du gestionnaire
 		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerTerminalNode(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, this.range);
 		//Connexion aux voisins
@@ -76,11 +76,6 @@ public class TerminalNode extends Node {
 	}
 
 	@Override
-	public String toString() {
-		return "TerminalNode ["+super.toString()+"t]";
-	}
-
-	@Override
 	public void transmitMessage(MessageI msg) throws Exception {
 		//Copie du message 
 		MessageI m = new Message((Message) msg);;
@@ -90,5 +85,10 @@ public class TerminalNode extends Node {
 			this.seekNtransmit(m);
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return "Terminal"+super.toString();
+	};
 
 }

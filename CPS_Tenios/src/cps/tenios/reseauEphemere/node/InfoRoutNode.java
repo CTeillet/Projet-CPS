@@ -40,7 +40,7 @@ public class InfoRoutNode {
 	 * @return l'addresse  stocker dans l'objet
 	 */
 	//TODO refactor address : il faut 2 d
-	public AddressI getAdress() {
+	public AddressI getAddress() {
 		return address;
 	}
 	

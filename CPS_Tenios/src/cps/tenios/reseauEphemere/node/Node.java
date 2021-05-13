@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import cps.tenios.reseauEphemere.ConnectionInfo;
 import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.NodeConnector;
 import cps.tenios.reseauEphemere.Position;
@@ -112,7 +113,13 @@ public abstract class  Node extends AbstractComponent {
 
 	@Override
 	public synchronized void finalise() throws Exception {
+		
+		System.out.println("\n"+this.toString()+"\n");
+		
+		
 		//Deconnexion des ports
+		
+		
 		this.doPortDisconnection(REGISTRATION_URI);
 
 		for(InfoTerminalN node : terminalNodes) {
@@ -246,7 +253,7 @@ public abstract class  Node extends AbstractComponent {
 	protected synchronized void inondation(MessageI m) throws Exception {
 		//retransmet le message a tous ses voisins routeurs
 		for (InfoRoutNode n : routingNodes) {
-			logMessage("Je transfere a " + n.getAdress());
+			logMessage("Je transfere a " + n.getAddress());
 			n.getNode().transmitMessage(m);
 		}
 	}
@@ -345,8 +352,26 @@ public abstract class  Node extends AbstractComponent {
 		return addr;
 	}
 
+
 	@Override
 	public String toString() {
-		return "Node [index=" + index + "]";
+		String str = "Node :" + addr + "\nterminalNodes=";
+		
+		for (InfoTerminalN n : terminalNodes) {
+			str += "\n\t" + n.getAddress();
+			
+		}
+		
+		str += "\nroutingNodes=";
+		for (InfoRoutNode n : routingNodes) {
+			str += "\n\t" + n.getAddress();
+			
+		}
+		return str;
 	}
+
+	
+	
+	
+	
 }

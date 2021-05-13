@@ -127,11 +127,6 @@ public class AccessPointNode extends Router2Test {
 		return -1;
 	}
 
-
-	@Override
-	public String toString() {
-		return "AccessPointNode [" + super.toString() + "]";
-	}
 	
 	@Override
 	protected CommunicationOutboundPort addRoutingNeighbour(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
@@ -168,5 +163,10 @@ public class AccessPointNode extends Router2Test {
 	
 	@Override
 	public void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception {}
+	
+	@Override
+	public String toString() {
+		return "AcessPoint"+super.toString();
+	};
 	
 }

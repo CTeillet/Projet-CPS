@@ -163,11 +163,6 @@ public abstract class Router2Test extends AbstractComponent {
 		indexUpdate = createNewExecutorService(AbstractPort.generatePortURI(), 3, false);
 	}
 
-	@Override
-	public String toString() {
-		return "Node [index=" + index + "]";
-	}
-
 
 
 	/**
@@ -287,7 +282,7 @@ public abstract class Router2Test extends AbstractComponent {
 		lockRoutNodes.lock();
 		//logMessage("lockRout pris");
 		for (InfoRoutNode n : routingNodes) {
-			logMessage("Je transfere a " + n.getAdress());
+			logMessage("Je transfere a " + n.getAddress());
 			n.getNode().transmitMessage(m);
 		}
 		//logMessage("lockRout relache");
@@ -354,7 +349,7 @@ public abstract class Router2Test extends AbstractComponent {
 		lockRoutNodes.lock();
 		//logMessage("lockRout pris");
 		for(InfoRoutNode node : routingNodes) {
-			if(node.getAdress().equals(adrr)) {
+			if(node.getAddress().equals(adrr)) {
 				// liberation et reveil de processus endormie
 				//logMessage("lockRout relach");
 				lockRoutNodes.unlock();
@@ -397,7 +392,7 @@ public abstract class Router2Test extends AbstractComponent {
 	protected RoutingOutboundPort findRoutingOutboundPort(AddressI adrr) {
 		// TODO verif section critique
 		for(InfoRoutNode node : routingNodes) {
-			if(node.getAdress().equals(adrr)) {
+			if(node.getAddress().equals(adrr)) {
 				return node.getRout();
 			}
 		}
@@ -456,7 +451,7 @@ public abstract class Router2Test extends AbstractComponent {
 	private void suppprimeVoisins(InfoRoutNode toDelete) {
 		lockTable.lock();
 		
-		routingTable.remove(toDelete.getAdress());
+		routingTable.remove(toDelete.getAddress());
 		ArrayList<AddressI> deleteList = new ArrayList<AddressI>();
 		for (Entry<AddressI, Chemin> entry : routingTable.entrySet()) {
 			if (entry.getValue().getNext().equals(toDelete.getNode())) {
@@ -496,7 +491,7 @@ public abstract class Router2Test extends AbstractComponent {
 		lockRoutNodes.lock();
 		try {
 			for (InfoRoutNode c : routingNodes) {
-				if (c.getAdress() == addr) {
+				if (c.getAddress() == addr) {
 					return true;
 				}
 			}
@@ -604,7 +599,7 @@ public abstract class Router2Test extends AbstractComponent {
 		lockRoutNodes.lock();
 		//logMessage("lockRout pris");
 		for(InfoRoutNode rn : routingNodes) {
-			if(!rn.getAdress().equals(neighbour)) {
+			if(!rn.getAddress().equals(neighbour)) {
 				rn.getRout().updateRouting(this.getAddr(), r);
 			}
 		}
@@ -622,6 +617,8 @@ public abstract class Router2Test extends AbstractComponent {
 
 	@Override
 	public synchronized void finalise() throws Exception {
+		
+		System.out.println("\n"+this.toString()+"\n");
 		//Deconnexion des ports
 		this.doPortDisconnection(REGISTRATION_URI);
 
@@ -664,6 +661,23 @@ public abstract class Router2Test extends AbstractComponent {
 			throw new ComponentShutdownException(e);
 		}
 
+	}
+	
+	@Override
+	public String toString() {
+		String str = "Node :" + addr + "\nterminalNodes=";
+		
+		for (InfoTerminalN n : terminalNodes) {
+			str += "\n\t" + n.getAddress();
+			
+		}
+		
+		str += "\nroutingNodes=";
+		for (InfoRoutNode n : routingNodes) {
+			str += "\n\t" + n.getAddress();
+			
+		}
+		return str;
 	}
 
 }

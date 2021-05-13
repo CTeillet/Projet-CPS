@@ -103,7 +103,7 @@ public abstract class Router extends Node {
 		Set<RouteInfoI> r = this.getInfoTableRout();
 
 		for(InfoRoutNode rn : routingNodes) {
-			if(!rn.getAdress().equals(neighbour)) {
+			if(!rn.getAddress().equals(neighbour)) {
 				rn.getRout().updateRouting(this.getAddr(), r);
 			}
 		}
@@ -129,7 +129,7 @@ public abstract class Router extends Node {
 	 */
 	protected CommunicationOutboundPort findNodeOutboundPort(AddressI adrr) {
 		for(InfoRoutNode node : routingNodes) {
-			if(node.getAdress().equals(adrr)) {
+			if(node.getAddress().equals(adrr)) {
 				return node.getNode();
 			}
 		}
@@ -148,7 +148,7 @@ public abstract class Router extends Node {
 	 */
 	protected RoutingOutboundPort findRoutingOutboundPort(AddressI adrr) {
 		for(InfoRoutNode node : routingNodes) {
-			if(node.getAdress().equals(adrr)) {
+			if(node.getAddress().equals(adrr)) {
 				return node.getRout();
 			}
 		}
