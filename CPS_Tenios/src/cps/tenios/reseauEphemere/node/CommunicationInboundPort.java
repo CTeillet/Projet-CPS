@@ -36,10 +36,13 @@ public class CommunicationInboundPort extends AbstractInboundPort implements Com
 
 	@Override
 	public void connect(AddressI address, String communicationInboundPortURI) throws Exception {
-		this.getOwner().handleRequest( c -> {
-			if (c instanceof Node) {((Node)c).connect(address, communicationInboundPortURI);}
-			else {((Router2Test)c).connect(address, communicationInboundPortURI);}
-			return null;
+		this.getOwner().runTask( c -> {
+			try {
+				if (c instanceof Node) {((Node)c).connect(address, communicationInboundPortURI);}
+				else {((Router2Test)c).connect(address, communicationInboundPortURI);}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
 
 	}

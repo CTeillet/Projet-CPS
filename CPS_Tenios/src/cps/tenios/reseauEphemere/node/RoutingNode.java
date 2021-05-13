@@ -13,7 +13,6 @@ import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
-import cps.tenios.reseauEphemere.node.request.TransmitRequest;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
@@ -51,32 +50,54 @@ public class RoutingNode extends Router2Test {
 
 	@Override
 	public void execute() throws Exception {
-		logMessage("Debut Execute RoutingNode " + this.index);
+		logMessage("Debut Execute RoutingNode " + this.addr);
 		// enrigistrement au près du gestionnaire
 		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerRoutingNode(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, this.range, ROUTING_INBOUNDPORT_URI);
-		//logMessage("Taille voisin " + voisin.size());
-		//Connexion aux voisins
+		logMessage("ajout de" + voisin.size() + " voisin ");
 		for(ConnectionInfo c : voisin) {
-			CommunicationOutboundPort out; // port de communication sortant 
-
-			if (c.isRouting()) {
-				// ajout d'un voisin routeur
-				logMessage("avant addRouting");
-				out = this.addRoutingNeighbour(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
-				//logMessage("add ok routeur : " + (out!= null));
-			} else {
-				// ajout d'un voisin terminal
-				logMessage("avant addTerminal");
-				out = this.addTerminalNeighbour(c.getAddress(), c.getCommunicationInboundURI());
-			}
-			logMessage("avant connect");
-			// connexion au voisin pour qu'il ajoute le noeud courant
-			out.connectRouting(this.addr, this.COMM_INBOUNDPORT_URI, this.ROUTING_INBOUNDPORT_URI);
-			logMessage("apres connect");
-			// ajout du noeud a la table de routage
-			routingTable.put(c.getAddress(), new Chemin(out, 1));
+			ajoutVoisins(c);
 		}
-		logMessage("Fin");
+		logMessage("\n Fin !!!\n");
+	}
+
+	/**
+	 * @param c
+	 * @throws Exception
+	 */
+	private void ajoutVoisins(ConnectionInfo c) throws Exception {
+		
+		runTask(super.indexCommunication, new FComponentTask() {
+			
+			@Override
+			public void run(ComponentI owner) {
+				// TODO Auto-generated method stub
+				CommunicationOutboundPort out; // port de communication sortant 
+				try {
+					if (c.isRouting()) {
+						// ajout d'un voisin routeur
+						logMessage("avant addRouting");
+
+						out = addRoutingNeighbour(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
+
+						logMessage("add ok routeur : " + (out!= null));
+					} else {
+						// ajout d'un voisin terminal
+						logMessage("avant addTerminal");
+						out = addTerminalNeighbour(c.getAddress(), c.getCommunicationInboundURI());
+						logMessage("addTerminal ok");
+					}
+					logMessage("avant connect");
+					// connexion au voisin pour qu'il ajoute le noeud courant
+					out.connectRouting(addr, COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
+					logMessage("apres connect");
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		});
 	}
 
 	@Override
@@ -188,7 +209,7 @@ public class RoutingNode extends Router2Test {
 						}
 						logMessage("lockRout relache");
 						lockRoutNodes.unlock();
-						tableAndRoutes.notifyAll();
+						//tableAndRoutes.notifyAll();
 					} else {
 						lockP2N.unlock();
 					}
@@ -197,6 +218,7 @@ public class RoutingNode extends Router2Test {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				logMessage("fin update");
 			}
 		});
 	}
@@ -230,31 +252,40 @@ public class RoutingNode extends Router2Test {
 
 		// ajout du noeud dans list des voisins
 		lockRoutNodes.lock();
-		logMessage("lockRout pris");
-		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
+		//logMessage("lockRout pris");
+		try {
+			routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//logMessage("ajout ok");
 		lockRoutNodes.unlock();
-		tableAndRoutes.notifyAll();
-		logMessage("lockRout relache");
+		
+		//logMessage("lockRout relache");
 		// mis a jour du nouvau voisins
 		lockTable.lock();
+		//logMessage("lockTable pris");
 		routingTable.put(addr, new Chemin(nodeOutbound, 1));
+		//logMessage("lockTable relache");
 		lockTable.unlock();
-		logMessage("locktable");
+		//logMessage("locktable");
 
 		int hops = -1;
 		lockP2N.lock();
+		//logMessage("p2n pris");
 		if (path2Network != null) {
 			hops = path2Network.getNumberOfHops();
 		}
+		//logMessage("p2n relache");
 		lockP2N.unlock();
-		logMessage("p2n");
+		//logMessage("p2n");
 
 		if (hops > -1) {
 			routOutbound.updateAccessPoint(this.addr, hops);
 		}
 		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
 
-		logMessage("fin add");
+		logMessage("fin add" + addr);
 		return nodeOutbound;
 	}
 }

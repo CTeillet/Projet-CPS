@@ -66,7 +66,7 @@ public class TerminalNode extends Node {
 			this.transmitMessage(toSend);
 		}
 		
-		logMessage("Fin execute");
+		logMessage("\n Fin execute !!!\n");
 	}
 
 	@Override

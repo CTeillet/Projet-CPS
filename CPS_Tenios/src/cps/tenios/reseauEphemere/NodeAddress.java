@@ -46,4 +46,11 @@ public class NodeAddress implements AddressI {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return "NodeAddress [addr=" + addr + ", idMachine=" + idMachine + "]";
+	}
+	
+	
+
 }
