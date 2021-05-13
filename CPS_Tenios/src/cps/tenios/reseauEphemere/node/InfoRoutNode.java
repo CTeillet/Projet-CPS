@@ -12,7 +12,7 @@ public class InfoRoutNode {
 	/**
 	 * Addresse d'un noeud
 	 */
-	private AddressI label;
+	private AddressI address;
 	/**
 	 * Port de communication
 	 */
@@ -28,9 +28,9 @@ public class InfoRoutNode {
 	 * @param node port de communication
 	 * @param rout port de routage
 	 */
-	public InfoRoutNode(AddressI label, CommunicationOutboundPort node, RoutingOutboundPort rout) {
+	public InfoRoutNode(AddressI address, CommunicationOutboundPort node, RoutingOutboundPort rout) {
 		super();
-		this.label = label;
+		this.address = address;
 		this.node = node;
 		this.rout = rout;
 	}
@@ -41,7 +41,7 @@ public class InfoRoutNode {
 	 */
 	//TODO refactor address : il faut 2 d
 	public AddressI getAdress() {
-		return label;
+		return address;
 	}
 	
 	/**
@@ -56,8 +56,8 @@ public class InfoRoutNode {
 	 * Permet de changer l'addresse stocker
 	 * @param label l'addresse que l'on veut stocker
 	 */
-	public void setLabel(AddressI label) {
-		this.label = label;
+	public void setAddress(AddressI address) {
+		this.address = address;
 	}
 	
 	/**

@@ -1,11 +1,13 @@
 package cps.tenios.reseauEphemere.node;
 
+import java.rmi.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.Map.Entry;
@@ -30,7 +32,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 @OfferedInterfaces(offered = {CommunicationCI.class, RoutingCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class, RoutingCI.class})
 public abstract class Router2Test extends AbstractComponent {
-	
+
 	/**
 	 * URI du port entrants de communication
 	 */
@@ -39,7 +41,7 @@ public abstract class Router2Test extends AbstractComponent {
 	 * Port entrants pour les communication avec les Noeuds
 	 */
 	protected CommunicationInboundPort nodeInboundPort;
-	
+
 	/**
 	 * URI de port sortants vers le gestionnaire r�seau
 	 */
@@ -48,7 +50,7 @@ public abstract class Router2Test extends AbstractComponent {
 	 * Port sortant pour communiquer avec le gestionnaire Reseau
 	 */
 	protected RegistrationOutboundPort registrationOutboundPort;	
-	
+
 	/**
 	 * URI du port de Routage entrant
 	 */
@@ -57,8 +59,9 @@ public abstract class Router2Test extends AbstractComponent {
 	 * Port de routage entrants
 	 */
 	protected RoutingInboundPort routInbound;
-	
-	
+
+	protected boolean amIAlive = true;
+
 	/**
 	 * Compteur du nombre de noeud, utilis� pour les adresses
 	 */
@@ -71,7 +74,7 @@ public abstract class Router2Test extends AbstractComponent {
 	 * Adresse du noeud
 	 */
 	protected AddressI addr;
-	
+
 	/**
 	 * Position du Noeud
 	 */
@@ -81,7 +84,7 @@ public abstract class Router2Test extends AbstractComponent {
 	 */
 	protected double range;
 
-	
+
 	/**
 	 * Index du pool de thread pour la communication
 	 */
@@ -90,7 +93,7 @@ public abstract class Router2Test extends AbstractComponent {
 	 * Index du pool de thread pour la mise a jour des tables.
 	 */
 	protected int indexUpdate;
-	
+
 	/**
 	 * Verrou qui protege des acces concurrent a la list terminalNodes
 	 */
@@ -103,7 +106,10 @@ public abstract class Router2Test extends AbstractComponent {
 	 * Verrou qui protege des acces concurrent a la table de routage
 	 */
 	protected Lock lockTable = new ReentrantLock();
-	
+
+	protected Condition tableAndTerminal = lockTable.newCondition();
+	protected Condition tableAndRoutes = lockTable.newCondition();
+
 	/**
 	 * List des noeud terminaux
 	 */
@@ -116,8 +122,8 @@ public abstract class Router2Test extends AbstractComponent {
 	 * Table de routage
 	 */
 	protected Map<AddressI, Chemin> routingTable;
-	 
-	
+
+
 	/**
 	 * permet de creer un Composant noeud
 	 * @param uri URI du port sortant vers le gestionnaire r�seau
@@ -126,44 +132,44 @@ public abstract class Router2Test extends AbstractComponent {
 	 * @param r range
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected Router2Test(String uri, int i, int j, double r) throws Exception {
+	protected Router2Test(String uri, NodeAddress addr, int i, int j, double r) throws Exception {
 		super(10, 0);
 		REGISTRATION_URI = uri;
 		COMM_INBOUNDPORT_URI = AbstractPort.generatePortURI();
-		
+
 		nodeInboundPort = new CommunicationInboundPort(COMM_INBOUNDPORT_URI,this);
 		nodeInboundPort.publishPort();
-		
+
 		registrationOutboundPort = new RegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
-		
+
 		terminalNodes = new ArrayList<InfoTerminalN>();
 		routingNodes = new ArrayList<InfoRoutNode>();
-		
+
 		this.toggleLogging();
 		this.toggleTracing();
-		
+
 		this.range=r;
-		addr = (AddressI) new NodeAddress(cmp++);
+		this.addr = addr;
 		pos = new Position(i, j);
-		
+
 		routingTable = new HashMap<AddressI, Chemin>();
 		ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		routInbound = new RoutingInboundPort(ROUTING_INBOUNDPORT_URI, this);
 		routInbound.publishPort();
-		
-		
+
+
 		indexCommunication = createNewExecutorService(AbstractPort.generatePortURI(), 7, false);
 		indexUpdate = createNewExecutorService(AbstractPort.generatePortURI(), 3, false);
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Node [index=" + index + "]";
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Method used to connect a Node to another that can rout message
 	 * @param addr Address of the node we want to connect
@@ -187,14 +193,14 @@ public abstract class Router2Test extends AbstractComponent {
 		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
 		nodeOutbound.publishPort();
 		doPortConnection(nodeOutbound.getPortURI(), communicationInboundPortURI, NodeConnector.class.getCanonicalName());
-		
+
 		lockTerNodes.lock(); //section critique
 		terminalNodes.add(new InfoTerminalN(address, nodeOutbound));
 		lockTerNodes.unlock();
-		
+		tableAndTerminal.notifyAll();
 		return nodeOutbound;
 	}
-	
+
 	/**
 	 * Se connecte avec le noeud d'adresse address, et le rajoute � ses voisins
 	 * @param address l'adresse du port avec lequel on veut se connecter 
@@ -202,14 +208,13 @@ public abstract class Router2Test extends AbstractComponent {
 	 * @throws Exception s'il y a un probleme
 	 */
 	public void connect(AddressI address, String communicationInboundPortURI) throws Exception {
-		
+
 		logMessage("Dans connect " + this.addr + ", " + address);
-		
+
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, false, "", null));
 		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
 		this.addTerminalNeighbour(address, communicationInboundPortURI);
 		logMessage("fin connect");
-		
 	}
 
 	/**
@@ -223,13 +228,13 @@ public abstract class Router2Test extends AbstractComponent {
 			throws Exception {
 		logMessage("connectR " + addr);
 		assert this.addr != address;
-		
+
 		//voisin.add(new ConnectionInfo(address, communicationInboundPortURI, true, routingInboundPortURI, null));
 		logMessage("Ajout de voisin" + (routingNodes.size() + terminalNodes.size()));
-		
+
 		this.addRoutingNeighbour(address, communicationInboundPortURI, routingInboundPortURI);
 	}
-	
+
 	/**
 	 * Verifie si un message doit être retransmis.
 	 * On decremente son nombre de saut possible si c'est le cas.
@@ -267,7 +272,7 @@ public abstract class Router2Test extends AbstractComponent {
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Transmet par Inondation le message a tous ses voisins
 	 * @param m Message a retransmettre
@@ -276,13 +281,16 @@ public abstract class Router2Test extends AbstractComponent {
 	protected void inondation(MessageI m) throws Exception {
 		//retransmet le message a tous ses voisins routeurs
 		lockRoutNodes.lock();
+		logMessage("lockRout pris");
 		for (InfoRoutNode n : routingNodes) {
 			logMessage("Je transfere a " + n.getAdress());
 			n.getNode().transmitMessage(m);
 		}
+		logMessage("lockRout relache");
 		lockRoutNodes.unlock();
+		tableAndRoutes.notifyAll();
 	}
-	
+
 	/**
 	 * Cherche une route possible pour transfer un message.
 	 * Si parmi les voisins une route existe, on lui transmet le message.
@@ -294,8 +302,9 @@ public abstract class Router2Test extends AbstractComponent {
 		// cherche une route parmie ses voisins
 		int rout = -1, tmp; 
 		CommunicationOutboundPort next = null;
-		
+
 		lockRoutNodes.lock(); //section critique
+		logMessage("lockRout pris");
 		for (InfoRoutNode n : routingNodes) {
 			tmp = n.getNode().hasRouteFor(m.getAddress());
 			// selection de la route la plus courte
@@ -304,8 +313,9 @@ public abstract class Router2Test extends AbstractComponent {
 				next = n.getNode();
 			}
 		}
+		logMessage("lockRout relache");
 		lockRoutNodes.unlock();
-		
+		tableAndRoutes.notifyAll();
 		// transmet au voisin suivant si une route existe ou a tous sinon
 		if(rout > -1) {
 			next.transmitMessage(m);
@@ -315,7 +325,7 @@ public abstract class Router2Test extends AbstractComponent {
 			inondation(m);
 		}
 	}
-	
+
 	/**
 	 * Permet de recevoir un message. S'il nous est attribu� ou qu'il n'a plus de saut, alors on arrete de le transmettre
 	 * sinon on le transmet � nos voisins
@@ -323,27 +333,50 @@ public abstract class Router2Test extends AbstractComponent {
 	 * @throws Exception s'il y a un probleme
 	 */
 	public abstract void transmitMessage(MessageI msg) throws Exception;
-	
+
 	/**
 	 * Trouve depuis une adresse le port de Communication sortant correspondant
+	 * contexte d'appel ou tableLock est verrouiller
 	 * @param adrr addresse du noeud recherche
 	 * @return port de Communication sortant
+	 * @throws InterruptedException 
 	 */
-	protected CommunicationOutboundPort findNodeOutboundPort(AddressI adrr) {
-		// TODO verif section critique
+	protected CommunicationOutboundPort findNodeOutboundPort(AddressI adrr) throws Exception {
+		// tentative de recuperation du verrou des noeud de routage
+		while(!lockRoutNodes.tryLock()) {
+			logMessage("lockRout tenative");
+			tableAndRoutes.wait();
+		}
+		logMessage("lockRout pris");
 		for(InfoRoutNode node : routingNodes) {
 			if(node.getAdress().equals(adrr)) {
+				// liberation et reveil de processus endormie
+				logMessage("lockRout relach");
+				lockRoutNodes.unlock();
+				tableAndRoutes.notifyAll();
 				return node.getNode();
 			}
+		}
+		// liberation et reveil de processus endormie
+		logMessage("lockRout relache");
+		lockRoutNodes.unlock();
+		tableAndRoutes.notifyAll();
+		// tentative de recuperation du verrou de noeud terminaux
+		while(!lockTable.tryLock()) {
+			tableAndTerminal.wait();
 		}
 		for(InfoTerminalN node : terminalNodes) {
 			if(node.getAddress().equals(adrr)) {
+				lockTerNodes.unlock();
+				tableAndTerminal.notifyAll();
 				return node.getNode();
 			}
 		}
+		lockTerNodes.unlock();
+		tableAndTerminal.notifyAll();
 		return null;
 	}
-	
+
 	/**
 	 * Trouve depuis une adresse le port de Routage sortant correspondant
 	 * @param adrr addresse du noeud recherche
@@ -358,7 +391,7 @@ public abstract class Router2Test extends AbstractComponent {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Permet d'avoir l'addresse d'un noeud
 	 * @return l'adresse d'un noeud
@@ -366,7 +399,7 @@ public abstract class Router2Test extends AbstractComponent {
 	public AddressI getAddr() {
 		return addr;
 	}
-	
+
 	/**
 	 * Permet de connaitre le nombre de noeud cr�e au total
 	 * @return le nombre total de noeud
@@ -374,13 +407,77 @@ public abstract class Router2Test extends AbstractComponent {
 	public static int getCmp() {
 		return cmp;
 	}
-	
+
 	/**
 	 * Permet de v�rifier que les voisins sont toujours actif
 	 * @throws Exception s'il y a un probleme
 	 */
-	public abstract void ping() throws Exception;
+	public void ping() throws Exception {
+		if (!amIAlive || Math.random() > 0.01) {
+			amIAlive = false;
+			logMessage("mort du composants !");
+			throw new ConnectException("ping"); 
+		}
+	}
+
+	protected void suppprimeVoisins(InfoTerminalN toDelete) {
+		lockTable.lock();
+		routingTable.remove(toDelete.getAddress());
+		ArrayList<AddressI> deleteList = new ArrayList<AddressI>();
+		for (Entry<AddressI, Chemin> entry : routingTable.entrySet()) {
+			if (entry.getValue().getNext().equals(toDelete.getNode())) {
+				deleteList.add(entry.getKey());
+			}
+		}
+		for(AddressI a : deleteList) {
+			routingTable.remove(a);
+		}
+		lockTable.unlock();
+		
+		lockTerNodes.lock();
+		terminalNodes.remove(toDelete);
+		lockTable.unlock();
+		
+	}
 	
+	private void suppprimeVoisins(InfoRoutNode toDelete) {
+		lockTable.lock();
+		routingTable.remove(toDelete.getAdress());
+		ArrayList<AddressI> deleteList = new ArrayList<AddressI>();
+		for (Entry<AddressI, Chemin> entry : routingTable.entrySet()) {
+			if (entry.getValue().getNext().equals(toDelete.getNode())) {
+				deleteList.add(entry.getKey());
+			}
+		}
+		for(AddressI a : deleteList) {
+			routingTable.remove(a);
+		}
+		lockTable.unlock();
+		
+		lockRoutNodes.lock();
+		logMessage("lockRout pris");
+		routingNodes.remove(toDelete);
+		logMessage("lockRout relache");
+		lockRoutNodes.unlock();
+	}
+	
+	protected void suppprimeVoisins(CommunicationOutboundPort toDelete) {
+		for (InfoTerminalN v: terminalNodes)
+		{
+			if (v.getNode() == toDelete) {
+				suppprimeVoisins(v);
+				return;
+			}
+		}
+		for (InfoRoutNode v: routingNodes)
+		{
+			if (v.getNode() == toDelete) {
+				suppprimeVoisins(v);
+				return;
+			}
+		}
+	}
+
 	/**
 	 * retourne les informations de la table de routage
 	 * @return les informations de la table de routage
@@ -394,7 +491,7 @@ public abstract class Router2Test extends AbstractComponent {
 		lockTable.unlock();
 		return voisins;
 	}
-	
+
 	/**
 	 * Permet de mettre a jour la route la plus courte vers un point d'acces
 	 * @param neighbour voisins ayant envoyer les information vers le point d'acces
@@ -402,7 +499,7 @@ public abstract class Router2Test extends AbstractComponent {
 	 * @throws Exception en cas de probleme
 	 */
 	public abstract void updateAccessPoint(AddressI neighbour, int numberOfHops) throws Exception;
-	
+
 	/**
 	 * Permet de mettre a jour la route la plus optimale vers la destination et met a jour les noeuds voisins en cas de changement
 	 * @param neighbour voisin ayant envoyé les information de stable de routage
@@ -411,46 +508,53 @@ public abstract class Router2Test extends AbstractComponent {
 	 */
 	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 		// TODO remplacer par une lambda
+		logMessage("updateRouting");
 		runTask(this.indexUpdate, new FComponentTask() {
-			
+
 			@Override
 			public void run(ComponentI owner) {
+				System.out.println("run updateRouting");
+				logMessage("run updateRouting!! ");
 				boolean hasChanged = false;
 
-				for(RouteInfoI ri : routes) {
-					if (ri.getDestination().isNodeAddress()) {
+				try {
+					for(RouteInfoI ri : routes) {
+						if (ri.getDestination().isNodeAddress()) {
 
-						lockTable.lock();//section critique
-						Chemin tmp = routingTable.get(ri.getDestination());
-						//Si pas de route vers address => creation d'un nouveau chemin
-						if(tmp == null) {
-							hasChanged = true;
-							routingTable.put( (AddressI)ri.getDestination(), new Chemin(findNodeOutboundPort(neighbour), ri.getNumberOfHops()));
+							lockTable.lock();//section critique
+							Chemin tmp = routingTable.get(ri.getDestination());
+							//Si pas de route vers address => creation d'un nouveau chemin
+							if(tmp == null) {
+								hasChanged = true;
+								routingTable.put( (AddressI)ri.getDestination(), new Chemin(findNodeOutboundPort(neighbour), ri.getNumberOfHops()));
 
-						// Si meilleur route => Maj
-						} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
-							hasChanged = true;
-							// TODO remplacer par une list et ajouter
-							tmp.setNext(findNodeOutboundPort(neighbour));
-							tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
+								// Si meilleur route => Maj
+							} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
+								hasChanged = true;
+								// TODO remplacer par une list et ajouter
+								tmp.setNext(findNodeOutboundPort(neighbour));
+								tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
+							}
+							lockTable.unlock();
 						}
-						lockTable.unlock();
 					}
+					//propage l'update en cas de changement
+					if(hasChanged) {
+						try {
+							propageUpdate(neighbour);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}				
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				//propage l'update en cas de changement
-				if(hasChanged) {
-					try {
-						propageUpdate(neighbour);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}				
 			}
 		});
-		
+
 	}
-	
+
 	/**
 	 * Propage la mis a jour des tables 
 	 * @param neighbour adresse du voisins ayant propager sa mis a jour
@@ -458,19 +562,22 @@ public abstract class Router2Test extends AbstractComponent {
 	 */
 	protected void propageUpdate(AddressI neighbour) throws Exception{
 		Set<RouteInfoI> r = this.getInfoTableRout();
-		
+
 		lockRoutNodes.lock();
+		logMessage("lockRout pris");
 		for(InfoRoutNode rn : routingNodes) {
 			if(!rn.getAdress().equals(neighbour)) {
 				rn.getRout().updateRouting(this.getAddr(), r);
 			}
 		}
+		logMessage("lockRout relache");
 		lockRoutNodes.unlock();
+		tableAndRoutes.notifyAll();
 	}
-	
-	
+
+
 	// Methode de AbstractComponent
-	
+
 	@Override
 	public abstract void execute() throws Exception;
 
@@ -490,10 +597,10 @@ public abstract class Router2Test extends AbstractComponent {
 			logMessage("disconnect routPort");
 		}
 		logMessage("fin disconnect");
-		
+
 		super.finalise();
 	}
-	
+
 	@Override
 	public synchronized void shutdown() throws ComponentShutdownException {
 		logMessage("shutdown");
@@ -501,10 +608,10 @@ public abstract class Router2Test extends AbstractComponent {
 			//Depublication des ports entrants
 			this.nodeInboundPort.unpublishPort();
 			this.routInbound.unpublishPort();
-			
+
 			//ports sortant
 			this.registrationOutboundPort.unpublishPort();
-			
+
 			for(InfoTerminalN node : terminalNodes) {
 				node.getNode().unpublishPort();
 			}
@@ -512,12 +619,12 @@ public abstract class Router2Test extends AbstractComponent {
 				node.getNode().unpublishPort();
 				node.getRout().unpublishPort();
 			}
-			
+			super.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ComponentShutdownException(e);
 		}
-		super.shutdown();
+
 	}
 
 }

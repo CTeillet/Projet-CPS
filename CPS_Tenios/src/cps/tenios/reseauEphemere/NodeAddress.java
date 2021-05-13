@@ -13,12 +13,17 @@ public class NodeAddress implements AddressI {
 	 * Addresse
 	 */
 	public final int addr;
+	/**
+	 * Identifiant machine
+	 */
+	public final int idMachine;
 
 	/**
 	 * Constructeur de NodeAddress
 	 * @param addr Addresse
 	 */
-	public NodeAddress(int addr) {
+	public NodeAddress(int idMachine ,int addr) {
+		this.idMachine = idMachine;
 		this.addr = addr;
 	}
 
@@ -36,7 +41,7 @@ public class NodeAddress implements AddressI {
 	public boolean equals(AddressI a) {
 		if (a.isNodeAddress()) {
 			NodeAddress n = (NodeAddress) a;
-			return n.addr==this.addr;
+			return n.addr==this.addr && n.idMachine == this.idMachine;
 		}
 		return false;
 	}

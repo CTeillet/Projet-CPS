@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.CommunicationCI;
 import cps.tenios.reseauEphemere.interfaces.MessageI;
@@ -43,8 +44,8 @@ public abstract class Router extends Node {
 	 * @param r Portee du signal 
 	 * @throws Exception En case de probleme
 	 */
-	public Router(String uri, int i, int j, double r) throws Exception {
-		super(uri, i, j, r);
+	public Router(String uri, NodeAddress addr, int i, int j, double r) throws Exception {
+		super(uri, addr, i, j, r);
 		routingTable = new HashMap<AddressI, Chemin>();
 		ROUTING_INBOUNDPORT_URI = AbstractPort.generatePortURI();
 		routInbound = new RoutingInboundPort(ROUTING_INBOUNDPORT_URI, this);

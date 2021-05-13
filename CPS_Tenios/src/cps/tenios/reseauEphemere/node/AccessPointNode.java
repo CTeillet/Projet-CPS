@@ -4,6 +4,7 @@ package cps.tenios.reseauEphemere.node;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
+import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.NodeConnector;
 import cps.tenios.reseauEphemere.RoutingConnector;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
@@ -30,8 +31,8 @@ public class AccessPointNode extends Router2Test {
 	 * @param r Portee du signal 
 	 * @throws Exception En case de probleme
 	 */
-	protected AccessPointNode(String uri, int i, int j, double r) throws Exception {
-		super(uri, i, j, r);
+	protected AccessPointNode(String uri, NodeAddress addr, int i, int j, double r) throws Exception {
+		super(uri, addr, i, j, r);
 	}
 
 	@Override
@@ -108,11 +109,6 @@ public class AccessPointNode extends Router2Test {
 		return -1;
 	}
 
-	@Override
-	public void ping() throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public String toString() {
@@ -137,6 +133,7 @@ public class AccessPointNode extends Router2Test {
 		lockRoutNodes.lock();
 		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
 		lockRoutNodes.unlock();
+		tableAndRoutes.notifyAll();
 		// mis a jour du nouvau voisins
 		lockTable.lock();
 		routingTable.put(addr, new Chemin(nodeOutbound, 1));

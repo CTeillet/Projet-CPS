@@ -66,7 +66,6 @@ public abstract class  Node extends AbstractComponent {
 	 */
 	protected double range;
 	
-	// TODO :  voir si necessaire
 	/**
 	 * List des noeud terminaux
 	 */
@@ -85,7 +84,7 @@ public abstract class  Node extends AbstractComponent {
 	 * @param uri URI du port sortant vers le gestionnaire r�seau
 	 * @throws Exception s'il y a un probleme
 	 */
-	protected Node(String uri, int i, int j, double r) throws Exception {
+	protected Node(String uri, NodeAddress addr, int i, int j, double r) throws Exception {
 		super(10, 15);
 		REGISTRATION_URI = uri;
 		COMM_INBOUNDPORT_URI = AbstractPort.generatePortURI();
@@ -95,7 +94,7 @@ public abstract class  Node extends AbstractComponent {
 		
 		registrationOutboundPort = new RegistrationOutboundPort(REGISTRATION_URI, this);
 		registrationOutboundPort.publishPort();
-		// TODO a verifier
+		
 		terminalNodes = new ArrayList<InfoTerminalN>();
 		routingNodes = new ArrayList<InfoRoutNode>();
 		
@@ -103,17 +102,10 @@ public abstract class  Node extends AbstractComponent {
 		this.toggleTracing();
 		
 		this.range=r;
-		addr = (AddressI) new NodeAddress(cmp++);
+		this.addr = addr;
 		pos = new Position(i, j);
 	}
-	/**
-	 * Constructeur de node qui lui attribue des coordonnee et et un rayon de facon aleatoire
-	 * @param uri
-	 * @throws Exception
-	 */
-	protected Node(String uri) throws Exception {
-		this(uri, (new Random()).nextInt(20), (new Random()).nextInt(20), (new Random()).nextDouble());
-	}
+	
 	
 	@Override
 	public abstract void execute() throws Exception;
@@ -130,7 +122,7 @@ public abstract class  Node extends AbstractComponent {
 			logMessage("routing disconnect");
 			this.doPortDisconnection(node.getNode().getClientPortURI());
 			logMessage("disconnect nodePort");
-			this.doPortDisconnection(node.getRout().getClientPortURI());
+			//this.doPortDisconnection(node.getRout().getClientPortURI());
 			logMessage("disconnect routPort");
 		}
 		logMessage("fin disconnect");
@@ -140,7 +132,6 @@ public abstract class  Node extends AbstractComponent {
 
 	@Override
 	public synchronized void shutdown() throws ComponentShutdownException {
-		logMessage("shutdown");
 		try {
 			//Depublication des ports
 			this.nodeInboundPort.unpublishPort();
@@ -150,13 +141,9 @@ public abstract class  Node extends AbstractComponent {
 				node.getNode().unpublishPort();
 			}
 			for(InfoRoutNode node : routingNodes) {
-				logMessage("routing unpublished");
 				node.getNode().unpublishPort();
-				logMessage("node");
-				node.getRout().unpublishPort();
-				logMessage("routing");
+				//node.getRout().unpublishPort();
 			}
-			logMessage("fin for");
 			
 		} catch (Exception e) {
 			e.printStackTrace();

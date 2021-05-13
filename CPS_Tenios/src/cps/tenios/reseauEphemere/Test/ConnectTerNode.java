@@ -36,7 +36,7 @@ public class ConnectTerNode extends AbstractCVM {
 	public static void main(String[] args) {
 		try {
 			ConnectTerNode c = new ConnectTerNode();
-			c.startStandardLifeCycle(60000L);
+			c.startStandardLifeCycle(1000L);
 			System.exit(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -5,6 +5,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
+import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.NodeConnector;
 import cps.tenios.reseauEphemere.RoutingConnector;
 import cps.tenios.reseauEphemere.interfaces.AddressI;
@@ -43,8 +44,8 @@ public class RoutingNode extends Router2Test {
 	 * @param r Portee du signal 
 	 * @throws Exception En case de probleme
 	 */
-	protected RoutingNode(String uri, int i, int j, double r) throws Exception {
-		super(uri, i, j, r);
+	protected RoutingNode(String uri, NodeAddress addr, int i, int j, double r) throws Exception {
+		super(uri, addr, i, j, r);
 		path2Network = null;
 	}
 
@@ -60,10 +61,12 @@ public class RoutingNode extends Router2Test {
 
 			if (c.isRouting()) {
 				// ajout d'un voisin routeur
+				logMessage("avant addRouting");
 				out = this.addRoutingNeighbour(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
-				logMessage("add ok routeur : " + (out!= null));
+				//logMessage("add ok routeur : " + (out!= null));
 			} else {
 				// ajout d'un voisin terminal
+				logMessage("avant addTerminal");
 				out = this.addTerminalNeighbour(c.getAddress(), c.getCommunicationInboundURI());
 			}
 			logMessage("avant connect");
@@ -77,17 +80,12 @@ public class RoutingNode extends Router2Test {
 	}
 
 	@Override
-	public void ping() throws Exception {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public int hasRouteFor(AddressI address) throws Exception {
 
 		if(address.equals(this.addr)) {
 			return 0;
 		}
-		
+
 		if(address.isNetworkAddress()) {
 			if (path2Network != null) {
 				return path2Network.getNumberOfHops();
@@ -107,9 +105,9 @@ public class RoutingNode extends Router2Test {
 	@Override
 	public void transmitMessage(MessageI msg) throws Exception {
 		MessageI m = new Message((Message) msg);
-		
+
 		//handleRequest(super.indexTransmit,new TransmitRequest(this, m, path2Network, routingTable, routingNodes, addr));
-		
+
 		// TODO voir aussi ComponentTask 
 		runTask(super.indexCommunication, new FComponentTask() {
 			@Override
@@ -128,11 +126,11 @@ public class RoutingNode extends Router2Test {
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
-							
+
 							return;
 						}
 						lockP2N.unlock();
-						
+
 					} else {
 						// Cherche l'adresse dans la table 
 						lockTable.lock();
@@ -168,24 +166,36 @@ public class RoutingNode extends Router2Test {
 		runTask(this.indexUpdate, new FComponentTask() {
 
 			@Override
-			public void run(ComponentI owner) {
-				lockP2N.lock();
-				if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
-					path2Network = new Chemin(findNodeOutboundPort(neighbour), numberOfHops + 1);
-					lockP2N.unlock();
-					lockRoutNodes.lock();
-					// propagation de l'update
-					for(InfoRoutNode v : routingNodes) {
-						if (!neighbour.equals(v.getAdress()))
-							try {
-								v.getRout().updateAccessPoint(getAddr(), path2Network.getNumberOfHops());
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+			public void run(ComponentI owner)  {
+				logMessage("dans update");
+				try {
+					lockP2N.lock();
+					if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
+
+						path2Network = new Chemin(findNodeOutboundPort(neighbour), numberOfHops + 1);
+
+						lockP2N.unlock();
+						lockRoutNodes.lock();
+						logMessage("lockRout pris");
+						// propagation de l'update
+						for(InfoRoutNode v : routingNodes) {
+							if (!neighbour.equals(v.getAdress()))
+								try {
+									v.getRout().updateAccessPoint(getAddr(), path2Network.getNumberOfHops());
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+						}
+						logMessage("lockRout relache");
+						lockRoutNodes.unlock();
+						tableAndRoutes.notifyAll();
+					} else {
+						lockP2N.unlock();
 					}
-					lockRoutNodes.unlock();
-				} else {
-					lockP2N.unlock();
+
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
@@ -199,28 +209,37 @@ public class RoutingNode extends Router2Test {
 	@Override
 	protected CommunicationOutboundPort addRoutingNeighbour(AddressI addr, String nodeInboundPortURI, String routingInboundPortURI) throws Exception {
 		logMessage("addRoutingNeighbour " + addr);
-
-		// Connexion au node par un port de Communication
-		CommunicationOutboundPort nodeOutbound = new CommunicationOutboundPort(this);
-		nodeOutbound.publishPort();
-		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
-
-		//Connexion au RoutingNodeOutboundPort
-		RoutingOutboundPort routOutbound = new RoutingOutboundPort(this);
-		routOutbound.publishPort();
-		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
-		//logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
+		CommunicationOutboundPort nodeOutbound = null;
+		RoutingOutboundPort routOutbound = null;
+		try {
+			// Connexion au node par un port de Communication
+			nodeOutbound = new CommunicationOutboundPort(this);
+			nodeOutbound.publishPort();
+			doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
+	
+			//Connexion au RoutingNodeOutboundPort
+			routOutbound = new RoutingOutboundPort(this);
+			routOutbound.publishPort();
+			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+		} catch (Exception e ) {
+			e.printStackTrace();
+		}
+		logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
 
 		logMessage("avant synchro");
 
 		// ajout du noeud dans list des voisins
 		lockRoutNodes.lock();
+		logMessage("lockRout pris");
 		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
 		lockRoutNodes.unlock();
+		tableAndRoutes.notifyAll();
+		logMessage("lockRout relache");
 		// mis a jour du nouvau voisins
 		lockTable.lock();
 		routingTable.put(addr, new Chemin(nodeOutbound, 1));
 		lockTable.unlock();
+		logMessage("locktable");
 
 		int hops = -1;
 		lockP2N.lock();
@@ -228,11 +247,12 @@ public class RoutingNode extends Router2Test {
 			hops = path2Network.getNumberOfHops();
 		}
 		lockP2N.unlock();
+		logMessage("p2n");
 
 		if (hops > -1) {
 			routOutbound.updateAccessPoint(this.addr, hops);
 		}
-//		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
+		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
 
 		logMessage("fin add");
 		return nodeOutbound;
