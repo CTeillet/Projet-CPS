@@ -26,7 +26,7 @@ public class DistributedCVM extends AbstractDistributedCVM {
 	protected final int nbNodes = 8; // nombre de nodes
 	protected final String[] nodesPortURIs = new String[nbNodes]; 
 	protected final String[] nodesObjectURIs = new String[nbNodes];
-	private NodeAddress[] addresses;
+	private NodeAddress[] addresses = new NodeAddress[nbNodes];
 	private String gestionnaireURI;
 	
 
