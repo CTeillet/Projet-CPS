@@ -35,7 +35,7 @@ public class CVM extends AbstractCVM {
 		
 		AbstractComponent.createComponent(GestionnaireReseau.class.getCanonicalName(),new Object[] {});
 		
-		String terminalURI1 =  AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(),new Object[] {composantsURIs[0], addresses[0], 0, 0, 15.});
+		String terminalURI1 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(),new Object[] {composantsURIs[0], addresses[0], 0, 0, 15.});
 		String terminalURI2 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(), new Object[] {composantsURIs[1], addresses[1], 5, 5, 15.});
 		String terminalURI3 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(), new Object[] {composantsURIs[2], addresses[2], 30, 30, 15.});
 		

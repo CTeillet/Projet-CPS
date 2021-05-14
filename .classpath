@@ -6,6 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="BCM4Java-31032021.jar"/>
+	<classpathentry kind="lib" path="CPS_Tenios/deployment/jars/BCM4Java-31032021.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
