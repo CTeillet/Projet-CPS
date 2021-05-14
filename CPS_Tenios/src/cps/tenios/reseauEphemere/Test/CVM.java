@@ -23,7 +23,7 @@ public class CVM extends AbstractCVM {
 	@Override
 	public void deploy() throws Exception {
 		
-		int nbComposant = 8;
+		int nbComposant = 1;
 		
 		String [] composantsURIs = new String[nbComposant];
 		NodeAddress [] addresses = new NodeAddress[nbComposant];
@@ -64,7 +64,7 @@ public class CVM extends AbstractCVM {
 	public static void main(String[] args) {
 		try {
 			CVM c = new CVM(1);
-			c.startStandardLifeCycle(6000L);
+			c.startStandardLifeCycle(60000L);
 			System.exit(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

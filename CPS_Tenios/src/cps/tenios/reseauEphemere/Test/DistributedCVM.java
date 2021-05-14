@@ -23,7 +23,7 @@ public class DistributedCVM extends AbstractDistributedCVM {
 	protected final String NODES_COMPO_URI = "nodes_compo_uri";
 	
 	
-	protected final int nbNodes = 8; // nombre de nodes
+	protected final int nbNodes = 1; // nombre de nodes
 	protected final String[] nodesPortURIs = new String[nbNodes]; 
 	protected final String[] nodesObjectURIs = new String[nbNodes];
 	private NodeAddress[] addresses = new NodeAddress[nbNodes];
@@ -32,18 +32,12 @@ public class DistributedCVM extends AbstractDistributedCVM {
 
 	public DistributedCVM(String[] args) throws Exception {
 		super(args);
-		for (int i = 0; i < nbNodes; i++) {
-			nodesPortURIs[i]  = AbstractPort.generatePortURI();
-			addresses[i] = new NodeAddress(0, i+1);
-		}
+		
 	}
 	
 	public DistributedCVM(String[] args, int xLayout, int yLayout) throws Exception {
 		super(args, xLayout, yLayout);
-		for (int i = 0; i < nbNodes; i++) {
-			nodesPortURIs[i]  = AbstractPort.generatePortURI();
-			addresses[i] = new NodeAddress(0, i+1);
-		}
+		
 	}
 	
 
@@ -73,6 +67,13 @@ public class DistributedCVM extends AbstractDistributedCVM {
 			assert	this.gestionnaireURI  != null;
 			
 		} else if (thisJVMURI.equals(NODES_JVM_URI)) {
+			
+			for (int i = 0; i < nbNodes; i++) {
+				nodesPortURIs[i]  = AbstractPort.generatePortURI();
+				System.err.println("nodesPortURIs["+i+"] = " + nodesPortURIs[i]);
+				addresses[i] = new NodeAddress(0, i+1);
+			}
+			
 			for (int i = 0; i < nbNodes; i++) {
 				String kind;
 				if (i < 3) {
@@ -84,7 +85,8 @@ public class DistributedCVM extends AbstractDistributedCVM {
 				}
 				nodesObjectURIs[i]  = AbstractComponent.createComponent(kind,
 						new Object[] {nodesPortURIs[i], addresses[i], (int) (Math.random() * 25), (int) (Math.random() * 25), 15.});
-			
+
+				System.err.println("nodesObjectURIs["+i+"] = " + nodesObjectURIs[i]);
 				assert	this.isDeployedComponent(this.nodesObjectURIs[i]);
 				//this.toggleTracing(this.nodesObjectURIs[i]);
 				//this.toggleLogging(this.nodesObjectURIs[i]);
@@ -116,10 +118,16 @@ public class DistributedCVM extends AbstractDistributedCVM {
 			int i;
 			for(i=0; i < nbNodes; i++) {
 
-				this.doPortConnection(nodesObjectURIs[i], nodesPortURIs[i],
-						GestionnaireReseau.INBOUNDPORT_URI,
-						RegistrationConnector.class.getCanonicalName());
-				assert	this.nodesObjectURIs[i] != null;
+				try {
+					
+					
+					this.doPortConnection(nodesObjectURIs[i], nodesPortURIs[i],
+							GestionnaireReseau.INBOUNDPORT_URI,
+							RegistrationConnector.class.getCanonicalName());
+					assert	nodesObjectURIs[i] != null;
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			assert	this.gestionnaireURI == null;
 		} else {
