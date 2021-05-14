@@ -68,8 +68,8 @@ public class DistributedCVM extends AbstractDistributedCVM {
 			assert	this.isDeployedComponent(gestionnaireURI);
 			// make it trace its operations; comment and uncomment the line to see
 			// the difference
-			this.toggleTracing(this.gestionnaireURI );
-			this.toggleLogging(this.gestionnaireURI );
+			//this.toggleTracing(this.gestionnaireURI );
+			//this.toggleLogging(this.gestionnaireURI );
 			assert	this.gestionnaireURI  != null;
 			
 		} else if (thisJVMURI.equals(NODES_JVM_URI)) {
@@ -86,8 +86,8 @@ public class DistributedCVM extends AbstractDistributedCVM {
 						new Object[] {nodesPortURIs[i], addresses[i], (int) (Math.random() * 25), (int) (Math.random() * 25), 15.});
 			
 				assert	this.isDeployedComponent(this.nodesObjectURIs[i]);
-				this.toggleTracing(this.nodesObjectURIs[i]);
-				this.toggleLogging(this.nodesObjectURIs[i]);
+				//this.toggleTracing(this.nodesObjectURIs[i]);
+				//this.toggleLogging(this.nodesObjectURIs[i]);
 				assert	this.nodesObjectURIs[i] != null;
 			}
 			
@@ -165,8 +165,8 @@ public class DistributedCVM extends AbstractDistributedCVM {
 		try {
 			DistributedCVM dcvm = new DistributedCVM(args);
 			
-			dcvm.startStandardLifeCycle(2000L);
-			Thread.sleep(5000L);
+			dcvm.startStandardLifeCycle(60000L);
+			Thread.sleep(600000L);
 			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
