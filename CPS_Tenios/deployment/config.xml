@@ -10,10 +10,10 @@
     <jvm2hostname jvmuri="ValueProvider"
         rmiRegistryCreator="true"
         hostname="localhost"
-        mainclass="fr.sorbonne_u.components.examples.cps.DistributedCVM"/>
+        mainclass="cps.tenios.reseauEphemere.Test.DistributedCVM"/>
     <jvm2hostname jvmuri="ValueConsumer"
         rmiRegistryCreator="false"
         	hostname="localhost"
-        mainclass="fr.sorbonne_u.components.examples.cps.DistributedCVM"/>
+        mainclass="cps.tenios.reseauEphemere.Test.DistributedCVM"/>
   </jvms2hostnames>
 </deployment>
