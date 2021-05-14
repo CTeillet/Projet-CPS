@@ -1,19 +1,19 @@
 <deployment>
    <hosts>
     <host name="localhost"
-          dir="/Users/jmalenfant/principal/Tests/CPS/"/>
+          dir="/home/ludi/git/Projet-CPS"/>
   </hosts>
   <cyclicBarrier   hostname="localhost" port="55253"/>
   <globalRegistry  hostname="localhost" port="55252"/>
   <rmiRegistryPort no="55999"/>
   <jvms2hostnames>
-    <jvm2hostname jvmuri="ValueProvider"
+    <jvm2hostname jvmuri="gestionnaire_jvm_uri"
         rmiRegistryCreator="true"
         hostname="localhost"
         mainclass="cps.tenios.reseauEphemere.Test.DistributedCVM"/>
-    <jvm2hostname jvmuri="ValueConsumer"
+    <jvm2hostname jvmuri="nodes_jvm_uri"
         rmiRegistryCreator="false"
-        	hostname="localhost"
+        hostname="localhost"
         mainclass="cps.tenios.reseauEphemere.Test.DistributedCVM"/>
   </jvms2hostnames>
 </deployment>
