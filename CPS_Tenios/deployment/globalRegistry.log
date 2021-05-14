@@ -1,0 +1,50 @@
+1621006834739|Global registry up and running!
+1621006849555|Global registry accepted the 1th connection.
+1621006849556|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-d0e61392-5379-47c3-8663-724982042904 rmi=localhost
+1621006849693|GlobalRegistry processing put registration-uri rmi=localhost
+1621006850334|Global registry accepted the 2th connection.
+1621006850334|All (2) connected!
+1621006850336|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-f8cfe919-5b10-4746-9e4e-f4b64a253502 rmi=localhost
+1621006850573|GlobalRegistry processing put 2a80cda4-f29c-4e40-a3c2-bf5d8fac7235 rmi=localhost
+1621006850733|GlobalRegistry processing put 22596f1b-c568-4965-b3ab-54ea6a7dc71f rmi=localhost
+1621006851487|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-f700e3a3-5213-4f31-8200-71a75516f42c rmi=localhost
+1621006851634|GlobalRegistry processing put gestionnaire_jvm_uri-dcc rmi=localhost
+1621006852434|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-60b0b511-a695-419b-9456-c9e025a06ac6 rmi=localhost
+1621006852514|GlobalRegistry processing put a09b791f-33d6-40d7-bb45-cfb1f0f46b4a rmi=localhost
+1621006852531|GlobalRegistry processing put 00e4286e-37b8-47f6-abd2-0b6301e1bd23 rmi=localhost
+1621006852726|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-daf707d0-38dd-4d71-bb89-fce1da67071a rmi=localhost
+1621006852760|GlobalRegistry processing put 69edfbed-adc1-4321-bb76-7d415f164579 rmi=localhost
+1621006852802|GlobalRegistry processing put e28ce216-61c3-471f-9dd4-9b5588c372ac rmi=localhost
+1621006853006|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-5331e8b9-7971-4259-bc8b-c7285510cb19 rmi=localhost
+1621006853035|GlobalRegistry processing put 7318d44c-04a0-4db6-b1e5-714fa6844b34 rmi=localhost
+1621006853114|GlobalRegistry processing put a75df1be-0cb4-41cf-a4f1-ecd6ace014bf rmi=localhost
+1621006853394|GlobalRegistry processing put aa97d1ba-5f53-4aa7-8c16-ddf0f696a280 rmi=localhost
+1621006853429|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-74d4ccd9-ed4e-442b-84b2-baaead367c78 rmi=localhost
+1621006853468|GlobalRegistry processing put 60d41ac1-d0e4-4488-835e-6897ef149bd7 rmi=localhost
+1621006853570|GlobalRegistry processing put 6f3e32d3-5865-4cbd-af4e-84b26b2f3a0f rmi=localhost
+1621006853652|GlobalRegistry processing put e0b4f944-5070-4e4a-95f5-258962320fef rmi=localhost
+1621006853737|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-a24bad84-69e3-41ab-9633-1b89454401b5 rmi=localhost
+1621006853854|GlobalRegistry processing put 645a6cc0-d6b6-431e-8cef-bcb6baf4aa84 rmi=localhost
+1621006853893|GlobalRegistry processing put d4d4ece5-f8a9-4736-a4a4-a28d36a7d3d4 rmi=localhost
+1621006854004|GlobalRegistry processing put 7b5d2fc9-1e08-46af-bf4d-a3a8d7f0630b rmi=localhost
+1621006854094|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-35e8bfb7-d7b5-40cc-97b4-e47b67545c9d rmi=localhost
+1621006854118|GlobalRegistry processing put 385094b5-d703-414e-b67c-c38f70e15fd3 rmi=localhost
+1621006854178|GlobalRegistry processing put 479d76d9-3274-4663-8956-6f4405f0774a rmi=localhost
+1621006854298|GlobalRegistry processing put 284f52af-d251-4df0-becf-66bf44ac9d43 rmi=localhost
+1621006854312|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-45fba783-8802-4e4d-aa32-3a1e53f6f465 rmi=localhost
+1621006854328|GlobalRegistry processing put e573e38a-410c-4115-81b9-874440e910af rmi=localhost
+1621006854394|GlobalRegistry processing put cd9fdc0e-b148-4ed2-b9cc-1eb4ea00d0fa rmi=localhost
+1621006854493|GlobalRegistry processing put 353492cb-b267-4d9d-82c4-62d6ad86f11f rmi=localhost
+1621006854574|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionCI-fc30209b-66d2-4904-8e83-6a208c557dca rmi=localhost
+1621006854726|GlobalRegistry processing put nodes_jvm_uri-dcc rmi=localhost
+1621006854768|GlobalRegistry processing lookup registration-uri
+1621006855146|GlobalRegistry processing lookup registration-uri
+1621006855222|GlobalRegistry processing lookup registration-uri
+1621006855238|GlobalRegistry processing lookup registration-uri
+1621006855256|GlobalRegistry processing lookup registration-uri
+1621006855354|GlobalRegistry processing lookup registration-uri
+1621006855369|GlobalRegistry processing lookup registration-uri
+1621006855388|GlobalRegistry processing lookup registration-uri
+1621006896029|GlobalRegistry processing null
+1621006902103|GlobalRegistry processing null
+1621006902121|Global registry shuts down!

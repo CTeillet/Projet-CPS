@@ -1,0 +1,30 @@
+1621006837074|DCVM Cyclic Barrier up and running!
+1621006843855|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 43256
+1621006843860|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1621006848770|All connected!
+1621006848840|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 43258
+1621006848842|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1621006848842|DCVM Cyclic Barrier releases 2 sites.
+1621006848864|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 43256
+1621006848868|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1621006848879|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 43258
+1621006848880|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1621006848880|DCVM Cyclic Barrier releases 2 sites.
+1621006851637|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 43256
+1621006851639|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1621006854748|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 43258
+1621006854750|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1621006854750|DCVM Cyclic Barrier releases 2 sites.
+1621006854755|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 43256
+1621006854764|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1621006855446|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 43258
+1621006855448|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1621006855448|DCVM Cyclic Barrier releases 2 sites.
+1621006855461|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 43256
+1621006855463|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1621006855465|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 43258
+1621006855500|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1621006855500|DCVM Cyclic Barrier releases 2 sites.
+1621006896030|DCVMCyclicBarrier.run() finished.
+1621006902101|DCVMCyclicBarrier.run() finished.
+1621006902101|DCVM Cyclic Barrier shuts down!
