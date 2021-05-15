@@ -1,30 +1,30 @@
-1621075325090|DCVM Cyclic Barrier up and running!
-1621075325766|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 51498
-1621075325770|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1621075326780|All connected!
-1621075326785|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 51500
-1621075326790|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1621075326790|DCVM Cyclic Barrier releases 2 sites.
-1621075326809|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 51500
-1621075326810|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1621075326869|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 51498
-1621075326869|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1621075326869|DCVM Cyclic Barrier releases 2 sites.
-1621075328346|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 51500
-1621075328347|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1621075328772|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 51498
-1621075328773|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1621075328773|DCVM Cyclic Barrier releases 2 sites.
-1621075328789|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 51498
-1621075328789|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1621075328938|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 51500
-1621075328939|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1621075328939|DCVM Cyclic Barrier releases 2 sites.
-1621075328947|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 51498
-1621075328947|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1621075328950|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 51500
-1621075328951|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1621075328951|DCVM Cyclic Barrier releases 2 sites.
-1621075377274|DCVMCyclicBarrier.run() finished.
-1621075383131|DCVMCyclicBarrier.run() finished.
-1621075383131|DCVM Cyclic Barrier shuts down!
+1621090211161|DCVM Cyclic Barrier up and running!
+1621090211860|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 52234
+1621090211866|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1621090212926|All connected!
+1621090212933|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 52236
+1621090212935|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1621090212935|DCVM Cyclic Barrier releases 2 sites.
+1621090212949|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 52236
+1621090212950|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1621090213006|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 52234
+1621090213007|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1621090213007|DCVM Cyclic Barrier releases 2 sites.
+1621090215309|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 52234
+1621090215310|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1621090215636|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 52236
+1621090215637|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1621090215637|DCVM Cyclic Barrier releases 2 sites.
+1621090215639|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 52234
+1621090215641|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1621090216088|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 52236
+1621090216089|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1621090216089|DCVM Cyclic Barrier releases 2 sites.
+1621090216094|DCVM Cyclic Barrier accepts: gestionnaire_jvm_uri localhost 52234
+1621090216101|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1621090216133|DCVM Cyclic Barrier accepts: nodes_jvm_uri localhost 52236
+1621090216134|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1621090216134|DCVM Cyclic Barrier releases 2 sites.
+1621090266678|DCVMCyclicBarrier.run() finished.
+1621090269296|DCVMCyclicBarrier.run() finished.
+1621090269297|DCVM Cyclic Barrier shuts down!
