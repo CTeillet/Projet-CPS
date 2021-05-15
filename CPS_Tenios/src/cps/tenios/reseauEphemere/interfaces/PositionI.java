@@ -1,11 +1,13 @@
 package cps.tenios.reseauEphemere.interfaces;
 
+import java.io.Serializable;
+
 /**
- * Permet de représenter la position d'un noeud
+ * Permet de reprï¿½senter la position d'un noeud
  * @author Tenios
  *
  */
-public interface PositionI {
+public interface PositionI extends Serializable {
 	/**
 	 * Retourne la distance entre la position appelante et la position courante
 	 * @param other la postion avec laquelle on veut savoir la distance

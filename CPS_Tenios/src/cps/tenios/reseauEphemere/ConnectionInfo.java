@@ -1,5 +1,7 @@
 package cps.tenios.reseauEphemere;
 
+import java.io.Serializable;
+
 import cps.tenios.reseauEphemere.interfaces.AddressI;
 import cps.tenios.reseauEphemere.interfaces.PositionI;
 
@@ -8,7 +10,11 @@ import cps.tenios.reseauEphemere.interfaces.PositionI;
  * @author Tenios
  *
  */
-public class ConnectionInfo {
+public class ConnectionInfo implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7792201937940269623L;
 	/**
 	 * Adresse du noeud
 	 */

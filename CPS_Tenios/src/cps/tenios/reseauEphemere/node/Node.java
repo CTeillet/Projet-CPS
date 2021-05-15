@@ -118,19 +118,18 @@ public abstract class  Node extends AbstractComponent {
 		
 		
 		//Deconnexion des ports
-		
-		
+
 		this.doPortDisconnection(REGISTRATION_URI);
+		//System.out.println("apres registration connected" + isPortConnected(REGISTRATION_URI));
 
 		for(InfoTerminalN node : terminalNodes) {
 			this.doPortDisconnection(node.getNode().getClientPortURI());
+			//System.out.println("apres : port connected=" + isPortConnected(node.getNode().getClientPortURI()));
 		}
 		for(InfoRoutNode node : routingNodes) {
-			logMessage("routing disconnect");
 			this.doPortDisconnection(node.getNode().getClientPortURI());
-			logMessage("disconnect nodePort");
-			//this.doPortDisconnection(node.getRout().getClientPortURI());
-			logMessage("disconnect routPort");
+			//System.out.println("apres : port connected=" + isPortConnected(node.getNode().getClientPortURI()));
+			
 		}
 		logMessage("fin disconnect");
 		
@@ -149,7 +148,6 @@ public abstract class  Node extends AbstractComponent {
 			}
 			for(InfoRoutNode node : routingNodes) {
 				node.getNode().unpublishPort();
-				//node.getRout().unpublishPort();
 			}
 			
 		} catch (Exception e) {

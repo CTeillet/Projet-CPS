@@ -1,20 +1,22 @@
 package cps.tenios.reseauEphemere.interfaces;
 
+import java.io.Serializable;
+
 /**
  * Permet de representer une addresse
  * @author Tenios
  *
  */
-public interface AddressI {
+public interface AddressI extends Serializable {
 	
 	/**
-	 * Permet de vérifier si l'addresse est une addresse interne au réseau
+	 * Permet de vï¿½rifier si l'addresse est une addresse interne au rï¿½seau
 	 * @return retourne si c'est une adresse interne
 	 */
 	boolean isNodeAddress();
 	
 	/**
-	 * Permet de vérifier si l'adresse est une addresse externe au réseau
+	 * Permet de vï¿½rifier si l'adresse est une addresse externe au rï¿½seau
 	 * @return si c'est une addresse externe
 	 */
 	boolean isNetworkAddress();

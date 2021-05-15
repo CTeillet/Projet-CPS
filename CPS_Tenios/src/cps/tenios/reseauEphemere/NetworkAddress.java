@@ -1,7 +1,6 @@
 package cps.tenios.reseauEphemere;
 
 import cps.tenios.reseauEphemere.interfaces.AddressI;
-import cps.tenios.reseauEphemere.interfaces.NetworkAddressI;
 
 /**
  * 
@@ -9,6 +8,10 @@ import cps.tenios.reseauEphemere.interfaces.NetworkAddressI;
  *
  */
 public class NetworkAddress implements AddressI {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5961808823919060318L;
 	/**
 	 * Addresse
 	 */

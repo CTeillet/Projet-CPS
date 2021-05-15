@@ -621,6 +621,7 @@ public abstract class Router2Test extends AbstractComponent {
 		System.out.println("\n"+this.toString()+"\n");
 		//Deconnexion des ports
 		this.doPortDisconnection(REGISTRATION_URI);
+		//System.out.println("apres registration connected" + isPortConnected(REGISTRATION_URI));
 
 		for(InfoTerminalN node : terminalNodes) {
 			this.doPortDisconnection(node.getNode().getClientPortURI());
@@ -628,6 +629,8 @@ public abstract class Router2Test extends AbstractComponent {
 		for(InfoRoutNode node : routingNodes) {
 			this.doPortDisconnection(node.getNode().getClientPortURI());
 			this.doPortDisconnection(node.getRout().getClientPortURI());
+			//System.out.println("apres : node port connected = " + isPortConnected(node.getNode().getClientPortURI()));
+			//System.out.println("apres : rout port connected = " + isPortConnected(node.getRout().getClientPortURI()));
 		}
 		logMessage("fin disconnect");
 
