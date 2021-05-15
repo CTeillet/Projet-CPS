@@ -9,15 +9,7 @@ import cps.tenios.reseauEphemere.Position;
 import cps.tenios.reseauEphemere.gestionnaireReseau.GestionnaireReseau;
 
 class TestPosition {
-	
-
-	@Test
-	void testValeur() {
-		Position p = new Position(0, 0);
-		assertEquals(p.getX(), 0);
-		assertEquals(p.getY(), 0);
-	}
-	
+		
 	@Test
 	void testDistance() {
 		Position p1 = new Position(0, 0);
