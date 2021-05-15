@@ -13,7 +13,6 @@ import cps.tenios.reseauEphemere.interfaces.MessageI;
 import cps.tenios.reseauEphemere.interfaces.RegistrationCI;
 import cps.tenios.reseauEphemere.interfaces.RoutingCI;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.ComponentI.FComponentTask;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 /**
@@ -55,27 +54,22 @@ public class AccessPointNode extends Router2Test {
 
 			@Override
 			public void run(ComponentI owner) {
-				// TODO Auto-generated method stub
 				CommunicationOutboundPort out; // port de communication sortant 
 				try {
 
 					if (c.isRouting()) {
 						// ajout d'un voisin routeur
-						logMessage("avant addRouting");
+						logMessage("ajout d'un voisin routeur " + c.getAddress());
 						out = addRoutingNeighbour(c.getAddress(), c.getCommunicationInboundURI(), c.getRoutingInboundPortURI());
-						logMessage("add ok routeur : " + (out!= null));
 					} else {
 						// ajout d'un voisin terminal
-						logMessage("avant addTerminal");
+						logMessage("ajout d'un voisin terminal " + c.getAddress());
 						out = addTerminalNeighbour(c.getAddress(), c.getCommunicationInboundURI());
-						logMessage("addTerminal ok");
 					}
-					logMessage("avant connect");
 					// connexion au voisin pour qu'il ajoute le noeud courant
 					out.connectRouting(addr, COMM_INBOUNDPORT_URI, ROUTING_INBOUNDPORT_URI);
-					logMessage("apres connect");
 				} catch (Exception e) {
-					// TODO: handle exception
+					e.printStackTrace();
 				}
 			}
 		});
@@ -140,38 +134,30 @@ public class AccessPointNode extends Router2Test {
 			nodeOutbound = new CommunicationOutboundPort(this);
 			nodeOutbound.publishPort();
 			doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
-			logMessage("Communication ");
+
 			//Connexion au RoutingNodeOutboundPort
 			routOutbound = new RoutingOutboundPort(this);
-			logMessage("1");
 			routOutbound.publishPort();
-			logMessage("2");
-			logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
-			logMessage("out : " + routOutbound.getPortURI() + ", in : " + routingInboundPortURI);
 			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
-			logMessage("Rout");
+			
 		} catch (Exception e ) {
 			e.printStackTrace();
 		}
-		logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
 
-		logMessage("avant synchro");
 		// ajout du noeud dans list des voisins
 		lockRoutNodes.lock();
-		logMessage("lockRout pris");
 		try {
 			routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		logMessage("ajout ok");
 		lockRoutNodes.unlock();
-		//tableAndRoutes.notifyAll();
+		
 		// mis a jour du nouvau voisins
 		lockTable.lock();
 		routingTable.put(addr, new Chemin(nodeOutbound, 1));
 		lockTable.unlock();
-		// fin
+
 		logMessage("lancement update ");
 		routOutbound.updateRouting(this.addr, this.getInfoTableRout());
 		routOutbound.updateAccessPoint(this.addr, 0);
