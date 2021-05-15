@@ -17,19 +17,37 @@ public class RegistrationConnector extends AbstractConnector implements Registra
 	@Override
 	public Set<ConnectionInfo> registerTerminalNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception {
-		return ((RegistrationCI)this.offering).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange);
+		
+		try {
+			return ((RegistrationCI)this.offering).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e);
+		}
 	}
 
 	@Override
 	public Set<ConnectionInfo> registerAccessPoint(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
-		return ((RegistrationCI)this.offering).registerAccessPoint(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI);
+		try {
+			return ((RegistrationCI)this.offering).registerAccessPoint(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new Exception(e);
+		}
 	}
 
 	@Override
 	public Set<ConnectionInfo> registerRoutingNode(AddressI address, String communicationInboundPortURI,
-			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
-		return ((RegistrationCI)this.offering).registerRoutingNode(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI);
+			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception  {
+		try {
+			return ((RegistrationCI)this.offering).registerRoutingNode(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new Exception(e);
+		}
 	}
 
 	@Override

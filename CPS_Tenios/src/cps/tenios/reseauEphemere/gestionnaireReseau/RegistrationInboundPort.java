@@ -50,23 +50,37 @@ implements RegistrationCI {
 	@Override
 	public Set<ConnectionInfo> registerTerminalNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception {
-		return this.getOwner().handleRequest(
-				register -> ((GestionnaireReseau)register).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange));
-
+		try {
+			return this.getOwner().handleRequest(
+					register -> ((GestionnaireReseau)register).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e);
+		}
 	}
 
 	@Override
 	public Set<ConnectionInfo> registerAccessPoint(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
-		return this.getOwner().handleRequest(
-				register -> ((GestionnaireReseau)register).registerAccessPoint(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
+		try {
+			return this.getOwner().handleRequest(
+					register -> ((GestionnaireReseau)register).registerAccessPoint(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e);
+		}
 	}
 
 	@Override
 	public Set<ConnectionInfo> registerRoutingNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
-		return this.getOwner().handleRequest(
-				register -> ((GestionnaireReseau)register).registerRoutingNode(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
+		try {
+			return this.getOwner().handleRequest(
+					register -> ((GestionnaireReseau)register).registerRoutingNode(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e);
+		}
 	}
 
 	@Override
