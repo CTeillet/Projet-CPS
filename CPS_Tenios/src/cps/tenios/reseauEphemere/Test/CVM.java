@@ -4,6 +4,7 @@ import cps.tenios.reseauEphemere.NodeAddress;
 import cps.tenios.reseauEphemere.RegistrationConnector;
 import cps.tenios.reseauEphemere.gestionnaireReseau.GestionnaireReseau;
 import cps.tenios.reseauEphemere.node.AccessPointNode;
+import cps.tenios.reseauEphemere.node.Message;
 import cps.tenios.reseauEphemere.node.RoutingNode;
 import cps.tenios.reseauEphemere.node.TerminalNode;
 import fr.sorbonne_u.components.AbstractComponent;
@@ -37,7 +38,7 @@ public class CVM extends AbstractCVM {
 		
 		String terminalURI1 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(),new Object[] {composantsURIs[0], addresses[0], 0, 0, 15.});
 		String terminalURI2 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(), new Object[] {composantsURIs[1], addresses[1], 5, 5, 15.});
-		String terminalURI3 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(), new Object[] {composantsURIs[2], addresses[2], 30, 30, 15.});
+		String terminalURI3 = AbstractComponent.createComponent(TerminalNode.class.getCanonicalName(), new Object[] {composantsURIs[2], addresses[2], 30, 30, 15., new Message(addresses[0], "Bonjour Monde !", 8)});
 		
 		String routingURI1 = AbstractComponent.createComponent(RoutingNode.class.getCanonicalName(), new Object[] {composantsURIs[3], addresses[3], 0, 10, 15.});
 		String routingURI2 = AbstractComponent.createComponent(RoutingNode.class.getCanonicalName(), new Object[] {composantsURIs[4], addresses[4], 10, 20, 15.});

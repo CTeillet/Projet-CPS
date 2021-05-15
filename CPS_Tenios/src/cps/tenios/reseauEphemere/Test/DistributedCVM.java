@@ -62,8 +62,8 @@ public class DistributedCVM extends AbstractDistributedCVM {
 			assert	this.isDeployedComponent(gestionnaireURI);
 			// make it trace its operations; comment and uncomment the line to see
 			// the difference
-			//this.toggleTracing(this.gestionnaireURI );
-			//this.toggleLogging(this.gestionnaireURI );
+			// this.toggleTracing(this.gestionnaireURI );
+			// this.toggleLogging(this.gestionnaireURI );
 			assert	this.gestionnaireURI  != null;
 			
 		} else if (thisJVMURI.equals(NODES_JVM_URI)) {
