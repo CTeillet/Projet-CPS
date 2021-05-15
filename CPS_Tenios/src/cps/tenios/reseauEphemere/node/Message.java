@@ -24,9 +24,9 @@ public class Message implements MessageI {
 	 */
 	private int gops;
 
-	
+
 	/**
-	 * Permet de Construire un message
+	 * Permet de construire un message
 	 * @param address Addresse de destination du message
 	 * @param content Contenue du message
 	 * @param gops Nombre de saut avant destruction
@@ -56,13 +56,12 @@ public class Message implements MessageI {
 	public void decrementsGops() {
 		gops--;
 	}
-	
 
 	@Override
 	public AddressI getAddress() {
 		return address;
 	}
-	
+
 	@Override
 	public Serializable getContent() {
 		return content;

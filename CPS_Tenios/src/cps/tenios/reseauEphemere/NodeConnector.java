@@ -23,13 +23,11 @@ public class NodeConnector extends AbstractConnector implements CommunicationCI 
 			String routingInboundPortURI)  throws Exception{
 		((CommunicationCI)this.offering).connectRouting(address, communicationInboundPortURI,
 														routingInboundPortURI);
-
 	}
 
 	@Override
 	public void transmitMessage(MessageI m)  throws Exception{
 		((CommunicationCI)this.offering).transmitMessage(m);
-
 	}
 
 	@Override
@@ -40,7 +38,6 @@ public class NodeConnector extends AbstractConnector implements CommunicationCI 
 	@Override
 	public void ping()  throws Exception{
 		((CommunicationCI)this.offering).ping();
-
 	}
 
 }

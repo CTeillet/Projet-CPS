@@ -106,11 +106,7 @@ public class AccessPointNode extends Router2Test {
 	@Override
 	public int hasRouteFor(AddressI address) throws Exception {
 
-		if(address.equals(this.addr)) {
-			return 0;
-		}
-
-		if(address.isNetworkAddress()) {
+		if(address.equals(this.addr) || address.isNetworkAddress()) {
 			return 0;
 		}
 		lockTable.lock();
@@ -129,20 +125,15 @@ public class AccessPointNode extends Router2Test {
 		CommunicationOutboundPort nodeOutbound = null;
 		RoutingOutboundPort routOutbound = null;
 		logMessage("avant tyr");
-		try {
-			// Connexion au node par un port de Communication
-			nodeOutbound = new CommunicationOutboundPort(this);
-			nodeOutbound.publishPort();
-			doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
+		// Connexion au node par un port de Communication
+		nodeOutbound = new CommunicationOutboundPort(this);
+		nodeOutbound.publishPort();
+		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
 
-			//Connexion au RoutingNodeOutboundPort
-			routOutbound = new RoutingOutboundPort(this);
-			routOutbound.publishPort();
-			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
-			
-		} catch (Exception e ) {
-			e.printStackTrace();
-		}
+		//Connexion au RoutingNodeOutboundPort
+		routOutbound = new RoutingOutboundPort(this);
+		routOutbound.publishPort();
+		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
 
 		// ajout du noeud dans list des voisins
 		lockRoutNodes.lock();
@@ -152,7 +143,7 @@ public class AccessPointNode extends Router2Test {
 			e.printStackTrace();
 		}
 		lockRoutNodes.unlock();
-		
+
 		// mis a jour du nouvau voisins
 		lockTable.lock();
 		routingTable.put(addr, new Chemin(nodeOutbound, 1));

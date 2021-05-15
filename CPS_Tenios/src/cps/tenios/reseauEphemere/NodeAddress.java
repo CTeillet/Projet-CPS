@@ -10,7 +10,7 @@ import cps.tenios.reseauEphemere.interfaces.AddressI;
  */
 public class NodeAddress implements AddressI {
 	/**
-	 * 
+	 * Utilisé pour la Serialization
 	 */
 	private static final long serialVersionUID = 6287121261640088195L;
 	/**

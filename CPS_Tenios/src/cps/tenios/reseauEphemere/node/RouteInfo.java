@@ -19,6 +19,11 @@ public class RouteInfo implements RouteInfoI {
 	 */
 	private int numberOfHops;
 	
+	/**
+	 * Constructeur permettant de construire une routeInfo avec la destination et le nombre de saut necessaire
+	 * @param destination adresse de destination 
+	 * @param numberOfHops nombre de saut necessaire pour y aller
+	 */
 	public RouteInfo(AddressI destination, int numberOfHops) {
 		super();
 		this.destination = destination;

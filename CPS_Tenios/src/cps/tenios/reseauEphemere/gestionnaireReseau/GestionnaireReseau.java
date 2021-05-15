@@ -18,7 +18,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 @OfferedInterfaces(offered = {RegistrationCI.class})
 public class GestionnaireReseau extends AbstractComponent {
 	/**
-	 * uri du port entrant de registration
+	 * URI du port entrant de registration
 	 */
 	public final static String  INBOUNDPORT_URI = "registration-uri";
 	/**
@@ -214,13 +214,11 @@ public class GestionnaireReseau extends AbstractComponent {
 		String str = "GestionnaireReseau :\ntableNoeudTerminal=";
 		for (ConnectionInfo ci : tableNoeudTerminal) {
 			str += "\n\t" + ci.getAddress();
-			
 		}
 		
 		str += "\ntableNoeudRouting=";
 		for (ConnectionInfo ci : tableNoeudRouting) {
 			str += "\n\t" + ci.getAddress();
-			
 		}
 		
 		str += "\ntableNoeudAccess=";

@@ -24,7 +24,7 @@ public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI
 		super(RoutingCI.class, owner);
 		assert owner instanceof RoutingCI;
 	}
-	
+
 	public RoutingInboundPort(String uri, ComponentI owner)  throws Exception{
 		super(uri, RoutingCI.class, owner);
 		//assert (owner instanceof RoutingNode) || (owner instanceof AccessPointNode);
@@ -33,13 +33,12 @@ public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI
 
 	@Override
 	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
-//		this.getOwner().handleRequest( r-> { ((RoutingCI)r).updateRouting(neighbour, routes); return null;});
 		this.getOwner().runTask( r ->{
-				try {
-					((Router2Test) r).updateRouting(neighbour, routes);
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
+			try {
+				((Router2Test) r).updateRouting(neighbour, routes);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
 	}
 
@@ -51,7 +50,7 @@ public class RoutingInboundPort extends AbstractInboundPort implements RoutingCI
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
-	});		
+		});		
 	}
 
 }

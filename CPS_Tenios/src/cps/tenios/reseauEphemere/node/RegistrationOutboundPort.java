@@ -17,17 +17,16 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 public class RegistrationOutboundPort extends AbstractOutboundPort implements RegistrationCI {
 
 	/**
-	 * Verison de s�rie de la classe
+	 * Version de s�rie de la classe
 	 */
 	private static final long serialVersionUID = -4716039516988394345L;
 
 	/**
-	 * Cosntructeur du port prenant seulement le propri�taire
+	 * Constructeur du port prenant seulement le propri�taire
 	 * @param owner propri�taire du port
 	 * @throws Exception s'il y a un  probleme
 	 */
-	public RegistrationOutboundPort(ComponentI owner)
-			throws Exception {
+	public RegistrationOutboundPort(ComponentI owner) throws Exception {
 		super(RegistrationCI.class, owner);
 	}
 
@@ -37,10 +36,8 @@ public class RegistrationOutboundPort extends AbstractOutboundPort implements Re
 	 * @param owner propri�taire du port
 	 * @throws Exception s'il y a un probleme
 	 */
-	public RegistrationOutboundPort(String uri, ComponentI owner)
-			throws Exception {
+	public RegistrationOutboundPort(String uri, ComponentI owner) throws Exception {
 		super(uri, RegistrationCI.class, owner);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -49,7 +46,6 @@ public class RegistrationOutboundPort extends AbstractOutboundPort implements Re
 		try {
 			return ((RegistrationCI)this.getConnector()).registerTerminalNode(address, communicationInboundPortURI, initialPosition, initialRange);
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new Exception(e);
 		}
 	}
@@ -57,14 +53,12 @@ public class RegistrationOutboundPort extends AbstractOutboundPort implements Re
 	@Override
 	public Set<ConnectionInfo> registerAccessPoint(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
-		// TODO Auto-generated method stub
 		return ((RegistrationCI)this.getConnector()).registerAccessPoint(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI);
 	}
 
 	@Override
 	public Set<ConnectionInfo> registerRoutingNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange, String routingInboundPortURI) throws Exception {
-		// TODO Auto-generated method stub
 		return ((RegistrationCI)this.getConnector()).registerRoutingNode(address, communicationInboundPortURI, initialPosition, initialRange, routingInboundPortURI);
 	}
 

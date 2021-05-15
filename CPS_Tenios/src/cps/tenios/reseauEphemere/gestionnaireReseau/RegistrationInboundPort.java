@@ -22,7 +22,7 @@ implements RegistrationCI {
 	 * Serie de la class
 	 */
 	private static final long serialVersionUID = -5946152123825267062L;
-	
+
 	/**
 	 * Constructeur de RegistrationInboundPort
 	 * @param owner Propritaire du port
@@ -33,7 +33,7 @@ implements RegistrationCI {
 		// verif owner est du bon type
 		assert owner instanceof GestionnaireReseau;
 	}
-	
+
 	/**
 	 * Constructeur de RegistrationInboundPort
 	 * @param uri URI du port
@@ -46,7 +46,7 @@ implements RegistrationCI {
 		// verif owner est du bon type
 		assert owner instanceof GestionnaireReseau;
 	}
-	
+
 	@Override
 	public Set<ConnectionInfo> registerTerminalNode(AddressI address, String communicationInboundPortURI,
 			PositionI initialPosition, double initialRange) throws Exception {
@@ -86,12 +86,12 @@ implements RegistrationCI {
 	@Override
 	public void unregister(AddressI address) throws Exception {
 		this.getOwner().runTask( register -> {
-					try {
-						((GestionnaireReseau)register).unregister(address);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
+			try {
+				((GestionnaireReseau)register).unregister(address);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 }

@@ -17,7 +17,7 @@ public class InfoTerminalN {
 	 * Port de communication sortant
 	 */
 	private CommunicationOutboundPort node;
-	
+
 	/**
 	 * Constructeur
 	 * @param addr Addresse du noeud
@@ -35,7 +35,7 @@ public class InfoTerminalN {
 	public AddressI getAddress() {
 		return addr;
 	}
-	
+
 	/**
 	 * Obtenir le port de communication sortant du noeud
 	 * @return port de communication sortant du noeud
@@ -43,7 +43,7 @@ public class InfoTerminalN {
 	public CommunicationOutboundPort getNode() {
 		return node;
 	}
-	
+
 	/**
 	 * Modifier l'adresse 
 	 * @param addr Nouvelle adresse 
@@ -51,7 +51,7 @@ public class InfoTerminalN {
 	public void setAddress(AddressI addr) {
 		this.addr = addr;
 	}
-	
+
 	/**
 	 * Modifier le port de Communication sortant
 	 * @param node Nouveau port de Communication sortant

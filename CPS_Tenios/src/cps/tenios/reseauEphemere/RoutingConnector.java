@@ -12,7 +12,6 @@ public class RoutingConnector extends AbstractConnector implements RoutingCI {
 	@Override
 	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
 		((RoutingCI)this.offering).updateRouting(neighbour, routes);
-
 	}
 
 	@Override

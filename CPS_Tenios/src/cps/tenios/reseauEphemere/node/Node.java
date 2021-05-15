@@ -116,9 +116,7 @@ public abstract class  Node extends AbstractComponent {
 		
 		System.out.println("\n"+this.toString()+"\n");
 		
-		
 		//Deconnexion des ports
-
 		this.doPortDisconnection(REGISTRATION_URI);
 		//System.out.println("apres registration connected" + isPortConnected(REGISTRATION_URI));
 
@@ -353,19 +351,18 @@ public abstract class  Node extends AbstractComponent {
 
 	@Override
 	public String toString() {
-		String str = "Node :" + addr + "\nterminalNodes=";
+		StringBuilder str = new StringBuilder("Node :" + addr + "\nterminalNodes=");
 		
 		for (InfoTerminalN n : terminalNodes) {
-			str += "\n\t" + n.getAddress();
-			
+			str.append( "\n\t" + n.getAddress() );
 		}
 		
-		str += "\nroutingNodes=";
+		str.append("\nroutingNodes=");
 		for (InfoRoutNode n : routingNodes) {
-			str += "\n\t" + n.getAddress();
+			str.append("\n\t" + n.getAddress());
 			
 		}
-		return str;
+		return str.toString();
 	}
 
 	

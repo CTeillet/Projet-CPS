@@ -7,9 +7,9 @@ import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 public class CommunicationOutboundPort extends AbstractOutboundPort implements CommunicationCI {
-	
+
 	/**
-	 * Verison de s�rie de la classe
+	 * Version de s�rie de la classe
 	 */
 	private static final long serialVersionUID = 3254624094913909113L;
 
@@ -21,19 +21,18 @@ public class CommunicationOutboundPort extends AbstractOutboundPort implements C
 	public CommunicationOutboundPort(ComponentI owner) throws Exception {
 		super(CommunicationCI.class, owner);
 	}
-	
+
 	/**
 	 * Constructeur prenant en arguments le propri�taire ainsi que le port voulue pour le port
 	 * @param uri voulue pour le port
 	 * @param owner propri�taire du port 
 	 * @throws Exception s'il y a un probleme
 	 */
-	public CommunicationOutboundPort(String uri,ComponentI owner)
-			throws Exception {
+	public CommunicationOutboundPort(String uri,ComponentI owner) throws Exception {
 		super(uri, CommunicationCI.class, owner);
 	}
-	
-	
+
+
 
 	@Override
 	public void connect(AddressI address, String communicationInboundPortURI) throws Exception {

@@ -8,7 +8,7 @@ import cps.tenios.reseauEphemere.interfaces.AddressI;
  *
  */
 public class InfoRoutNode {
-	
+
 	/**
 	 * Addresse d'un noeud
 	 */
@@ -39,11 +39,10 @@ public class InfoRoutNode {
 	 * Retourne l'addresse stocker
 	 * @return l'addresse  stocker dans l'objet
 	 */
-	//TODO refactor address : il faut 2 d
 	public AddressI getAddress() {
 		return address;
 	}
-	
+
 	/**
 	 * Retoune le port de communication
 	 * @return le port de communication
@@ -51,7 +50,7 @@ public class InfoRoutNode {
 	public CommunicationOutboundPort getNode() {
 		return node;
 	}
-	
+
 	/**
 	 * Permet de changer l'addresse stocker
 	 * @param label l'addresse que l'on veut stocker
@@ -59,7 +58,7 @@ public class InfoRoutNode {
 	public void setAddress(AddressI address) {
 		this.address = address;
 	}
-	
+
 	/**
 	 * Permet de changer le port de communication stocker
 	 * @param node le nouveau noeud de communication a stocker

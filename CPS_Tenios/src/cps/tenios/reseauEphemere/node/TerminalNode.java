@@ -18,9 +18,9 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 @OfferedInterfaces(offered = {CommunicationCI.class})
 @RequiredInterfaces(required = {CommunicationCI.class, RegistrationCI.class})
 public class TerminalNode extends Node {
-	
+
 	private MessageI toSend;
-	
+
 	/**
 	 * Constructeur initialisant un noeud terminal
 	 * @param uri du port de registration
@@ -40,7 +40,7 @@ public class TerminalNode extends Node {
 		super(uri, addr, i, j, r);
 		toSend = msg;
 	}
-	
+
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute TerminalNode "+ this.addr);
@@ -59,20 +59,20 @@ public class TerminalNode extends Node {
 				logMessage("Ne doit pas arriver : 2 terN connected");
 			}
 		}
-		
+
 		if(toSend != null) {
-			
+
 			logMessage("J'envoie le message " + toSend.getContent());
 			this.transmitMessage(toSend);
 		}
-		
+
 		logMessage("\n Fin execute !!!\n");
 	}
 
 	@Override
 	public void ping() throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class TerminalNode extends Node {
 			this.seekNtransmit(m);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Terminal"+super.toString();

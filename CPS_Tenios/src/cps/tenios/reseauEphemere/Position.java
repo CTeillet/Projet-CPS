@@ -8,7 +8,7 @@ import cps.tenios.reseauEphemere.interfaces.PositionI;
  */
 public class Position implements PositionI {
 	/**
-	 * 
+	 * Utilisé pour la Serialization
 	 */
 	private static final long serialVersionUID = -5325457738448186339L;
 	/**

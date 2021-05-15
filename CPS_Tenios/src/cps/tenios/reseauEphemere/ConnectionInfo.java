@@ -12,7 +12,7 @@ import cps.tenios.reseauEphemere.interfaces.PositionI;
  */
 public class ConnectionInfo implements Serializable {
 	/**
-	 * 
+	 * Utilisé pour la Serialization
 	 */
 	private static final long serialVersionUID = 7792201937940269623L;
 	/**

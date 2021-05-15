@@ -51,7 +51,7 @@ public class RoutingNode extends Router2Test {
 	@Override
 	public void execute() throws Exception {
 		logMessage("Debut Execute RoutingNode " + this.addr);
-		// enrigistrement au près du gestionnaire
+		// enregistrement au près du gestionnaire
 		Set<ConnectionInfo> voisin = this.registrationOutboundPort.registerRoutingNode(this.addr, this.COMM_INBOUNDPORT_URI, this.pos, this.range, ROUTING_INBOUNDPORT_URI);
 		logMessage("ajout de" + voisin.size() + " voisin ");
 		for(ConnectionInfo c : voisin) {
@@ -65,9 +65,9 @@ public class RoutingNode extends Router2Test {
 	 * @throws Exception
 	 */
 	private void ajoutVoisins(ConnectionInfo c) throws Exception {
-		
+
 		runTask(super.indexCommunication, new FComponentTask() {
-			
+
 			@Override
 			public void run(ComponentI owner) {
 				CommunicationOutboundPort out; // port de communication sortant 
@@ -120,8 +120,6 @@ public class RoutingNode extends Router2Test {
 	public void transmitMessage(MessageI msg) throws Exception {
 		MessageI m = new Message((Message) msg);
 
-		//handleRequest(super.indexTransmit,new TransmitRequest(this, m, path2Network, routingTable, routingNodes, addr));
-
 		runTask(super.indexCommunication, new FComponentTask() {
 			@Override
 			public void run(ComponentI owner) {
@@ -150,7 +148,7 @@ public class RoutingNode extends Router2Test {
 						Chemin path = routingTable.get(m.getAddress());
 						lockTable.unlock();
 						if(path != null) {
-							
+
 							try {
 								path.getNext().transmitMessage(m);
 							} catch (Exception e) {
@@ -215,32 +213,26 @@ public class RoutingNode extends Router2Test {
 		logMessage("addRoutingNeighbour " + addr);
 		CommunicationOutboundPort nodeOutbound = null;
 		RoutingOutboundPort routOutbound = null;
-		try {
-			// Connexion au node par un port de Communication
-			nodeOutbound = new CommunicationOutboundPort(this);
-			nodeOutbound.publishPort();
-			doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
+		// Connexion au node par un port de Communication
+		nodeOutbound = new CommunicationOutboundPort(this);
+		nodeOutbound.publishPort();
+		doPortConnection(nodeOutbound.getPortURI(), nodeInboundPortURI, NodeConnector.class.getCanonicalName());
 
-			//Connexion au RoutingNodeOutboundPort
-			routOutbound = new RoutingOutboundPort(this);
-			routOutbound.publishPort();
-			doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
+		//Connexion au RoutingNodeOutboundPort
+		routOutbound = new RoutingOutboundPort(this);
+		routOutbound.publishPort();
+		doPortConnection(routOutbound.getPortURI(), routingInboundPortURI, RoutingConnector.class.getCanonicalName());
 
-		} catch (Exception e ) {
-			e.printStackTrace();
-		}
 		//logMessage("isCreate=" + (routOutbound != null) + ", isPublished=" + routOutbound.isPublished());
 
 
 		// ajout du noeud dans list des voisins
 		lockRoutNodes.lock();
-		try {
-			routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+		routingNodes.add(new InfoRoutNode(addr, nodeOutbound, routOutbound));
+
 		lockRoutNodes.unlock();
-		
+
 		// mis a jour du nouveau voisins dans la table
 		lockTable.lock();
 		routingTable.put(addr, new Chemin(nodeOutbound, 1));
@@ -261,7 +253,7 @@ public class RoutingNode extends Router2Test {
 		logMessage("fin add" + addr);
 		return nodeOutbound;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Routing"+super.toString();

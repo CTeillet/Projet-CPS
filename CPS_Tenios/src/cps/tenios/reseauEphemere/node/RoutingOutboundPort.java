@@ -16,7 +16,7 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 public class RoutingOutboundPort extends AbstractOutboundPort implements RoutingCI {
 
 	/**
-	 * 
+	 * Utilisé pour la sérialisation
 	 */
 	private static final long serialVersionUID = 4539783156684585745L;
 
