@@ -121,7 +121,7 @@ public abstract class Router2Test extends AbstractComponent {
 	/**
 	 * Table de routage
 	 */
-	protected Map<AddressI, Chemin> routingTable;
+	protected Map<AddressI, TousChemins> routingTable;
 
 
 	/**
@@ -155,7 +155,7 @@ public abstract class Router2Test extends AbstractComponent {
 		// Creation des structure de donnees
 		terminalNodes = new ArrayList<InfoTerminalN>();
 		routingNodes = new ArrayList<InfoRoutNode>();
-		routingTable = new HashMap<AddressI, Chemin>();
+		routingTable = new HashMap<AddressI, TousChemins>();
 		
 		
 		this.range=r;
@@ -200,7 +200,7 @@ public abstract class Router2Test extends AbstractComponent {
 		
 		// mis a jour du nouveau voisins dans la table
 		lockTable.lock();
-		routingTable.put(addr, new Chemin(nodeOutbound, 1));
+		routingTable.put(addr, new TousChemins(nodeOutbound, 1));
 		lockTable.unlock();
 		
 		logMessage("addTerminalNeighbour fin " + address);
@@ -414,71 +414,87 @@ public abstract class Router2Test extends AbstractComponent {
 			throw new ConnectException("ping"); 
 		}
 	}
+	
+	/**
+	 * Supprime tout trace d'un voisin de la table de routage
+	 * @param addrToDelete adress a supprimer
+	 * @param portToDelete port a supprimer
+	 */
+	protected void suppprimeVoisinsTable(AddressI addrToDelete, CommunicationOutboundPort portToDelete) {
+		lockTable.lock();
+		// supprime le chemin vers ce node
+		routingTable.remove(addrToDelete);
+		// supprime toutes presence du noeud dans la tablde de routage
+		for (Entry<AddressI, TousChemins> entry : routingTable.entrySet()) {
+			entry.getValue().delete(portToDelete);
+		}
+		lockTable.unlock();
+	}
+	
+	protected void testVoisins() throws Exception {
 
-	protected void suppprimeVoisins(InfoTerminalN toDelete) {
-		lockTable.lock();
-		// supprime le chemin vers ce node
-		routingTable.remove(toDelete.getAddress());
-		// recheccher la presence du noeud dans la tablde de routage
-		ArrayList<AddressI> deleteList = new ArrayList<AddressI>();
-		for (Entry<AddressI, Chemin> entry : routingTable.entrySet()) {
-			if (entry.getValue().getNext().equals(toDelete.getNode())) {
-				deleteList.add(entry.getKey());
-			}
-		}
-		// supprime toute les apparition du noed dans la table de routage
-		for(AddressI a : deleteList) {
-			routingTable.remove(a);
-		}
-		lockTable.unlock();
-		
-		//supprime de la liste des nodes termineaux
-		lockTerNodes.lock();
-		terminalNodes.remove(toDelete);
-		lockTable.unlock();
-		
-	}
-	
-	private void suppprimeVoisins(InfoRoutNode toDelete) {
-		lockTable.lock();
-		// supprime le chemin vers ce node
-		routingTable.remove(toDelete.getAddress());
-		// recheccher la presence du noeud dans la tablde de routage
-		ArrayList<AddressI> deleteList = new ArrayList<AddressI>();
-		for (Entry<AddressI, Chemin> entry : routingTable.entrySet()) {
-			if (entry.getValue().getNext().equals(toDelete.getNode())) {
-				deleteList.add(entry.getKey());
-			}
-		}
-		// supprime toute les apparition du noed dans la table de routage
-		for(AddressI a : deleteList) {
-			routingTable.remove(a);
-		}
-		lockTable.unlock();
-		
-		// supprime de la list des routingNodes
 		lockRoutNodes.lock();
-		routingNodes.remove(toDelete);
+		for(InfoRoutNode n : routingNodes) {
+			try {
+				n.getNode().ping();
+			} catch (ConnectException e) {
+				logMessage(e.getMessage() + "suppression " + n.getAddress());
+				routingNodes.remove(n);
+				lockRoutNodes.unlock();
+				suppprimeVoisinsTable(n.getAddress(), n.getNode());
+				testVoisins();
+				return;
+			}
+		}
 		lockRoutNodes.unlock();
+		
+		lockTerNodes.lock();
+		for(InfoTerminalN n : terminalNodes) {
+			try {
+				n.getNode().ping();
+			} catch (ConnectException e) {
+				logMessage(e.getMessage() + "suppression " + n.getAddress());
+				terminalNodes.remove(n);
+				lockTerNodes.unlock();
+				suppprimeVoisinsTable(n.getAddress(), n.getNode());
+				testVoisins();
+				return;
+			}
+		}
+		lockTerNodes.unlock();
 	}
 	
-	protected void suppprimeVoisins(CommunicationOutboundPort toDelete) {
-		// recherche de quel type de noeud il s'agit
-		for (InfoTerminalN v: terminalNodes)
-		{
-			if (v.getNode() == toDelete) {
-				suppprimeVoisins(v);
-				return;
-			}
-		}
-		for (InfoRoutNode v: routingNodes)
-		{
-			if (v.getNode() == toDelete) {
-				suppprimeVoisins(v);
-				return;
-			}
-		}
-	}
+	/**
+	 * supprime un voisins
+	 * @param toDelete port a supprimer
+	 */
+//	protected void suppprimeVoisins(InfoTerminalN v) {
+//		// recherche de quel type de noeud il s'agit
+//		
+//		lockTerNodes.lock();
+//		for (InfoTerminalN v: terminalNodes)
+//		{
+//			if (v.getNode() == toDelete) {
+//				terminalNodes.remove(v);
+//				lockTerNodes.unlock();
+//				suppprimeVoisinsTable(v.getAddress(), v.getNode());
+//				return;
+//			}
+//		}
+//		lockTerNodes.unlock();
+//		
+//		lockRoutNodes.lock();
+//		for (InfoRoutNode v: routingNodes)
+//		{
+//			if (v.getNode() == toDelete) {
+//				routingNodes.remove(v);
+//				lockRoutNodes.unlock();
+//				suppprimeVoisinsTable(v.getAddress(), v.getNode());
+//				return;
+//			}
+//		}
+//		lockRoutNodes.unlock();
+//	}
 	
 	protected boolean isMemberOfRountingNodes (AddressI addr) {
 		lockRoutNodes.lock();
@@ -502,8 +518,8 @@ public abstract class Router2Test extends AbstractComponent {
 		Set<RouteInfoI> voisins = new HashSet<>();
 		lockTable.lock(); //section critique
 		//logMessage("lockTable pris");
-		for(Entry<AddressI, Chemin> v : routingTable.entrySet()) {
-			voisins.add(new RouteInfo(v.getKey(), v.getValue().getNumberOfHops()));
+		for(Entry<AddressI, TousChemins> v : routingTable.entrySet()) {
+			voisins.add(new RouteInfo(v.getKey(), v.getValue().getFirstChemin().getNumberOfHops()));
 		}
 		//logMessage("lockTable relache");
 		lockTable.unlock();
@@ -538,25 +554,25 @@ public abstract class Router2Test extends AbstractComponent {
 			public void run(ComponentI owner) {
 				logMessage("run updateRouting!! ");
 				boolean hasChanged = false;
+				
 
 				try {
+					CommunicationOutboundPort neighbourPort = findNodeOutboundPort(neighbour);
+					
 					for(RouteInfoI ri : routes) {
 						if (ri.getDestination().isNodeAddress()) {
 
 							lockTable.lock();//section critique
 							//logMessage("lockTable lock");
-							Chemin tmp = routingTable.get(ri.getDestination());
+							TousChemins tmp = routingTable.get(ri.getDestination());
 							//Si pas de route vers address => creation d'un nouveau chemin
 							if(tmp == null) {
 								hasChanged = true;
-								routingTable.put( (AddressI)ri.getDestination(), new Chemin(findNodeOutboundPort(neighbour), ri.getNumberOfHops()));
+								routingTable.put( (AddressI)ri.getDestination(), new TousChemins(neighbourPort, ri.getNumberOfHops()));
 
 								// Si meilleur route => Maj
-							} else if (tmp.getNumberOfHops() > ri.getNumberOfHops() + 1){
+							} else if (tmp.add(neighbourPort, ri.getNumberOfHops())){
 								hasChanged = true;
-								// TODO remplacer par une list et ajouter
-								tmp.setNext(findNodeOutboundPort(neighbour));
-								tmp.setNumberOfHops(ri.getNumberOfHops() + 1);
 							}
 							//logMessage("lockTable unlock");
 							lockTable.unlock();

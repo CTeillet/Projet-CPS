@@ -1,5 +1,7 @@
 package cps.tenios.reseauEphemere.node;
 
+import java.net.ConnectException;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -58,6 +60,11 @@ public class RoutingNode extends Router2Test {
 			ajoutVoisins(c);
 		}
 		logMessage("\n Fin !!!\n");
+		
+		while(true) {
+			Thread.sleep(1000);
+			testVoisins();
+		}
 	}
 
 	/**
@@ -106,10 +113,10 @@ public class RoutingNode extends Router2Test {
 			}
 		} else {
 			lockTable.lock();
-			Chemin chemin = routingTable.get(address);
+			TousChemins chemin = routingTable.get(address);
 			lockTable.unlock();
 			if(chemin != null) {
-				return chemin.getNumberOfHops();
+				return chemin.getFirstChemin().getNumberOfHops();
 			}
 		}
 
@@ -145,16 +152,20 @@ public class RoutingNode extends Router2Test {
 					} else {
 						// Cherche l'adresse dans la table 
 						lockTable.lock();
-						Chemin path = routingTable.get(m.getAddress());
+						TousChemins tc = routingTable.get(m.getAddress());
 						lockTable.unlock();
-						if(path != null) {
+						if(tc != null) {
 
 							try {
-								path.getNext().transmitMessage(m);
+								CommunicationOutboundPort path = tc.getFirstChemin().getNext();
+								lockTable.unlock();
+								path.transmitMessage(m);;
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 							return;
+						} else {
+							lockTable.unlock();
 						}
 					}
 					try {
@@ -235,7 +246,7 @@ public class RoutingNode extends Router2Test {
 
 		// mis a jour du nouveau voisins dans la table
 		lockTable.lock();
-		routingTable.put(addr, new Chemin(nodeOutbound, 1));
+		routingTable.put(addr, new TousChemins(nodeOutbound, 1));
 		lockTable.unlock();
 
 		int hops = -1;

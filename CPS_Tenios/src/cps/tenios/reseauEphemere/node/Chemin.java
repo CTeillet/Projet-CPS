@@ -1,5 +1,7 @@
 package cps.tenios.reseauEphemere.node;
 
+import java.util.Comparator;
+
 /**
  * Classe permettant de representer un chemin vers un autre noeud du reseau
  * @author Tenios
@@ -57,7 +59,39 @@ public class Chemin {
 	public void setNumberOfHops(int numberOfHops) {
 		this.numberOfHops = numberOfHops;
 	}
-	
-	
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((next == null) ? 0 : next.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Chemin other = (Chemin) obj;
+		if (next == null) {
+			if (other.next != null)
+				return false;
+		} else {
+			try {
+				return next.getClientPortURI() == other.next.getClientPortURI();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+			}
+		}
+		return false;
+	}
 }
+
+
+

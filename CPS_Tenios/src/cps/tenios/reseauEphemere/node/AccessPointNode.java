@@ -46,6 +46,11 @@ public class AccessPointNode extends Router2Test {
 			ajoutVoisins(c);
 		}
 		logMessage("\n Fin !!!\n");
+		
+		while(true) {
+			Thread.sleep(1000);
+			testVoisins();
+		}
 	}
 
 	private void ajoutVoisins(ConnectionInfo c) throws Exception {
@@ -83,7 +88,7 @@ public class AccessPointNode extends Router2Test {
 		// verifie si le message est arrivé a destination, a destination du reseau, mort ou a retransmettre
 		if (this.checkMessage(m)) {
 			// Cherche l'adresse dans la table 
-			Chemin path = routingTable.get(m.getAddress());
+			Chemin path = routingTable.get(m.getAddress()).getFirstChemin();
 			if(path != null) {
 				logMessage("Gagner");
 				path.getNext().transmitMessage(m);
@@ -110,10 +115,10 @@ public class AccessPointNode extends Router2Test {
 			return 0;
 		}
 		lockTable.lock();
-		Chemin path = routingTable.get(address);
+		TousChemins path = routingTable.get(address);
 		lockTable.unlock();
 		if(path!=null) {
-			return path.getNumberOfHops();
+			return path.getFirstChemin().getNumberOfHops();
 		}
 		return -1;
 	}
@@ -146,7 +151,7 @@ public class AccessPointNode extends Router2Test {
 
 		// mis a jour du nouvau voisins
 		lockTable.lock();
-		routingTable.put(addr, new Chemin(nodeOutbound, 1));
+		routingTable.put(addr, new TousChemins(nodeOutbound, 1));
 		lockTable.unlock();
 
 		logMessage("lancement update ");
