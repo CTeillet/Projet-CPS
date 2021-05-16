@@ -1,5 +1,6 @@
 package cps.tenios.reseauEphemere.node;
 
+import java.rmi.ConnectException;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
@@ -20,6 +21,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 public class TerminalNode extends Node {
 
 	private MessageI toSend;
+	private boolean amIAlive = true;
 
 	/**
 	 * Constructeur initialisant un noeud terminal
@@ -69,14 +71,23 @@ public class TerminalNode extends Node {
 		logMessage("\n Fin execute !!!\n");
 	}
 
-	@Override
+	/**
+	 * Permet de v�rifier que les voisins sont toujours actif
+	 * @throws Exception s'il y a un probleme
+	 */
 	public void ping() throws Exception {
-		// TODO Auto-generated method stub
-
+		if ((!amIAlive) || Math.random() < 0.000001) {
+			amIAlive  = false;
+			logMessage("mort du composants !");
+			throw new ConnectException("ping"); 
+		}
 	}
 
 	@Override
 	public void transmitMessage(MessageI msg) throws Exception {
+		if (!amIAlive) {
+			return;
+		}
 		//Copie du message 
 		MessageI m = new Message((Message) msg);;
 

@@ -83,7 +83,7 @@ public class CommunicationInboundPort extends AbstractInboundPort implements Com
 	public void ping()  throws Exception{
 		this.getOwner().handleRequest( c -> {
 			if (c instanceof Node) {((Node)c).ping();}
-			else {((Node)c).ping();}
+			else {((Router2Test)c).ping();}
 			return null;
 		} );
 	}

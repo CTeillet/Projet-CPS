@@ -1,6 +1,7 @@
 package cps.tenios.reseauEphemere.node;
 
 
+import java.rmi.ConnectException;
 import java.util.Set;
 
 import cps.tenios.reseauEphemere.ConnectionInfo;
@@ -47,10 +48,10 @@ public class AccessPointNode extends Router2Test {
 		}
 		logMessage("\n Fin !!!\n");
 		
-		while(true) {
-			Thread.sleep(1000);
-			testVoisins();
-		}
+//		while(true) {
+//			Thread.sleep(1000);
+//			testVoisins();
+//		}
 	}
 
 	private void ajoutVoisins(ConnectionInfo c) throws Exception {
@@ -84,18 +85,37 @@ public class AccessPointNode extends Router2Test {
 	public void transmitMessage(MessageI msg) throws Exception {
 		//Copie du message 
 		MessageI m = new Message((Message) msg);;
+		
+		runTask(super.indexCommunication, new FComponentTask() {
 
-		// verifie si le message est arrivé a destination, a destination du reseau, mort ou a retransmettre
-		if (this.checkMessage(m)) {
-			// Cherche l'adresse dans la table 
-			Chemin path = routingTable.get(m.getAddress()).getFirstChemin();
-			if(path != null) {
-				logMessage("Gagner");
-				path.getNext().transmitMessage(m);
-				return ;
+			@Override
+			public void run(ComponentI owner) {
+				try {
+					try {
+						testVoisins();
+					} catch (ConnectException e1) {
+						System.out.println(e1.getMessage());
+					}
+					// verifie si le message est arrivé a destination, a destination du reseau, mort ou a retransmettre
+					if (checkMessage(m)) {
+						// Cherche l'adresse dans la table 
+						lockTable.lock();
+						TousChemins path = routingTable.get(m.getAddress());
+						if(path != null) {
+							path.getFirstChemin().getNext().transmitMessage(m);
+							lockTable.unlock();
+							return ;
+						}
+						lockTable.unlock();
+						
+						seekNtransmit(m);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-			this.seekNtransmit(m);
-		}
+			
+		});
 	}
 
 	@Override

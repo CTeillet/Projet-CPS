@@ -1,7 +1,6 @@
 package cps.tenios.reseauEphemere.node;
 
-import java.net.ConnectException;
-import java.util.Iterator;
+import java.rmi.ConnectException;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -60,11 +59,11 @@ public class RoutingNode extends Router2Test {
 			ajoutVoisins(c);
 		}
 		logMessage("\n Fin !!!\n");
-		
-		while(true) {
-			Thread.sleep(1000);
-			testVoisins();
-		}
+
+		//		while(true) {
+		//			Thread.sleep(1000);
+		//			testVoisins();
+		//		}
 	}
 
 	/**
@@ -130,50 +129,49 @@ public class RoutingNode extends Router2Test {
 		runTask(super.indexCommunication, new FComponentTask() {
 			@Override
 			public void run(ComponentI owner) {
-				// verifie si le message est arrivé a destination, mort ou a retransmettre
-				if (checkMessage(m)) {
-					// message a destion du reseau
-					if (m.getAddress().isNetworkAddress()) {
-						//si chemin connue
-						lockP2N.lock();
-						if(path2Network != null) {
-							try {
+				try {
+					try {
+						testVoisins();
+					} catch (ConnectException e1) {
+						System.out.println(e1.getMessage());
+					}
+					// verifie si le message est arrivé a destination, mort ou a retransmettre
+					if (checkMessage(m)) {
+						// message a destion du reseau
+						if (m.getAddress().isNetworkAddress()) {
+							//si chemin connue
+							lockP2N.lock();
+							if(path2Network != null) {
+
 								CommunicationOutboundPort next = path2Network.getNext();
 								lockP2N.unlock();
 								next.transmitMessage(m);
-							} catch (Exception e) {
-								e.printStackTrace();
+
+								return;
 							}
+							lockP2N.unlock();
 
-							return;
-						}
-						lockP2N.unlock();
-
-					} else {
-						// Cherche l'adresse dans la table 
-						lockTable.lock();
-						TousChemins tc = routingTable.get(m.getAddress());
-						lockTable.unlock();
-						if(tc != null) {
-
-							try {
+						} else {
+							// Cherche l'adresse dans la table 
+							lockTable.lock();
+							TousChemins tc = routingTable.get(m.getAddress());
+							if(tc != null) {
 								CommunicationOutboundPort path = tc.getFirstChemin().getNext();
 								lockTable.unlock();
 								path.transmitMessage(m);;
-							} catch (Exception e) {
-								e.printStackTrace();
+
+								return;
+							} else {
+								lockTable.unlock();
 							}
-							return;
-						} else {
-							lockTable.unlock();
 						}
-					}
-					try {
+
 						seekNtransmit(m);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}				
+
+					}	
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 	}
@@ -189,6 +187,11 @@ public class RoutingNode extends Router2Test {
 			public void run(ComponentI owner)  {
 				logMessage("dans update");
 				try {
+					try {
+						testVoisins();
+					} catch (ConnectException e1) {
+						System.out.println(e1.getMessage());
+					}
 					lockP2N.lock();
 					if(path2Network == null || path2Network.getNumberOfHops() > numberOfHops + 1) {
 

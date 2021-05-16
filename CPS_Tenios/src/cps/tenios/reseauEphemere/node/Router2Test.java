@@ -441,7 +441,7 @@ public abstract class Router2Test extends AbstractComponent {
 				logMessage(e.getMessage() + "suppression " + n.getAddress());
 				routingNodes.remove(n);
 				lockRoutNodes.unlock();
-				suppprimeVoisinsTable(n.getAddress(), n.getNode());
+				//suppprimeVoisinsTable(n.getAddress(), n.getNode());
 				testVoisins();
 				return;
 			}
@@ -457,7 +457,7 @@ public abstract class Router2Test extends AbstractComponent {
 				terminalNodes.remove(n);
 				lockTerNodes.unlock();
 				suppprimeVoisinsTable(n.getAddress(), n.getNode());
-				testVoisins();
+				//testVoisins();
 				return;
 			}
 		}
@@ -541,7 +541,6 @@ public abstract class Router2Test extends AbstractComponent {
 	 * @throws Exception en cas de probleme
 	 */
 	public void updateRouting(AddressI neighbour, Set<RouteInfoI> routes) throws Exception {
-		// TODO remplacer par une lambda
 		logMessage("updateRouting");
 		
 		if (!isMemberOfRountingNodes(neighbour)) {
@@ -557,6 +556,13 @@ public abstract class Router2Test extends AbstractComponent {
 				
 
 				try {
+					
+					try {
+						testVoisins();
+					} catch (ConnectException e1) {
+						System.out.println(e1.getMessage());
+					}
+					
 					CommunicationOutboundPort neighbourPort = findNodeOutboundPort(neighbour);
 					
 					for(RouteInfoI ri : routes) {
